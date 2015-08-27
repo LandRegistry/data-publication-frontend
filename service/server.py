@@ -11,7 +11,7 @@ commercial_datasets = ['NSD']
 @app.route('/index.htm')
 @app.route('/index.html')
 def index():
-    return render_template('index.html')
+    return render_template('nsd.html')
 
 
 @app.route('/<data_type>/<dataset>')
