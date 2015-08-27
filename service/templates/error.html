@@ -1,0 +1,16 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}{{error}}{% endblock %}
+
+{% block body %}
+<div class="outer-block">
+    <div class="inner-block">
+        <h2 class="heading-large">
+            {{error}}
+        </h2>
+        <div class="text">
+            {{description}}<br/>
+        </div>
+    </div>
+</div>
+{% endblock %}

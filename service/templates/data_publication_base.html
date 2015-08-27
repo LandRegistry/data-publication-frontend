@@ -1,0 +1,51 @@
+{% extends "global/landregistry_base.html" %}
+
+{% block header_class %}with-proposition{% endblock %}
+{% block proposition_header %}
+  <div class="header-proposition">
+    <div class="content">
+      {% if user_id %}
+        <a href='#proposition-links' class='js-header-toggle menu'>Menu</a>
+        <nav id='proposition-menu'>
+          <a href="/" id="proposition-name">Land Registry</a>
+          <ul id='proposition-links'>
+            <li><a href='/'>Manage Account</a></li>
+            <li><a href='/' class='active'>Logout</a></li>
+          </ul>
+        </nav>
+      {% else %}
+        <a href="/" id="proposition-name">Land Registry</a>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <main id="content" role="main">
+    <div class="grid-row">
+      {% if breadcrumbs %}
+        <div id="global-breadcrumb" class="header-context column-three-quarters">
+          <nav role="navigation" class="expand-top-half expand-bottom-half">
+            <ol class="group">
+              {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+              {% endfor %}
+            </ol>
+          </nav>
+        </div>
+      {% endif %}
+    </div>
+    {% block body %}{% endblock %}
+  </main>
+{% endblock %}
+
+{% block footer_support_links %}
+{% block footer_support_links_additionals %}{% endblock %}
+  <ul>
+    <li><p>© Land Registry 2014</p></li>
+    <li><p>For more information or to purchase the data contact our Business Development Fulfilment Team.</p></li>
+    <li><p>Call 0300 006 0492</p></li>
+    <li><p>Email <a href="mailto:datapublication@landregistry.gsi.gov.uk">datapublication@landregistry.gsi.gov.uk</a></p></li>
+  </ul>
+{% endblock %}

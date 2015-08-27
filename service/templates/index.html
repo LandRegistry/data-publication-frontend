@@ -1,0 +1,81 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Menu{% endblock %}
+{% block body %}
+    <h1 class="heading-xlarge">Land Registry data</h1>
+    <p class="lede">
+        Download open and commercial data available from Land Registry.<br/>
+        <span class="text-secondary">
+            (A login is required to view commercial data.)
+        </span>
+    </p>
+
+    <div class="grid-row">
+        <div class="column-half">
+            <h2 class="heading-large">Commercial</h2>
+            <hr>
+            <h3 class="heading-medium"><a href="commercial/nsd">National Spatial Dataset</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains polygons based on the property extents registered with Land Registry.
+                        This data is available currently in shapefile format, a popular geospatial vector data
+                        format for geographic information systems (GIS).</p>
+                </div>
+            </details>
+
+            <h3 class="heading-medium"><a href="commercial/cod">Commercial and Corporate Ownership Dataset</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains Ownership Details of Land owned by Corporate Organisations.</p>
+                </div>
+            </details>
+
+            <h3 class="heading-medium"><a href="commercial/ood">Overseas Ownership Dataset</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains Ownership Details of Land owned by Overseas Corporate Organisations.</p>
+                </div>
+            </details>
+
+        </div>
+        <div class="column-half">
+            <h2 class="heading-large">Open</h2>
+            <hr>
+            <h3 class="heading-medium"><a href="open/ppd">Price Paid Data</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains Standard and Additional Price Paid data.</p>
+                </div>
+            </details>
+
+            <h3 class="heading-medium"><a href="open/hpi">House Price Index</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains House Price Index data.</p>
+                </div>
+            </details>
+
+            <h3 class="heading-medium"><a href="open/ar">1862 Act Register</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains 1862 Act Register data.</p>
+                </div>
+            </details>
+
+            <h3 class="heading-medium"><a href="open/iip">INSPIRE Index polygons</a></h3>
+            <details>
+                <summary><span>What is this?</span></summary>
+                <div class="panel-indent">
+                    <p>This dataset contains INSPIRE Index polygon data.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+    <hr>
+{% endblock %}
