@@ -70,3 +70,7 @@ target/
 .DS_Store?
 
 .venv
+
+# Compiled CSS
+service/static/gen/
+service/static/.webassets-cache/
