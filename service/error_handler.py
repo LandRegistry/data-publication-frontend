@@ -15,7 +15,7 @@ def setup_errors(app, error_template="error.html"):
 
         breadcrumbs = [
             {"text": "Home", "url": url_for('index', _external=True)},
-            {"text": "Error", "url": "/error.html"}
+            {"text": "Error", "url": ""}
         ]
 
         return render_template(error_template,
