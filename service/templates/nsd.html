@@ -1,8 +1,8 @@
 {% extends "data_publication_base.html" %}
 
-{% block page_title %}Land Registry Data - National Spatial Dataset{% endblock %}
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
 {% block body %}
-    <h1 class="heading-xlarge">National Spatial Dataset</h1>
+    <h1 class="heading-xlarge">Overseas Ownership Dataset</h1>
 
     <div class="grid-row">
 
@@ -13,13 +13,6 @@
                     <li><a href="#introduction">Introduction</a></li>
                     <li><a href="#download-packages">Download packages</a></li>
                     <li><a href="#data-benefits">Data benefits</a></li>
-                    {% if 'NSD' in roles %}
-                        <li><a href="#download">Download Dataset</a></li>
-                    {% else %}
-                        <li><a href="#sample-download">Download Sample Data</a></li>
-                        <li><a href="#set-up-process">Set-up process</a></li>
-                        <li><a href="#payment">Payment</a></li>
-                    {% endif %}
                     <li><a href="#related-datasets">Related datasets</a></li>
                 </ul>
             </section>
@@ -28,21 +21,26 @@
 
             <h2 class="heading-large" id="introduction">Introduction</h2>
 
-            <p>Our National Spatial Dataset contains more than 3.2 million polygons representing Registered title records of freehold and leasehold property in England and Wales. You can access all polygons and link this data via Title Number to Tenure, UPRN etc. This chargeable, licensed data includes:</p>
+            <p>The overseas dataset will provide details of any freehold or leasehold title where the registered legal owner is a company that is incorporated outside of the UK (i.e. an overseas company). It currently contains approximately 100,000 titles.</p>
+            <p>It will include:</p>
 
             <ul class="list-bullet">
-                <li>Polygon Geometry</li>
-                <li>Title Number</li>
+              <li>Title number</li>
+              <li>Land or property address</li>
+              <li>Administrative area</li>
+              <li>Name and correspondence address of the legal owner(s)</li>
+              <li>Country or territory of incorporation</li>
+              <li>Date the owner was registered at Land Registry</li>
+              <li>Title number's tenure (freehold/leasehold)</li>
             </ul>
 
             <h2 class="heading-large" id="download-packages">Download packages</h2>
 
-            <p>Three download packages allow you to choose how frequently you would like your data updated and refreshed. Options include:</p>
+            <p>Two download packages allow you to keep your data updated and refreshed. Options include:</p>
 
             <ul class="list-bullet">
-                <li>Single download: a one-off download of the complete England and Wales (E&amp;W) data</li>
-                <li>Half-yearly and quarterly refresh: a complete download of the E&amp;W data at half yearly or quarterly intervals</li>
-                <li>Premium: a complete download of the E&amp;W data, quarterly refreshes and monthly ‘change only’ updates</li>
+                <li>Full download: a one-off download of the complete England and Wales (E&amp;W) data</li>
+                <li>Change only updates: a file detailing all of the changes since the previous update (either the Full file or previous change only update)</li>
             </ul>
 
             <h2 class="heading-large" id="data-benefits">Data benefits</h2>
@@ -57,60 +55,15 @@
                 <li>data is supplied in shapefile format to allow easy integration with your systems and other datasets</li>
             </ul>
 
-            {% if 'NSD' in roles %}
-                <h2 class="heading-large" id="download">Download Dataset</h2>
-
-                <p>{{ files }} {{ 'files' if files > 1 else 'file' }} available for you to download:</p>
-
-                {% for file in range(1, files + 1) %}
-                    <div class="panel-indent">
-                        <span class="icon icon-download"></span> <a href="/commercial/NSD/NSD-Dataset-{{ file }}.zip"><span class="lede">National Spatial Dataset {{ file }}</span></a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <h2 class="heading-large" id="sample-download">Download Sample Data</h2>
-
-                <p>Download a sample file for the dataset:</p>
-                <div class="panel-indent">
-                    <span class="icon icon-download"></span> <a href="/commercial/NSD/NSD-Dataset-Sample.zip"><span class="lede">National Spatial Dataset Sample File</span></a>
-                </div>
-
-                <h2 class="heading-large" id="set-up-process">Set-up process</h2>
-
-                <ul class="list-bullet">
-                    <li>You will need to sign the licence, select the appropriate download package and confirm whether the data will be used internally only or for external reuse purposes</li>
-                    <li>Following receipt of the data supply charge (upfront fee), you will be given access to your data package via a secure data room</li>
-                    <!--<li>Register your details prior to purchase, to access a sample sub-set of the data to review and test internally for six weeks, after a signed evaluation licence has been received</li>-->
-                </ul>
-
-                <h2 class="heading-large" id="payment">Payment</h2>
-
-                <ul class="list-bullet">
-                    <li>annual data supply charge</li>
-                    <li>quarterly royalties based on transactional title use or per end user registration</li>
-                </ul>
-
-                <!--<p class="bg-primary lead">Please register to access this data</p>-->
-            {% endif %}
-
-            <hr>
-            <h2 class="heading-large">Other information</h2>
-
-            <p><a href="">Get the API to access the data you have purchased</a></p>
-            <p><a href="nsa_gov.html">Find out more about spatial data</a> <small>(links to info on gov.uk)</small></p>
-            <p>To purchase data contact our Business Development Fulfilment Team.</p>
-            <ul class="list-bullet">
-                <li><strong>Phone:</strong> 0300 006 0492</li>
-                <li><strong>Email:</strong> <a href="mailto:datapublication@landregistry.gsi.gov.uk">datapublication@landregistry.gsi.gov.uk</a></li>
-            </ul>
-
-            <hr>
             <h2 class="heading-large" id="related-datasets">Related datasets</h2>
             <p>Other datasets that are currently available to download are:</p>
             <ul class="list-bullet">
               <li>Tenure Information</li>
               <li>UPRN</li>
             </ul>
+
+            <a href="data.html" class="button button-get-started">Start</a>
+
         </div>
     </div>
 {% endblock %}

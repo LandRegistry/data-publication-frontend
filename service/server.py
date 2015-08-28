@@ -13,6 +13,10 @@ commercial_datasets = ['NSD']
 def index():
     return render_template('nsd.html')
 
+@app.route('/data')
+@app.route('/data.html')
+def data():
+    return render_template('data.html')
 
 @app.route('/<data_type>/<dataset>')
 def view_commercial_dataset_page(data_type, dataset):
