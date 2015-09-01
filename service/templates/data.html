@@ -22,10 +22,28 @@
 </h2>
 <div class="grid-row">
   <div class="column-half">
-    <h3 class="heading-medium">Full Dataset</h3>
+    <h3 class="heading-medium">Full Datasets</h3>
+    <ul>
+        {% for link in fullDatasets %}
+      <li>
+        <a href='{{ link["url"] }}'>
+          {{ link["filename"] }}
+        </a>
+      </li>
+        {% endfor %}
+    </ul>
   </div>
   <div class="column-half">
     <h3 class="heading-medium">Change-Only Updates</h3>
+    <ul>
+        {% for link in updatedDatasets %}
+      <li>
+        <a href='{{ link["url"] }}'>
+          {{ link["filename"] }}
+        </a>
+      </li>
+        {% endfor %}
+    </ul>
   </div>
 </div>
 {% endblock %}
