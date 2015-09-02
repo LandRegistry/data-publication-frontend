@@ -9,7 +9,7 @@ months = ["January","February","March","April","May","June","July","August","Sep
 @app.route('/index.htm')
 @app.route('/index.html')
 def index():
-    return render_template('nsd.html')
+    return render_template('ood.html')
 
 @app.route('/data')
 @app.route('/data.html')
