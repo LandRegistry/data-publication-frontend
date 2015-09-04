@@ -8,6 +8,7 @@
     <nav role="navigation" class="expand-top-half expand-bottom-half">
       <ol class="group">
         <li><a href="/">Dataset Details</a></li>
+        <li><a href="/recaptcha">reCAPTCHA Check</a></li>
         <li><a href="/data">Dataset Download</a></li>
       </ol>
     </nav>
@@ -17,9 +18,10 @@
 
 <h1 class="heading-xlarge">Land Registry Data</h1>
 <h2 class="heading-large">
-  <span class="heading-secondary">Step 1 of 1</span>
+  <span class="heading-secondary">Step 2 of 2</span>
   Download Dataset Files
 </h2>
+<p>Please note that these download links will only remain valid for <span id="duration">{{ duration }}</span> seconds.<span id="warning" style="color: red"></span></p>
 <div class="grid-row">
   <div class="column-half">
     <h3 class="heading-medium">Full Datasets</h3>
@@ -46,4 +48,19 @@
     </ul>
   </div>
 </div>
+{% endblock %}
+{% block js_additionals %}
+  <script>
+    window.load=countdown();
+    function countdown() {
+      var refreshIntervalId = setInterval(function() {
+        var duration = document.getElementById('duration');
+        duration.innerText = duration.innerText - 1;
+        if (duration.innerText == 0) {
+          clearInterval(refreshIntervalId);
+          document.getElementById('warning').innerText = ' You may need to reload the page';
+        }
+      }, 1000);
+    }
+  </script>
 {% endblock %}

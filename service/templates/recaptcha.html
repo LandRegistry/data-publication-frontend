@@ -1,0 +1,59 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block body %}
+<div class="grid-row">
+
+    <div id="global-breadcrumb" class="header-context column-three-quarters">
+        <nav role="navigation" class="expand-top-half expand-bottom-half">
+            <ol class="group">
+                <li><a href="/">Dataset Details</a></li>
+                <li><a href="/recaptcha">reCAPTCHA Check</a></li>
+            </ol>
+        </nav>
+    </div>
+
+</div>
+
+<h1 class="heading-xlarge">Land Registry Data</h1>
+<h2 class="heading-large">
+    <span class="heading-secondary">Step 1 of 2</span>
+    reCAPTCHA Check
+</h2>
+{% if error %}
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+        {{ error }}
+    </h1>
+</div>
+{% endif %}
+<form action="/data" method="post">
+    <div class="g-recaptcha" data-sitekey="6LegMQwTAAAAAIJsEF_sMg76L3jxFLT5q89f_3S7"></div>
+    <noscript>
+        <div>
+            <div style="width: 302px; height: 482px; position: relative;">
+                <div>
+                    <iframe src="https://www.google.com/recaptcha/api/fallback?k=6LegMQwTAAAAAIJsEF_sMg76L3jxFLT5q89f_3S7"
+                            frameborder="0" scrolling="no"
+                            style="width: 302px; height:422px; border-style: none;">
+                    </iframe>
+                </div>
+                <div style="width: 300px; height: 60px; border-style: none;
+                  bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;
+                  background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;">
+                    <textarea id="g-recaptcha-response" name="g-recaptcha-response"
+                              class="g-recaptcha-response"
+                              style="width: 250px; height: 40px; border: 1px solid #c1c1c1;
+                              margin: 10px 25px; padding: 0px; resize: none; font-size: 10px;" >
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </noscript>
+    <br/>
+    <button class="button" type="submit">Verify</button>
+</form>
+
+{% endblock %}
+{% block js_additionals %}<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
