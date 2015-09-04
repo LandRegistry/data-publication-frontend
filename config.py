@@ -1,9 +1,15 @@
 import os
+from typing import Dict, Union
+
+recaptcha_secret_key = os.environ['RECAPTCHA_SECRET_KEY']
+recaptcha_site_key = os.environ['RECAPTCHA_SITE_KEY']
 
 CONFIG_DICT = {
     'DEBUG': False,
-    'LOGGING': True
-}
+    'LOGGING': True,
+    'RECAPTCHA_SITE_KEY': recaptcha_site_key,
+    'RECAPTCHA_SECRET_KEY': recaptcha_secret_key,
+} # type: Dict[str, Union[bool, str, int]]
 
 settings = os.environ.get('SETTINGS')
 
