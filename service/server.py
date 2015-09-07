@@ -7,6 +7,7 @@ months = ["January", "February", "March", "April", "May", "June", "July", "Augus
           "October", "November", "December"]
 
 RECAPTCHA_SECRET_KEY = app.config['RECAPTCHA_SECRET_KEY']
+BACKEND_URL = app.config['BACKEND_URL']
 
 
 @app.route('/')
@@ -22,7 +23,7 @@ def recaptcha():
 
 
 @app.route('/data', methods=['POST', 'GET'])
-def data():
+def get_data():
     if request.method == 'GET':
         recaptcha_response = ''
     else:
@@ -32,7 +33,7 @@ def data():
     captcha = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
 
     if captcha.json()['success']:
-        response = requests.get('http://localhost:5001/list-files/overseas-ownership')
+        response = requests.get(BACKEND_URL + '/list-files/overseas-ownership')
         files = response.json()['File_List']
         full_datasets = []
         updated_datasets = []

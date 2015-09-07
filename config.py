@@ -3,12 +3,14 @@ from typing import Dict, Union
 
 recaptcha_secret_key = os.environ['RECAPTCHA_SECRET_KEY']
 recaptcha_site_key = os.environ['RECAPTCHA_SITE_KEY']
+backend_url = os.environ['BACKEND_URL']
 
 CONFIG_DICT = {
     'DEBUG': False,
     'LOGGING': True,
     'RECAPTCHA_SITE_KEY': recaptcha_site_key,
     'RECAPTCHA_SECRET_KEY': recaptcha_secret_key,
+    'BACKEND_URL': backend_url,
 } # type: Dict[str, Union[bool, str, int]]
 
 settings = os.environ.get('SETTINGS')
