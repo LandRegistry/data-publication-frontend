@@ -34,21 +34,14 @@ class TestNavigation:
     def setup_method(self, method):
         self.app = app.test_client()
 
-    def test_get_index_page(self):
+    def test_get_index_page_success(self):
         response = self.app.get('/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
-    @mock.patch('service.server.get_data.requests.get', return_value = FakeResponse(str.encode))
-    def test_get_datasets(self):
-        response = self.app.get('/data')
-        content = response.data.decode()
-        assert response.status_code == 200
-        assert "Overseas Dataset (" in content
-
-    @mock.patch('service.server.get_data.requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
         response = self.app.get('/data')
         content = response.data.decode()
@@ -56,7 +49,7 @@ class TestNavigation:
         assert "Overseas Dataset (August 2015)" in content
         assert "Overseas Dataset (August 2015 update)" in content
 
-    @mock.patch('service.server.get_data.requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):
         response = self.app.get('/data')
         content = response.data.decode()

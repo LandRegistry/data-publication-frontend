@@ -16,7 +16,7 @@ def index():
 @app.route('/data')
 @app.route('/data.html')
 def get_data():
-    response = requests.get(app.config[overseas_ownership_url] + '/list-files/overseas-ownership')
+    response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + '/list-files/overseas-ownership')
 
     # Get the link
     files = response.json()['File_List']

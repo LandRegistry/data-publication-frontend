@@ -1,12 +1,14 @@
 import os
 
+overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
+
 CONFIG_DICT = {
     'DEBUG': False,
-    'LOGGING': True
+    'LOGGING': True,
+    'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url
 }
 
 settings = os.environ.get('SETTINGS')
-overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
 
 if settings == 'dev':
     CONFIG_DICT['DEBUG'] = True
