@@ -6,6 +6,7 @@ CONFIG_DICT = {
 }
 
 settings = os.environ.get('SETTINGS')
+overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
 
 if settings == 'dev':
     CONFIG_DICT['DEBUG'] = True

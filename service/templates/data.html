@@ -26,6 +26,7 @@
     <ul>
         {% for link in fullDatasets %}
       <li>
+        <span class="icon icon-download" title="download"></span>
         <a href='{{ link["url"] }}'>
           {{ link["filename"] }}
         </a>
@@ -38,6 +39,7 @@
     <ul>
         {% for link in updatedDatasets %}
       <li>
+        <span class="icon icon-download" title="download"></span>
         <a href='{{ link["url"] }}'>
           {{ link["filename"] }}
         </a>
