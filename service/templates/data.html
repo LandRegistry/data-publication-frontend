@@ -28,10 +28,15 @@
     <ul>
       {% for link in data.full_datasets %}
       <li>
-        <span class="icon icon-download" title="download"></span>
-        <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
-        <span class="text-secondary">({{ link["size"] }})</span>
-        <br/><br/>
+        <div style="margin-bottom: 2%">
+          <div style="float: left; margin: 1.5%">
+            <span class="icon icon-download" title="download"></span>
+          </div>
+          <div>
+            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a><br/>
+            <span class="text-secondary">({{ link["size"] }})</span>
+          </div>
+        </div>
       </li>
       {% endfor %}
     </ul>
@@ -41,10 +46,15 @@
     <ul>
       {% for link in data.updated_datasets %}
       <li>
-        <span class="icon icon-download" title="download"></span>
-        <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
-        <span class="text-secondary">({{ link["size"] }})</span>
-        <br/><br/>
+        <div style="margin-bottom: 2%">
+          <div style="float: left; margin: 1.5%">
+            <span class="icon icon-download" title="download"></span>
+          </div>
+          <div>
+            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a><br/>
+            <span class="text-secondary">({{ link["size"] }})</span>
+          </div>
+        </div>
       </li>
       {% endfor %}
     </ul>
