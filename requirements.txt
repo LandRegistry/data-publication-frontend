@@ -2,3 +2,6 @@ Flask==0.10.1
 Jinja2==2.7.3
 Flask-Assets==0.10
 libsass==0.8.3
+requests==2.7.0
+mypy-lang==0.2.0
+hurry.filesize==0.9
