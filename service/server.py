@@ -14,6 +14,11 @@ MONTHS = [
 def index():
     return render_template('ood.html')
 
+@app.route('/terms')
+@app.route('/terms.html')
+def terms():
+    return render_template('terms.html')
+
 @app.route('/data')
 @app.route('/data.html')
 def get_data():
