@@ -26,25 +26,27 @@
   <div class="column-half">
     <h3 class="heading-medium">Full Datasets</h3>
     <ul>
-        {% for link in data.full_datasets %}
+      {% for link in data.full_datasets %}
       <li>
-        <a href='{{ link["url"] }}'>
-          {{ link["filename"] }}
-        </a>
+        <span class="icon icon-download" title="download"></span>
+        <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
+        <span class="text-secondary">({{ link["size"] }})</span>
+        <br/><br/>
       </li>
-        {% endfor %}
+      {% endfor %}
     </ul>
   </div>
   <div class="column-half">
     <h3 class="heading-medium">Change-Only Updates</h3>
     <ul>
-        {% for link in data.updated_datasets %}
+      {% for link in data.updated_datasets %}
       <li>
-        <a href='{{ link["url"] }}'>
-          {{ link["filename"] }}
-        </a>
+        <span class="icon icon-download" title="download"></span>
+        <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
+        <span class="text-secondary">({{ link["size"] }})</span>
+        <br/><br/>
       </li>
-        {% endfor %}
+      {% endfor %}
     </ul>
   </div>
 </div>

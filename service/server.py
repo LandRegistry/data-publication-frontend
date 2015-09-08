@@ -2,6 +2,7 @@
 from flask import render_template, request
 from service import app
 import requests
+from hurry.filesize import size, alternative
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
           "October", "November", "December"]
@@ -46,10 +47,10 @@ def get_data():
 
             if words[1] == "FULL":
                 new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-                full_datasets.append({"filename": new_link, "url": link["URL"]})
+                full_datasets.append({"filename": new_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
             else:
                 update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-                updated_datasets.append({"filename": update_link, "url": link["URL"]})
+                updated_datasets.append({"filename": update_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
 
         form_data = {'full_datasets': full_datasets,
                      'updated_datasets': updated_datasets,
