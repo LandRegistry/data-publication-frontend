@@ -38,8 +38,10 @@ def get_data():
             update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
             updated_datasets.append({"filename":update_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
 
+        duration = response.json()['Link_Duration']
+
     return render_template(
-        'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets)
+        'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets, duration=duration)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
