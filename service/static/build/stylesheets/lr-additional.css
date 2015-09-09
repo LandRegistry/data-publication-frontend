@@ -1,3 +1,13 @@
 .icon {
   display: inline-block;
 }
+
+.decline,
+.decline:visited,
+.decline:active{
+  background-color: #DF3034;
+}
+.decline:hover,
+.decline:focus {
+  background-color: #B10E1E;
+}

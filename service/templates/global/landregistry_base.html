@@ -3,10 +3,11 @@
 
 {% block head %}
   <link href="{{ landregistry_asset_path }}stylesheets/landregistry-main.css" media="screen" rel="stylesheet" type="text/css">
-  <link href="{{ landregistry_asset_path }}stylesheets/lr-additional.css" media="screen" rel="stylesheet" type="text/css">
   {% assets "govuk_sass" %}
     <link href="{{ ASSET_URL }}" media="screen" rel="stylesheet" type="text/css">
   {% endassets %}
+  <link href="{{ landregistry_asset_path }}stylesheets/lr-additional.css" media="screen" rel="stylesheet" type="text/css">
+
   {% block head_additionals %}{% endblock %}
 {% endblock %}
 

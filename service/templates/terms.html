@@ -1,0 +1,40 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block body %}
+    <div class="grid-row">
+
+      <div id="global-breadcrumb" class="header-context column-three-quarters">
+        <nav role="navigation" class="expand-top-half expand-bottom-half">
+          <ol class="group">
+            <li><a href="/" id="details">Dataset Details</a></li>
+            <li><a href="/terms" id="terms">Terms and conditions</a></li>
+          </ol>
+        </nav>
+      </div>
+
+    </div>
+    <form action="/data" method="post">
+      <h1 class="heading-xlarge">Land Registry Data</h1>
+      <h2 class="heading-large">
+        <span class="heading-secondary">Step 1 of 2</span>
+        Terms and conditions
+      </h2>
+      <div>
+        <p>
+          To download datasets you must read and agree to the Terms and Conditions as set out below.
+        </p>
+        <p>
+          Select 'Accept' to confirm your acceptance and to continue to the download screen.
+        </p>
+        <p>
+          If you do not agree with the Terms and Conditions you can exit by selecting 'Decline'.
+        </p>
+        <textarea rows="14" cols="100" style="width:100%" readonly id="terms">
+          {{ text }}
+        </textarea>
+        <input type="submit" value="Accept" class="button" id="Accept">
+        <a href="/" class="button decline" id="Decline">Decline</a>
+      </div>
+    </form>
+{% endblock %}
