@@ -1,11 +1,13 @@
 import os
 
 overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
+overseas_terms_file = os.environ.get('OVERSEAS_TERMS_FILE')
 
 CONFIG_DICT = {
     'DEBUG': False,
     'LOGGING': True,
-    'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url
+    'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url,
+    'OVERSEAS_TERMS_FILE': overseas_terms_file,
 }
 
 settings = os.environ.get('SETTINGS')

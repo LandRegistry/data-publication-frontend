@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import render_template
+from flask import Flask, render_template, redirect, url_for, request
 from service import app
 import requests
 from hurry.filesize import size, alternative
@@ -15,38 +15,45 @@ def index():
     return render_template('ood.html')
 
 @app.route('/terms')
-@app.route('/terms.html')
 def terms():
-    return render_template('terms.html')
+    f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
+    data = f.read()
+    f.close()
+    return render_template('terms.html', text=data)
 
-@app.route('/data')
-@app.route('/data.html')
+@app.route('/data', methods=['GET', 'POST'])
 def get_data():
-    response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + '/list-files/overseas-ownership')
+    if request.method == 'POST':
+        response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
+                                "/list-files/overseas-ownership")
 
-    # Get the link
-    files = response.json()['File_List']
+        # Get the link
+        files = response.json()['File_List']
 
-    full_datasets = []
-    updated_datasets = []
+        full_datasets = []
+        updated_datasets = []
 
-    for link in files:
-        # Split into a list of words and reorder the month and year
-        words = link["Name"].split("_")
-        # Display the month in name format
-        words[3] = MONTHS[int(words[3][:2])-1]
+        for link in files:
+            # Split into a list of words and reorder the month and year
+            words = link["Name"].split("_")
+            # Display the month in name format
+            words[3] = MONTHS[int(words[3][:2])-1]
 
-        if words[1] == "FULL":
-            new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-            full_datasets.append({"filename":new_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
-        else:
-            update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-            updated_datasets.append({"filename":update_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
+            if words[1] == "FULL":
+                new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
+                full_datasets.append({"filename": new_link, "url": link["URL"],
+                                      "size": size(link["Size"], system=alternative)})
+            else:
+                update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
+                updated_datasets.append({"filename": update_link, "url": link["URL"],
+                                         "size": size(link["Size"], system=alternative)})
 
-        duration = response.json()['Link_Duration']
+            duration = response.json()['Link_Duration']
 
-    return render_template(
-        'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets, duration=duration)
+        return render_template('data.html', fullDatasets=full_datasets,
+                               updatedDatasets=updated_datasets, duration=duration)
+    else:
+        return redirect(url_for('terms'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
