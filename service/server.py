@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import render_template
+from flask import render_template, request
 from service import app
 import requests
 from hurry.filesize import size, alternative
@@ -17,6 +17,8 @@ def index():
 @app.route('/data')
 @app.route('/data.html')
 def get_data():
+    ip_address = request.remote_addr
+    
     response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + '/list-files/overseas-ownership')
 
     # Get the link
