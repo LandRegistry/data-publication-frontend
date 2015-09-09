@@ -1,0 +1,58 @@
+<main id="content" role="main">
+  <div class="grid-row">
+
+    <div id="global-breadcrumb" class="header-context column-three-quarters">
+      <nav role="navigation" class="expand-top-half expand-bottom-half">
+        <ol class="group">
+          <li><a href="./Menu.html">Home</a></li>
+          <li><a href="./OOD_Dataset.html">Dataset Details</a></li>
+          <li><a href="./User_Type_Form.html">User Type</a></li>
+          <li><a href="">Name</a></li>
+        </ol>
+      </nav>
+    </div>
+
+  </div>
+
+  <h1 class="heading-xlarge">Land Registry Data</h1>
+  <h2 class="heading-large"><span class="heading-secondary">Step 2 of 8</span>Enter name and title</h2>
+
+  <form action="">
+    <div class="form-group">
+      <label class="form-label" for="title">Title<span class="form-hint">e.g. Mr, Mrs, Miss, etc.</span></label>
+      <select class="form-control" id="title" style="width: 5em">
+        <option value="Dr">Dr.</option>
+        <option value="Lady">Lady</option>
+        <option value="Lord">Lord</option>
+        <option value="Miss">Miss.</option>
+        <option value="Mr">Mr.</option>
+        <option value="Mrs">Mrs.</option>
+        <option value="Ms">Ms.</option>
+        <option value="Other">Other</option>
+        <option value="Prof">Prof.</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="first-name">First Name(s)/Given Name(s)</label>
+      <input class="form-control" id="first-name" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="last-name">Last Name/Family Name</label>
+      <input class="form-control" id="last-name" type="text">
+    </div>
+
+    <div class="form-group">
+      <p>Date of Birth<span class="form-hint">e.g. 22/8/1970</span></p>
+        <label class="form-label visuallyhidden" for="day">Day</label>
+        <input class="form-control" id="day" type="text" style="width: 2.25em" maxlength="2">/
+        <label class="form-label visuallyhidden" for="month">Month</label>
+        <input class="form-control" id="month" type="text" style="width: 2.25em" maxlength="2">/
+        <label class="form-label visuallyhidden" for="year">Year</label>
+        <input class="form-control" id="year" type="text" style="width: 4em" maxlength="4">
+    </div>
+
+    <a href="/address" class="button button-get-started" role="button">Next</a>
+
+  </form>
+
+</main>
