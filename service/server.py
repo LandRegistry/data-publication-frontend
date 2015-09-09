@@ -48,7 +48,7 @@ def get_data():
                 updated_datasets.append({"filename": update_link, "url": link["URL"],
                                          "size": size(link["Size"], system=alternative)})
 
-            duration = response.json()['Link_Duration']
+        duration = response.json()['Link_Duration']
 
         return render_template('data.html', fullDatasets=full_datasets,
                                updatedDatasets=updated_datasets, duration=duration)
