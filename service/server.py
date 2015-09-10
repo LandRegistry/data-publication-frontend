@@ -21,6 +21,13 @@ def terms():
     f.close()
     return render_template('terms.html', text=data)
 
+@app.route('/printable_terms')
+def printable_terms():
+    f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
+    data = f.read()
+    f.close()
+    return render_template('terms_printer_friendly.html', text=data)
+
 @app.route('/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':

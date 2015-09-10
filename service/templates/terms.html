@@ -1,6 +1,7 @@
 {% extends "data_publication_base.html" %}
 
 {% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block head_additionals %}{% endblock %}
 {% block body %}
     <div class="grid-row">
 
@@ -21,6 +22,7 @@
         Terms and conditions
       </h2>
       <div>
+        <a href="/printable_terms" id="PrintFriendly" target="_blank" title="Opens in new window">Printer-friendly version</a>
         <p>
           To download datasets you must read and agree to the Terms and Conditions as set out below.
         </p>
@@ -30,9 +32,7 @@
         <p>
           If you do not agree with the Terms and Conditions you can exit by selecting 'Decline'.
         </p>
-        <textarea rows="14" cols="100" style="width:100%" readonly id="terms">
-          {{ text }}
-        </textarea>
+        <textarea rows="14" cols="100" style="width:100%" readonly id="terms">{{ text }}</textarea>
         <input type="submit" value="Accept" class="button" id="Accept">
         <a href="/" class="button decline" id="Decline">Decline</a>
       </div>

@@ -48,6 +48,12 @@ class TestNavigation:
         assert 'Land Registry Data' in content
         assert 'Terms and conditions' in content
 
+    def test_get_printable_terms_page_success(self):
+        response = self.app.get('/printable_terms')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Terms and conditions' in content
+
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
         response = self.app.post('/data')
