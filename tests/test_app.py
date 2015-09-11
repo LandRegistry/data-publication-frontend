@@ -41,6 +41,34 @@ class TestNavigation:
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
+    def test_get_usertype_page_success(self):
+        response = self.app.get('/usertype')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_get_personal_page_success(self):
+        response = self.app.get('/personal')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_get_address_page_success(self):
+        response = self.app.get('/address')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_get_contact_page_success(self):
+        response = self.app.get('/tel')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
         response = self.app.get('/data')
