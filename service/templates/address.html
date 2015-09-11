@@ -1,14 +1,16 @@
-<main id="content" role="main">
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block body %}
   <div class="grid-row">
 
     <div id="global-breadcrumb" class="header-context column-three-quarters">
       <nav role="navigation" class="expand-top-half expand-bottom-half">
         <ol class="group">
-          <li><a href="./Menu.html">Home</a></li>
-          <li><a href="./OOD_Dataset.html">Dataset Details</a></li>
-          <li><a href="./User_Type_Form.html">User Type</a></li>
-          <li><a href="./Name_Form.html">Name</a></li>
-          <li><a href="">Address</a></li>
+          <li><a href="/" id="details">Dataset Details</a></li>
+          <li><a href="/usertype" id="usertype">User type</a></li>
+          <li><a href="/personal" id="personal">Personal details</a></li>
+          <li><a href="/address" id="address">Address</a></li>
         </ol>
       </nav>
     </div>
@@ -16,9 +18,10 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
-  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 8</span>Enter address details</h2>
+  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Enter address details</h2>
 
-  <form action="">
+  <form>
+    <fieldset>
       <div class="form-group">
         <label class="form-label" for="address-line-1">Address Line 1</label>
         <input class="form-control" id="address-line-1" type="text">
@@ -47,9 +50,10 @@
         <label class="form-label" for="country">Country</label>
         <input class="form-control" id="country" type="text">
       </div>
+    </fieldset>
 
-    <a href="/tel" class="button button-get-started" role="button">Next</a>
+    <a href="/tel" class="button button-get-started" role="button" id="next">Next</a>
 
   </form>
 
-</main>
+{% endblock %}

@@ -8,8 +8,7 @@
       <nav role="navigation" class="expand-top-half expand-bottom-half">
         <ol class="group">
           <li><a href="/" id="details">Dataset Details</a></li>
-          <li><a href="/terms" id="terms">Terms and conditions</a></li>
-          <li><a href="/usertype">User type</a></li>
+          <li><a href="/usertype" id="usertype">User type</a></li>
         </ol>
       </nav>
     </div>
@@ -17,9 +16,9 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
-  <h2 class="heading-large"><span class="heading-secondary">Step 2 of 8</span>Select user type</h2>
+  <h2 class="heading-large"><span class="heading-secondary">Step 1 of 7</span>Select user type</h2>
 
-  <form action="">
+  <form>
     <fieldset>
       <legend>
         <span class="form-label">
@@ -27,18 +26,18 @@
         </span>
       </legend>
       <div class="form-group form-group-compound">
-        <label class="block-label" for="gender-male">
-          <input id="gender-male" type="radio" name="gender-group" value="Male">
+        <label class="block-label" for="private-individual">
+          <input id="private-individual" type="radio" name="user-group" value="Private individual">
           Private Individual
         </label>
-        <label class="block-label" for="gender-female">
-          <input id="gender-female" type="radio" name="gender-group" value="Female">
+        <label class="block-label" for="company">
+          <input id="company" type="radio" name="user-group" value="Company">
           Company
         </label>
       </div>
     </fieldset>
 
-    <a href="/personal" class="button button-get-started" role="button">Next</a>
+    <a href="/personal" class="button button-get-started" role="button" id="next">Next</a>
 
   </form>
 

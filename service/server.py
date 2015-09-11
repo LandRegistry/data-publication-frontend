@@ -14,6 +14,22 @@ MONTHS = [
 def index():
     return render_template('ood.html')
 
+@app.route('/usertype')
+def usertype():
+    return render_template('usertype.html')
+
+@app.route('/personal')
+def personal():
+    return render_template('personal.html')
+
+@app.route('/tel')
+def tel():
+    return render_template('tel.html')
+
+@app.route('/address')
+def address():
+    return render_template('address.html')
+
 @app.route('/data')
 @app.route('/data.html')
 def get_data():
