@@ -19,24 +19,34 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
+
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+      {{ errors }}
+    </h2>
+
+  </div>
+
+
   <h2 class="heading-large"><span class="heading-secondary">Step 4 of 7</span>Enter your contact details</h2>
 
-  <form>
+  <form action="/data" method="post">
     <fieldset>
       <div class="form-group">
         <label class="form-label" for="landline">Telephone - Landline</label>
-        <input class="form-control" id="landline" type="tel">
+        <input class="form-control" name="landline" id="landline" type="tel">
       </div>
       <div class="form-group">
         <label class="form-label" for="mobile">Telephone - Mobile</label>
-        <input class="form-control" id="mobile" type="tel">
+        <input class="form-control" name="mobile" id="mobile" type="tel">
       </div>
       <div class="form-group">
         <label class="form-label" for="email">E-mail</label>
-        <input class="form-control" id="email" type="email">
+        <input class="form-control" name="email" id="email" type="email">
       </div>
     </fieldset>
-    <a href="/data" class="button button-get-started" role="button">Next</a>
+    <input type="submit" class="button" id="next" value="Next"/>
 
   </form>
 

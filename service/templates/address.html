@@ -18,41 +18,48 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
-  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Enter address details</h2>
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
 
-  <form>
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+      {{ errors }}
+    </h2>
+
+  </div>
+  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Enter address details</h2>
+  <form action="/tel" method="post">
     <fieldset>
       <div class="form-group">
         <label class="form-label" for="address-line-1">Address Line 1</label>
-        <input class="form-control" id="address-line-1" type="text">
+        <span style="color:#AF1324">{{ address1error }}</span><br/>
+        <input class="form-control" name="address-line-1" id="address-line-1" type="text">
       </div>
       <div class="form-group">
-        <label class="form-label" for="address-line-2">Address Line 2</label>
-        <input class="form-control" id="address-line-2" type="text">
+        <label class="form-label" for="address-line-2">Address Line 2 (Optional)</label>
+        <input class="form-control" name="address-line-2" id="address-line-2" type="text">
       </div>
       <div class="form-group">
         <label class="form-label" for="address-line-3">Address Line 3 (Optional)</label>
-        <input class="form-control" id="address-line-3" type="text">
+        <input class="form-control" name="address-line-3" id="address-line-3" type="text">
       </div>
       <div class="form-group">
-        <label class="form-label" for="city">Town/City</label>
-        <input class="form-control" id="city" type="text">
+        <label class="form-label" for="city">Town/City (Optional)</label>
+        <input class="form-control" name="city" id="city" type="text">
       </div>
       <div class="form-group">
-        <label class="form-label" for="region">State/Province/Region/County</label>
-        <input class="form-control" id="region" type="text">
+        <label class="form-label" for="region">State/Province/Region/County (Optional)</label>
+        <input class="form-control" name="region" id="region" type="text">
       </div>
       <div class="form-group">
-        <label class="form-label" for="postal-code">ZIP/Postal Code/Postcode</label>
-        <input class="form-control" id="postal-code" type="text">
+        <label class="form-label" for="postal-code">ZIP/Postal Code/Postcode (Optional)</label>
+        <input class="form-control" name="postal-code" id="postal-code" type="text">
       </div>
       <div class="form-group">
         <label class="form-label" for="country">Country</label>
-        <input class="form-control" id="country" type="text">
+        <span style="color:#AF1324">{{ countryerror }}</span><br/>
+        <input class="form-control" name="country" id="country" type="text">
       </div>
     </fieldset>
-
-    <a href="/tel" class="button button-get-started" role="button" id="next">Next</a>
+    <input type="submit" class="button" id="next" value="Next"/>
 
   </form>
 

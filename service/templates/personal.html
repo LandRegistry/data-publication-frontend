@@ -17,13 +17,19 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
+  <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+    {{ errors }}
+  </h2>
   <h2 class="heading-large"><span class="heading-secondary">Step 2 of 7</span>Enter name and title</h2>
-
-  <form>
+  <form action="/address" method="post">
     <fieldset>
       <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-control" name="username" id="username" type="text">
+      </div>
+      <div class="form-group">
         <label class="form-label" for="title">Title<span class="form-hint">e.g. Mr, Mrs, Miss, etc.</span></label>
-        <select class="form-control" id="title" style="width: 5em">
+        <select class="form-control" name="title" id="title" style="width: 5em">
           <option value="Dr">Dr.</option>
           <option value="Lady">Lady</option>
           <option value="Lord">Lord</option>
@@ -37,24 +43,27 @@
       </div>
       <div class="form-group">
         <label class="form-label" for="first-name">First Name(s)/Given Name(s)</label>
-        <input class="form-control" id="first-name" type="text">
+        <input class="form-control" name="first-name" id="first-name" type="text">
       </div>
       <div class="form-group">
         <label class="form-label" for="last-name">Last Name/Family Name</label>
-        <input class="form-control" id="last-name" type="text">
+        <input class="form-control" name="last-name" id="last-name" type="text">
       </div>
-
+      <div class="form-group">
+        <label class="form-label" for="company-name">Company Name</label>
+        <input class="form-control" name="company-name" id="company-name" type="text">
+      </div>
       <div class="form-group">
         <p>Date of Birth<span class="form-hint">e.g. 22/8/1970</span></p>
           <label class="form-label visuallyhidden" for="day">Day</label>
-          <input class="form-control" id="day" type="text" style="width: 2.25em" maxlength="2">/
+          <input class="form-control" name="day" id="day" type="text" style="width: 2.25em" maxlength="2">/
           <label class="form-label visuallyhidden" for="month">Month</label>
-          <input class="form-control" id="month" type="text" style="width: 2.25em" maxlength="2">/
+          <input class="form-control" name="month" id="month" type="text" style="width: 2.25em" maxlength="2">/
           <label class="form-label visuallyhidden" for="year">Year</label>
-          <input class="form-control" id="year" type="text" style="width: 4em" maxlength="4">
+          <input class="form-control" name="year" id="year" type="text" style="width: 4em" maxlength="4">
       </div>
     </fieldset>
-    <a href="/address" class="button button-get-started" role="button" id="next">Next</a>
+    <input type="submit" class="button" id="next" value="Next"/>
 
   </form>
 

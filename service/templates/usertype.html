@@ -18,7 +18,7 @@
   <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 1 of 7</span>Select user type</h2>
 
-  <form>
+  <form action="/personal" method="post">
     <fieldset>
       <legend>
         <span class="form-label">
@@ -27,7 +27,7 @@
       </legend>
       <div class="form-group form-group-compound">
         <label class="block-label" for="private-individual">
-          <input id="private-individual" type="radio" name="user-group" value="Private individual">
+          <input id="private-individual" type="radio" name="user-group" value="Private individual" checked="checked">
           Private Individual
         </label>
         <label class="block-label" for="company">
@@ -37,7 +37,7 @@
       </div>
     </fieldset>
 
-    <a href="/personal" class="button button-get-started" role="button" id="next">Next</a>
+    <input type="submit" class="button" id="next" value="Next"/>
 
   </form>
 
