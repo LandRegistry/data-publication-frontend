@@ -2,6 +2,7 @@
 
 {% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
 {% block body %}
+<main id="content" role="main">
   <div class="grid-row">
 
     <div id="global-breadcrumb" class="header-context column-three-quarters">
@@ -19,43 +20,83 @@
   <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 2 of 7</span>Enter name and title</h2>
 
-  <form>
-    <fieldset>
-      <div class="form-group">
-        <label class="form-label" for="title">Title<span class="form-hint">e.g. Mr, Mrs, Miss, etc.</span></label>
-        <select class="form-control" id="title" style="width: 5em">
-          <option value="Dr">Dr.</option>
-          <option value="Lady">Lady</option>
-          <option value="Lord">Lord</option>
-          <option value="Miss">Miss.</option>
-          <option value="Mr">Mr.</option>
-          <option value="Mrs">Mrs.</option>
-          <option value="Ms">Ms.</option>
-          <option value="Other">Other</option>
-          <option value="Prof">Prof.</option>
-        </select>
+  <form action="/personal/validation" method="POST">
+    {{ form.csrf_token }}
+    {% if 'user_type' in session and session['user_type'] == 'Company' %}
+    <div class="form-group{% if form.company_name.errors %} error{% endif %}">
+      {{ form.company_name.label(class_="form-label") }}
+      {{ form.company_name(class_="form-control") }}
+      <br/>
+      {% for error in form.company_name.errors %}
+      <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="grid-row">
+      <div class="column-quarter">
+        <div class="form-group">
+          {{ form.title.label(class_="form-label") }}
+          {{ form.title(class_="form-control", style="width: 5em") }}
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="first-name">First Name(s)/Given Name(s)</label>
-        <input class="form-control" id="first-name" type="text">
+      <div class="column-two-thirds">
+        <div class="form-group{% if form.other_title.errors %} error{% endif %}">
+          {{ form.other_title.label(class_="form-label") }}
+          {{ form.other_title(class_="form-control") }}
+          <br/>
+          {% for error in form.other_title.errors %}
+          <span class="error-message">{{ error }}</span>
+          {% endfor %}
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="last-name">Last Name/Family Name</label>
-        <input class="form-control" id="last-name" type="text">
-      </div>
+    </div>
+    <div class="form-group{% if form.first_name.errors %} error{% endif %}">
+      {{ form.first_name.label(class_="form-label") }}
+      {{ form.first_name(class_="form-control") }}
+      <br/>
+      {% for error in form.first_name.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group{% if form.last_name.errors %} error{% endif %}">
+      {{ form.last_name.label(class_="form-label") }}
+      {{ form.last_name(class_="form-control") }}
+      <br/>
+      {% for error in form.last_name.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group{% if form.username.errors %} error{% endif %}">
+      {{ form.username.label(class_="form-label") }}
+      {{ form.username(class_="form-control") }}
+      <br/>
+      {% for error in form.username.errors %}
+      <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group{% if form.day.errors or form.month.errors or form.year.errors %} error{% endif %}">
+      <p>Date of Birth<span class="form-hint">e.g. 22/8/1970</span></p>
+      {{ form.day.label(class_="form-label visuallyhidden") }}
+      {{ form.day(class_="form-control", style="width: 2.25em", maxlength="2") }}/
+      {{ form.month.label(class_="form-label visuallyhidden") }}
+      {{ form.month(class_="form-control", style="width: 2.25em", maxlength="2") }}/
+      {{ form.year.label(class_="form-label visuallyhidden") }}
+      {{ form.year(class_="form-control", style="width: 4em", maxlength="4") }}
+      <br/>
+      {% for error in form.day.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+      {% for error in form.month.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+      {% for error in form.year.errors %}
+        <span class="error-message">{{ error }}</span>
+      {% endfor %}
+    </div>
 
-      <div class="form-group">
-        <p>Date of Birth<span class="form-hint">e.g. 22/8/1970</span></p>
-          <label class="form-label visuallyhidden" for="day">Day</label>
-          <input class="form-control" id="day" type="text" style="width: 2.25em" maxlength="2">/
-          <label class="form-label visuallyhidden" for="month">Month</label>
-          <input class="form-control" id="month" type="text" style="width: 2.25em" maxlength="2">/
-          <label class="form-label visuallyhidden" for="year">Year</label>
-          <input class="form-control" id="year" type="text" style="width: 4em" maxlength="4">
-      </div>
-    </fieldset>
-    <a href="/address" class="button button-get-started" role="button" id="next">Next</a>
+    <input type="submit" class="button button-get-started" value="Next"/>
 
   </form>
 
+</main>
 {% endblock %}

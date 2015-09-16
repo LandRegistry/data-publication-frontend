@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from flask import render_template
+from flask import render_template, redirect, url_for, session, request
 from service import app
+from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm, CompanyTelForm
 import requests
+import json
 from hurry.filesize import size, alternative
 
 MONTHS = [
@@ -14,24 +16,115 @@ MONTHS = [
 def index():
     return render_template('ood.html')
 
+
 @app.route('/usertype')
-def usertype():
-    return render_template('usertype.html')
+def user_type(usertype_form=None):
+    if usertype_form is None:
+        usertype_form = UserTypeForm()
+        populate_form(usertype_form)
+    return render_template('usertype.html', form=usertype_form)
+
+
+@app.route('/usertype/validation', methods=['POST'])
+def validate_usertype_details():
+    usertype_form = UserTypeForm()
+    populate_session(usertype_form)
+    if usertype_form.validate_on_submit():
+        return redirect(url_for("personal"))
+    return user_type(usertype_form)
+
 
 @app.route('/personal')
-def personal():
-    return render_template('personal.html')
+def personal(personal_form=None):
+    if personal_form is None:
+        if 'user_type' not in session:
+            return redirect(url_for('user_type'))
+        elif session['user_type'] == 'Company':
+            personal_form = CompanyForm()
+        else:
+            personal_form = PersonalForm()
+        populate_form(personal_form)
+    return render_template("personal.html", form=personal_form)
 
-@app.route('/tel')
-def tel():
-    return render_template('tel.html')
+
+@app.route('/personal/validation', methods=['POST'])
+def validate_personal_details():
+    if 'user_type' not in session:
+        return redirect(url_for('user_type'))
+    elif session['user_type'] == 'Company':
+        personal_form = CompanyForm()
+    else:
+        personal_form = PersonalForm()
+    populate_session(personal_form)
+    if personal_form.validate_on_submit():
+        return redirect(url_for("address"))
+    return personal(personal_form)
+
 
 @app.route('/address')
-def address():
-    return render_template('address.html')
+def address(address_form=None):
+    if address_form is None:
+        address_form = AddressForm()
+        if 'country' not in session or session['country'] is '':
+            # ip_address = request.remote_addr
+            my_ip_address = requests.get('http://www.telize.com/jsonip',
+                                         timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
+            if my_ip_address.status_code == 200:
+                ip_address = my_ip_address.json()['ip']
+                print(ip_address)
+            else:
+                ip_address = "81.128.179.58"
+            session['ip_address'] = ip_address
+            # geo = requests.get('http://freegeoip.net/json/{}'.format(ip_address), timeout=20)
+            geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
+                               timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
+            print(geo.status_code)
+            if geo.status_code == 200:
+                print(geo.json()['country'])
+                # address_form.country.data = geo.json()['country_name']
+                address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
+                session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
+        populate_form(address_form)
+    return render_template("address.html", form=address_form)
+
+
+@app.route('/address/validation', methods=['POST'])
+def validate_address_details():
+    address_form = AddressForm()
+    populate_session(address_form)
+    if address_form.validate_on_submit():
+        return redirect(url_for("tel"))
+    return address(address_form)
+
+
+@app.route('/tel')
+def tel(tel_form=None):
+    if tel_form is None:
+        if 'user_type' not in session:
+            return redirect(url_for('user_type'))
+        elif session['user_type'] == 'Company':
+            tel_form = CompanyTelForm()
+        else:
+            tel_form = TelForm()
+        populate_form(tel_form)
+    return render_template('tel.html', form=tel_form)
+
+
+@app.route('/tel/validation', methods=['POST'])
+def validate_telephone_details():
+    if 'user_type' not in session:
+        return redirect(url_for('user_type'))
+    elif session['user_type'] == 'Company':
+        tel_form = CompanyTelForm()
+    else:
+        tel_form = TelForm()
+    populate_session(tel_form)
+    if tel_form.validate_on_submit():
+        return redirect(url_for("get_data"))
+    return tel(tel_form)
+
 
 @app.route('/data')
-@app.route('/data.html')
 def get_data():
     response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + '/list-files/overseas-ownership')
 
@@ -54,10 +147,23 @@ def get_data():
             update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
             updated_datasets.append({"filename":update_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
 
-        duration = response.json()['Link_Duration']
+    duration = response.json()['Link_Duration']
 
     return render_template(
         'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets, duration=duration)
+
+
+def populate_form(form):
+    for field in form:
+        if field.name != 'csrf_token' and field.name in session and session[field.name] is not None:
+            field.data = session[field.name].strip() if isinstance(session[field.name], str) else session[field.name]
+
+
+def populate_session(form):
+    for field in form:
+        if field.name != 'csrf_token' and field.data != 'None' and field.data is not None:
+            session[field.name] = field.data.strip() if isinstance(field.data, str) else field.data
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

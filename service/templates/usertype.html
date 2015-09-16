@@ -18,26 +18,27 @@
   <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 1 of 7</span>Select user type</h2>
 
-  <form>
+  <form action="/usertype/validation" method="post">
+    {{ form.csrf_token }}
     <fieldset>
       <legend>
         <span class="form-label">
           I am accessing this data as a
         </span>
       </legend>
-      <div class="form-group form-group-compound">
-        <label class="block-label" for="private-individual">
-          <input id="private-individual" type="radio" name="user-group" value="Private individual">
-          Private Individual
+      <div class="form-group form-group-compound{% if form.user_type.errors %} error{% endif %}">
+        {% for subfield in form.user_type %}
+        <label class="block-label" for="{{ subfield.id }}">
+          {{ subfield }}{{ subfield.label.text }}
         </label>
-        <label class="block-label" for="company">
-          <input id="company" type="radio" name="user-group" value="Company">
-          Company
-        </label>
+        {% endfor %}
+        {% for error in form.user_type.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
     </fieldset>
 
-    <a href="/personal" class="button button-get-started" role="button" id="next">Next</a>
+    <input type="submit" class="button button-get-started" value="Next"/>
 
   </form>
 

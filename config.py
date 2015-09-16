@@ -1,11 +1,20 @@
 import os
 
 overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
+session_key = os.environ.get('SESSION_KEY')
+country_lookup_url = os.environ.get('COUNTRY_LOOKUP_URL')
+country_lookup_field_id = os.environ.get('COUNTRY_LOOKUP_FIELD_ID')
+country_lookup_timeout_seconds = int(os.environ.get('COUNTRY_LOOKUP_TIMEOUT_SECONDS'))
 
 CONFIG_DICT = {
     'DEBUG': False,
     'LOGGING': True,
-    'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url
+    'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url,
+    'SESSION_KEY': session_key,
+    'WTF_CSRF_SECRET_KEY': session_key,
+    'COUNTRY_LOOKUP_URL': country_lookup_url,
+    'COUNTRY_LOOKUP_FIELD_ID': country_lookup_field_id,
+    'COUNTRY_LOOKUP_TIMEOUT_SECONDS': country_lookup_timeout_seconds
 }
 
 settings = os.environ.get('SETTINGS')

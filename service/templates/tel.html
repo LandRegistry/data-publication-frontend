@@ -21,22 +21,35 @@
   <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 4 of 7</span>Enter your contact details</h2>
 
-  <form>
+  <form action="/tel/validation" method="post">
+    {{ form.csrf_token }}
     <fieldset>
-      <div class="form-group">
-        <label class="form-label" for="landline">Telephone - Landline</label>
-        <input class="form-control" id="landline" type="tel">
+      <div class="form-group{% if form.landline.errors %} error{% endif %}">
+        {{ form.landline.label(class_="form-label") }}
+        {{ form.landline(class_="form-control") }}
+        <br/>
+        {% for error in form.landline.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
-        <label class="form-label" for="mobile">Telephone - Mobile</label>
-        <input class="form-control" id="mobile" type="tel">
+      <div class="form-group{% if form.mobile.errors %} error{% endif %}">
+        {{ form.mobile.label(class_="form-label") }}
+        {{ form.mobile(class_="form-control") }}
+        <br/>
+        {% for error in form.mobile.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
-        <label class="form-label" for="email">E-mail</label>
-        <input class="form-control" id="email" type="email">
+      <div class="form-group{% if form.email.errors %} error{% endif %}">
+        {{ form.email.label(class_="form-label") }}
+        {{ form.email(class_="form-control") }}
+        <br/>
+        {% for error in form.email.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
     </fieldset>
-    <a href="/data" class="button button-get-started" role="button">Next</a>
+    <input type="submit" class="button button-get-started" value="Next"/>
 
   </form>
 
