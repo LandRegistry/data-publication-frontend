@@ -34,6 +34,8 @@ def get_data():
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas-ownership")
 
+        ip_address = request.remote_addr
+
         # Get the link
         files = response.json()['File_List']
 
