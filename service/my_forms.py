@@ -137,9 +137,15 @@ class AddressForm(Form):
 
 class TelForm(Form):
     landline = TextField('Telephone (Landline)',
-                         validators=[Length(max=60), RequiredUnless(alt_field='mobile')])
+                         validators=[Length(max=60),
+                                     RequiredUnless(alt_field='mobile',
+                                                    message='Landline or Mobile telephone '
+                                                            'number is required')])
     mobile = TextField('Telephone (Mobile)',
-                       validators=[Length(max=60), RequiredUnless(alt_field='landline')])
+                       validators=[Length(max=60),
+                                   RequiredUnless(alt_field='landline',
+                                                  message='Landline or Mobile telephone '
+                                                          'number is required')])
     email = TextField('E-mail',
                       validators=[Length(max=60),
                                   Required(message="E-mail is required"),

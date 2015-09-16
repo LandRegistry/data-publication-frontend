@@ -18,7 +18,6 @@
   </div>
 
   <h1 class="heading-xlarge">Land Registry Data</h1>
-  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Enter address details</h2>
 
   <form action="/address/validation" method="post">
     {{ form.csrf_token }}
@@ -31,25 +30,45 @@
         <span class="error-message">{{ error }}</span>
         {% endfor %}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.address_line_2.errors %} error{% endif %}">
         {{ form.address_line_2.label(class_="form-label") }}
         {{ form.address_line_2(class_="form-control") }}
+        <br/>
+        {% for error in form.address_line_2.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.address_line_3.errors %} error{% endif %}">
         {{ form.address_line_3.label(class_="form-label") }}
         {{ form.address_line_3(class_="form-control") }}
+        <br/>
+        {% for error in form.address_line_3.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.city.errors %} error{% endif %}">
         {{ form.city.label(class_="form-label") }}
         {{ form.city(class_="form-control") }}
+        <br/>
+        {% for error in form.city.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.region.errors %} error{% endif %}">
         {{ form.region.label(class_="form-label") }}
         {{ form.region(class_="form-control") }}
+        <br/>
+        {% for error in form.region.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.postal_code.errors %} error{% endif %}">
         {{ form.postal_code.label(class_="form-label") }}
         {{ form.postal_code(class_="form-control") }}
+        <br/>
+        {% for error in form.postal_code.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
       </div>
       <div class="form-group{% if form.country.errors %} error{% endif %}">
         {{ form.country.label(class_="form-label") }}
@@ -61,7 +80,7 @@
       </div>
     </fieldset>
 
-    <input type="submit" class="button button-get-started" value="Next"/>
+    <input type="submit" class="button" id="next" value="Next"/>
 
   </form>
 

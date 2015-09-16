@@ -66,22 +66,22 @@ def address(address_form=None):
     if address_form is None:
         address_form = AddressForm()
         if 'country' not in session or session['country'] is '':
-            # ip_address = request.remote_addr
-            my_ip_address = requests.get('http://www.telize.com/jsonip',
-                                         timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-            if my_ip_address.status_code == 200:
-                ip_address = my_ip_address.json()['ip']
-                print(ip_address)
-            else:
-                ip_address = "81.128.179.58"
+            ip_address = request.remote_addr
+            
+            # Use this code when running locally to get IP address
+#             my_ip_address = requests.get('http://www.telize.com/jsonip',
+#                                          timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
+#             if my_ip_address.status_code == 200:
+#                 ip_address = my_ip_address.json()['ip']
+#             else:
+#                 ip_address = "81.128.179.58"
+            
             session['ip_address'] = ip_address
-            # geo = requests.get('http://freegeoip.net/json/{}'.format(ip_address), timeout=20)
+            
             geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
                                timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-            print(geo.status_code)
-            if geo.status_code == 200:
-                print(geo.json()['country'])
-                # address_form.country.data = geo.json()['country_name']
+            print(geo.json())
+            if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
                 address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
                 session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
         populate_form(address_form)
@@ -130,25 +130,21 @@ def get_data():
 
     # Get the link
     files = response.json()['File_List']
-
     full_datasets = []
     updated_datasets = []
-
     for link in files:
         # Split into a list of words and reorder the month and year
         words = link["Name"].split("_")
         # Display the month in name format
         words[3] = MONTHS[int(words[3][:2])-1]
-
         if words[1] == "FULL":
             new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-            full_datasets.append({"filename":new_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
+            full_datasets.append({"filename": new_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
         else:
             update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-            updated_datasets.append({"filename":update_link, "url":link["URL"], "size": size(link["Size"], system=alternative)})
+            updated_datasets.append({"filename": update_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
 
     duration = response.json()['Link_Duration']
-
     return render_template(
         'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets, duration=duration)
 
