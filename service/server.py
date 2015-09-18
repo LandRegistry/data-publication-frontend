@@ -141,6 +141,7 @@ def printable_terms():
 @app.route('/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':
+        session['terms_accepted'] = True
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas-ownership")
 
