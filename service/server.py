@@ -80,7 +80,7 @@ def address(address_form=None):
 
             geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
                                timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-            print(geo.json())
+
             if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
                 address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
                 session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
