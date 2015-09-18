@@ -5,6 +5,7 @@ from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressFor
 import requests
 import json
 from hurry.filesize import size, alternative
+import datetime
 
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -78,12 +79,17 @@ def address(address_form=None):
 
             session['ip_address'] = ip_address
 
-            geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
-                               timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
+            try:
+                geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
+                                   timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
+                if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
+                    address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
+                    session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
+                else:
+                    session['detected_country'] = '(Could not detect)'
+            except ValueError:
+                session['detected_country'] = '(Could not detect)'
 
-            if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
-                address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
-                session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
