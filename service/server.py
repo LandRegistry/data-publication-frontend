@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from flask import render_template, redirect, url_for, session, request
+from flask import Flask, render_template, redirect, url_for, session, request
 from service import app
-from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm, CompanyTelForm
+from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm, CompanyTelForm, TermsForm
 import requests
 import json
 from hurry.filesize import size, alternative
@@ -17,14 +17,12 @@ MONTHS = [
 def index():
     return render_template('ood.html')
 
-
 @app.route('/usertype')
 def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
         populate_form(usertype_form)
     return render_template('usertype.html', form=usertype_form)
-
 
 @app.route('/usertype/validation', methods=['POST'])
 def validate_usertype_details():
@@ -33,7 +31,6 @@ def validate_usertype_details():
     if usertype_form.validate_on_submit():
         return redirect(url_for("personal"))
     return user_type(usertype_form)
-
 
 @app.route('/personal')
 def personal(personal_form=None):
@@ -47,7 +44,6 @@ def personal(personal_form=None):
         populate_form(personal_form)
     return render_template("personal.html", form=personal_form)
 
-
 @app.route('/personal/validation', methods=['POST'])
 def validate_personal_details():
     if 'user_type' not in session:
@@ -60,7 +56,6 @@ def validate_personal_details():
     if personal_form.validate_on_submit():
         return redirect(url_for("address"))
     return personal(personal_form)
-
 
 @app.route('/address')
 def address(address_form=None):
@@ -93,7 +88,6 @@ def address(address_form=None):
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
-
 @app.route('/address/validation', methods=['POST'])
 def validate_address_details():
     address_form = AddressForm()
@@ -101,7 +95,6 @@ def validate_address_details():
     if address_form.validate_on_submit():
         return redirect(url_for("tel"))
     return address(address_form)
-
 
 @app.route('/tel')
 def tel(tel_form=None):
@@ -114,7 +107,6 @@ def tel(tel_form=None):
             tel_form = TelForm()
         populate_form(tel_form)
     return render_template('tel.html', form=tel_form)
-
 
 @app.route('/tel/validation', methods=['POST'])
 def validate_telephone_details():
@@ -129,43 +121,68 @@ def validate_telephone_details():
         return redirect(url_for("get_data"))
     return tel(tel_form)
 
+@app.route('/terms')
+def terms(terms_form=None):
+    if terms_form is None:
+        terms_form = TermsForm()
+        populate_form(terms_form)
+    f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
+    data = f.read()
+    f.close()
+    return render_template('terms.html', form=terms_form, text=data)
 
-@app.route('/data')
+@app.route('/printable_terms')
+def printable_terms():
+    f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
+    data = f.read()
+    f.close()
+    return render_template('terms_printer_friendly.html', text=data)
+
+@app.route('/data', methods=['GET', 'POST'])
 def get_data():
-    response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + '/list-files/overseas-ownership')
+    if request.method == 'POST':
+        response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
+                                "/list-files/overseas-ownership")
 
-    # Get the link
-    files = response.json()['File_List']
-    full_datasets = []
-    updated_datasets = []
-    for link in files:
-        # Split into a list of words and reorder the month and year
-        words = link["Name"].split("_")
-        # Display the month in name format
-        words[3] = MONTHS[int(words[3][:2])-1]
-        if words[1] == "FULL":
-            new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-            full_datasets.append({"filename": new_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
-        else:
-            update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-            updated_datasets.append({"filename": update_link, "url": link["URL"], "size": size(link["Size"], system=alternative)})
+        ip_address = request.remote_addr
 
-    duration = response.json()['Link_Duration']
-    return render_template(
-        'data.html', fullDatasets=full_datasets, updatedDatasets=updated_datasets, duration=duration)
+        # Get the link
+        files = response.json()['File_List']
 
+        full_datasets = []
+        updated_datasets = []
+
+        for link in files:
+            # Split into a list of words and reorder the month and year
+            words = link["Name"].split("_")
+            # Display the month in name format
+            words[3] = MONTHS[int(words[3][:2])-1]
+
+            if words[1] == "FULL":
+                new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
+                full_datasets.append({"filename": new_link, "url": link["URL"],
+                                      "size": size(link["Size"], system=alternative)})
+            else:
+                update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
+                updated_datasets.append({"filename": update_link, "url": link["URL"],
+                                         "size": size(link["Size"], system=alternative)})
+
+        duration = response.json()['Link_Duration']
+
+        return render_template('data.html', fullDatasets=full_datasets,
+                               updatedDatasets=updated_datasets, duration=duration)
+    else:
+        return redirect(url_for('terms'))
 
 def populate_form(form):
     for field in form:
         if field.name != 'csrf_token' and field.name in session and session[field.name] is not None:
             field.data = session[field.name].strip() if isinstance(session[field.name], str) else session[field.name]
 
-
 def populate_session(form):
     for field in form:
         if field.name != 'csrf_token' and field.data != 'None' and field.data is not None:
             session[field.name] = field.data.strip() if isinstance(field.data, str) else field.data
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

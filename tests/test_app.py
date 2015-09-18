@@ -406,8 +406,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset (" in content
-        assert " update)" in content
+        assert "Terms and conditions" in content
 
     def test_validate_contact_page_company_no_landline(self):
         with self.app as c:
@@ -433,8 +432,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset (" in content
-        assert " update)" in content
+        assert "Terms and conditions" in content
 
     def test_validate_contact_page_pi_mobile_only(self):
         with self.app as c:
@@ -447,8 +445,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset (" in content
-        assert " update)" in content
+        assert "Terms and conditions" in content
 
     def test_validate_contact_page_pi_no_number(self):
         with self.app as c:
@@ -502,9 +499,22 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
 
+    def test_get_terms_page_success(self):
+        response = self.app.get('/terms')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Terms and conditions' in content
+
+    def test_get_printable_terms_page_success(self):
+        response = self.app.get('/printable_terms')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Terms and conditions' in content
+
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
-        response = self.app.get('/data')
+        response = self.app.post('/data')
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
@@ -512,11 +522,19 @@ class TestNavigation:
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):
-        response = self.app.get('/data')
+        response = self.app.post('/data')
         content = response.data.decode()
         assert response.status_code == 200
         assert "Full Datasets" in content
         assert "Change-Only Updates" in content
+
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_get_datasets_fail_using_get(self, mock_backend_reponse):
+        response = self.app.get('/data', follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Terms and conditions' in content
 
 if __name__ == '__main__':
     pytest.main()

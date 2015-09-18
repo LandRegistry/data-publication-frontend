@@ -163,3 +163,7 @@ class CompanyTelForm(TelForm):
                                      Required(message='Telephone (Landline) is required')])
     mobile = TextField('Mobile telephone number (Optional)',
                        validators=[Length(max=60)])
+
+
+class TermsForm(Form):
+    terms = TextField('',)
