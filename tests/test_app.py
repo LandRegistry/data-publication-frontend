@@ -395,13 +395,120 @@ class TestNavigation:
         assert 'Mobile telephone number' in content
         assert 'E-mail' in content
 
+    def test_validate_contact_page_all_company_fields_valid(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Company'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='01725221163',
+            mobile='07895223141',
+            email='1963@hotmail.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Overseas Dataset (" in content
+        assert " update)" in content
+
+    def test_validate_contact_page_company_no_landline(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Company'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='',
+            mobile='07895123445',
+            email='1963@hotmail.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Telephone (Landline) is required" in content
+
+    def test_validate_contact_page_pi_landline_only(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='01725221163',
+            mobile='',
+            email='1963@hotmail.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Overseas Dataset (" in content
+        assert " update)" in content
+
+    def test_validate_contact_page_pi_mobile_only(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='',
+            mobile='07895332244',
+            email='1963@hotmail.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Overseas Dataset (" in content
+        assert " update)" in content
+
+    def test_validate_contact_page_pi_no_number(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='',
+            mobile='',
+            email='1963@hotmail.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Landline or Mobile" in content
+
+    def test_validate_contact_page_pi_no_email(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='01917675432',
+            mobile='07896543213',
+            email=''
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "E-mail is required" in content
+
+    def test_validate_contact_page_pi_invalid_email(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='01917675432',
+            mobile='07896543213',
+            email='mickeymouseclubhouse.disney.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Invalid e-mail address format" in content
+
+    def test_validate_contact_page_pi_field_too_long(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/tel/validation', data=dict(
+            landline='01917675432',
+            mobile='07896543213',
+            email='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890@disney.com'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Field cannot be longer than 60 characters." in content
+
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
         response = self.app.get('/data')
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset (August 2015)" in content
-        assert "Overseas Dataset (August 2015 update)" in content
+        assert "Overseas Dataset (" in content
+        assert " update)" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):

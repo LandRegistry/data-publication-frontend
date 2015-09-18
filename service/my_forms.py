@@ -79,9 +79,11 @@ class UserTypeForm(Form):
 
 
 class PersonalForm(Form):
-    title = SelectField('Title', choices=[('Dr', 'Dr.'), ('Lady', 'Lady'), ('Lord', 'Lord'),
-                                          ('Miss', 'Miss.'), ('Mr', 'Mr.'), ('Mrs', 'Mrs.'),
-                                          ('Ms', 'Ms.'), ('Other', 'Other'), ('Prof', 'Prof.')])
+    title = SelectField('Title', choices=[('Mr', 'Mr.'), ('Mrs', 'Mrs.'),
+                                            ('Miss', 'Miss'), ('Ms', 'Ms.'),
+                                            ('Prof', 'Prof.'), ('Dr', 'Dr.'),
+                                            ('Lady', 'Lady'), ('Lord', 'Lord'),
+                                            ('Other', 'Other')])
     other_title = TextField('If \'Other\' please specify',
                             validators=[Length(max=60),
                                         RequiredIfEquals(conditional_field='title',
