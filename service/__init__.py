@@ -3,13 +3,17 @@ from flask import Flask, request
 from flask.ext.assets import Environment, Bundle
 from os import path
 import sass as libsass
+from flask_wtf.csrf import CsrfProtect
 
 from service import error_handler
 from config import CONFIG_DICT
 
 app = Flask(__name__)
 app.config.update(CONFIG_DICT)
+app.secret_key = app.config['SESSION_KEY']
 error_handler.setup_errors(app)
+
+CsrfProtect(app)
 
 assets = Environment(app)
 
