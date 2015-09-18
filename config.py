@@ -27,3 +27,4 @@ elif settings == 'test':
     # as it does in production.
     CONFIG_DICT['LOGGING'] = False
     CONFIG_DICT['DEBUG'] = True
+    CONFIG_DICT['WTF_CSRF_ENABLED'] = False

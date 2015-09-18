@@ -55,11 +55,236 @@ class TestNavigation:
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
+    def test_get_personal_page_pi_success(self):
+        response = self.app.post('/usertype/validation', data=dict(
+            user_type='Private individual'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Company Name' not in content
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_get_personal_page_company_success(self):
+        response = self.app.post('/usertype/validation', data=dict(
+            user_type='Company'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Company Name' in content
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_get_personal_page_no_selection_success(self):
+        response = self.app.post('/usertype/validation', data=dict(
+            user_type=''
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Select user type' in content
+        assert 'Not a valid choice' in content
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
     def test_get_address_page_success(self):
         response = self.app.get('/address')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_all_fields_valid(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Address Line 1' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_all_fields_valid_including_company(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Company'
+        response = self.app.post('/personal/validation', data=dict(
+            company_name='UNIT',
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Address Line 1' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_company_name_empty(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Company'
+        response = self.app.post('/personal/validation', data=dict(
+            company_name='',
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Company Name is required' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_all_fields_empty(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='',
+            last_name='',
+            username='',
+            day='',
+            month='',
+            year=''
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Username is required' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_all_fields_other_title_valid(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Other',
+            other_title='Brigadier Sir',
+            first_name='Alistair Gordon',
+            last_name='Lethbridge-Stewart',
+            username='The Brig',
+            day='22',
+            month='11',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Address Line 1' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_other_title_not_specified(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Other',
+            other_title='',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert ' title is required' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_old_date(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='1063'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Year must be between ' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_future_date(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='22',
+            month='11',
+            year='3063'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Year must be between ' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_invalid_date(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='The Doctor',
+            day='32',
+            month='13',
+            year='1963'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Year must be between ' in content
+        assert 'Overseas Ownership Dataset' in content
+
+    def test_personal_page_long_field(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_type'] = 'Private individual'
+        response = self.app.post('/personal/validation', data=dict(
+            title='Dr',
+            first_name='John',
+            last_name='Smith',
+            username='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890',
+            day='22',
+            month='11',
+            year='1063'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Field cannot be longer than 60 characters.' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_contact_page_success(self):
@@ -84,7 +309,6 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Full Datasets" in content
         assert "Change-Only Updates" in content
-
 
 if __name__ == '__main__':
     pytest.main()
