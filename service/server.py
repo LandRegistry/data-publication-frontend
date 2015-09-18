@@ -67,7 +67,7 @@ def address(address_form=None):
         address_form = AddressForm()
         if 'country' not in session or session['country'] is '':
             ip_address = request.remote_addr
-            
+
             # Use this code when running locally to get IP address
 #             my_ip_address = requests.get('http://www.telize.com/jsonip',
 #                                          timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
@@ -75,12 +75,12 @@ def address(address_form=None):
 #                 ip_address = my_ip_address.json()['ip']
 #             else:
 #                 ip_address = "81.128.179.58"
-            
+
             session['ip_address'] = ip_address
-            
+
             geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
                                timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-            print(geo.json())
+
             if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
                 address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
                 session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]

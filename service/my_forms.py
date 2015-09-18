@@ -43,15 +43,18 @@ class ValidateDate(object):
         month = form._fields.get(self.month)
         year = field
         try:
-            dob = datetime.datetime(year.data, month.data, day.data)
-        except ValueError:
-            if not (form.day.errors or form.month.errors or form.year.errors):
-                raise ValidationError(self.invalid_message)
+            date_day = day.data or 0
+            date_month = month.data or 0
+            date_year = year.data or 0
+            dob = datetime.datetime(date_year, date_month, date_day)
 
-        if self.check_future:
-            now = datetime.datetime.now()
-            if dob > now:
-                raise ValidationError(self.future_message)
+            if self.check_future:
+                now = datetime.datetime.now()
+                if dob > now:
+                    raise ValidationError(self.future_message)
+        except ValueError:
+            if not (day.errors or month.errors or year.errors):
+                raise ValidationError(self.invalid_message)
 
 
 class RequiredUnless(object):
@@ -85,14 +88,14 @@ class PersonalForm(Form):
                                                          conditional_value='Other',
                                                          message='\'Other\' title is required')])
 
-    first_name = TextField('First Name(s)/Given Name(s)',
+    first_name = TextField('First name(s)/Given name(s)',
                            validators=[
                                Length(max=60),
-                               Required(message="First Name(s)/Given Name(s) is required")])
-    last_name = TextField('Last Name/Family Name',
+                               Required(message="First name(s)/Given name(s) is required")])
+    last_name = TextField('Last name/Family name',
                           validators=[
                               Length(max=60),
-                              Required(message="Last Name/Family Name is required")])
+                              Required(message="Last name/Family name is required")])
     username = TextField('Username',
                          validators=[
                              Length(max=60), Required(message="Username is required")])
@@ -101,15 +104,15 @@ class PersonalForm(Form):
     oldest_year = current_year - 125
     day = IntegerField('day',
                        validators=[
-                           Required(message="day is required"),
+                           Required(message="Day is required"),
                            NumberRange(min=1, max=31, message="Day must be between 1 and 31")])
     month = IntegerField('month',
                          validators=[
-                             Required(message="month is required"),
+                             Required(message="Month is required"),
                              NumberRange(min=1, max=12, message="Month must be between 1 and 12")])
     year = IntegerField('year',
                         validators=[
-                            Required(message="year is required"),
+                            Required(message="Year is required"),
                             NumberRange(min=oldest_year, max=current_year,
                                         message="Year must be between {} and {}".format(
                                             oldest_year, current_year)),
@@ -117,31 +120,31 @@ class PersonalForm(Form):
 
 
 class CompanyForm(PersonalForm):
-    company_name = TextField('Company Name',
+    company_name = TextField('Company name',
                              validators=[
                                  Length(max=60), Required(message="Company Name is required")])
 
 
 class AddressForm(Form):
-    address_line_1 = TextField('Address Line 1',
+    address_line_1 = TextField('Address line 1',
                                validators=[
-                                   Length(max=60), Required(message="Address Line 1 is required")])
-    address_line_2 = TextField('Address Line 2', validators=[Length(max=60)])
-    address_line_3 = TextField('Address Line 3', validators=[Length(max=60)])
-    city = TextField('Town/City', validators=[Length(max=60)])
-    region = TextField('State/Province/Region/County', validators=[Length(max=60)])
-    postal_code = TextField('ZIP/Postal Code/Postcode', validators=[Length(max=60)])
+                                   Length(max=60), Required(message="Address line 1 is required")])
+    address_line_2 = TextField('Address line 2 (Optional)', validators=[Length(max=60)])
+    address_line_3 = TextField('Address line 3 (Optional)', validators=[Length(max=60)])
+    city = TextField('Town/City (Optional)', validators=[Length(max=60)])
+    region = TextField('State/Province/Region/County (Optional)', validators=[Length(max=60)])
+    postal_code = TextField('ZIP/Postal Code/Postcode (Optional)', validators=[Length(max=60)])
     country = TextField('Country',
                         validators=[Length(max=60), Required(message="Country is required")])
 
 
 class TelForm(Form):
-    landline = TextField('Telephone (Landline)',
+    landline = TextField('Landline telephone number',
                          validators=[Length(max=60),
                                      RequiredUnless(alt_field='mobile',
                                                     message='Landline or Mobile telephone '
                                                             'number is required')])
-    mobile = TextField('Telephone (Mobile)',
+    mobile = TextField('Mobile telephone number',
                        validators=[Length(max=60),
                                    RequiredUnless(alt_field='landline',
                                                   message='Landline or Mobile telephone '
@@ -153,8 +156,8 @@ class TelForm(Form):
 
 
 class CompanyTelForm(TelForm):
-    landline = TextField('Telephone (Landline)',
+    landline = TextField('Landline telephone number',
                          validators=[Length(max=60),
                                      Required(message='Telephone (Landline) is required')])
-    mobile = TextField('Telephone (Mobile)',
+    mobile = TextField('Mobile telephone number (Optional)',
                        validators=[Length(max=60)])
