@@ -17,6 +17,10 @@ MONTHS = [
 def index():
     return render_template('ood.html')
 
+@app.route('/cookies')
+def cookies():
+    return render_template('cookies.html')
+
 @app.route('/usertype')
 def user_type(usertype_form=None):
     if usertype_form is None:
@@ -118,7 +122,7 @@ def validate_telephone_details():
         tel_form = TelForm()
     populate_session(tel_form)
     if tel_form.validate_on_submit():
-        return redirect(url_for("get_data"))
+        return redirect(url_for('terms'))
     return tel(tel_form)
 
 @app.route('/terms')

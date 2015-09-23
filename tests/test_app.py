@@ -536,5 +536,11 @@ class TestNavigation:
         assert 'Land Registry Data' in content
         assert 'Terms and conditions' in content
 
+    def test_get_cookies_page_success(self):
+        response = self.app.get('/cookies')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Cookies' in content
+
 if __name__ == '__main__':
     pytest.main()
