@@ -24,7 +24,7 @@
       {{ form.csrf_token }}
       <h1 class="heading-xlarge">Land Registry Data</h1>
       <h2 class="heading-large">
-        <span class="heading-secondary">Step 6 of 7</span>
+        <span class="heading-secondary">Step 5 of 6</span>
         Terms and conditions
       </h2>
       <div>
@@ -40,7 +40,7 @@
         </p>
         <textarea rows="14" cols="100" style="width:100%" readonly id="terms">{{ text }}</textarea>
         <input type="submit" value="Accept" class="button" id="Accept">
-        <a href="/" class="button decline" id="Decline">Decline</a>
+        <a href="/decline_terms" class="button decline" id="Decline">Decline</a>
       </div>
     </form>
 {% endblock %}

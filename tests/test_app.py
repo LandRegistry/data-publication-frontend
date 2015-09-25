@@ -4,6 +4,7 @@ from tests.fake_response import FakeResponse
 from unittest import mock
 import json
 import requests
+import datetime
 
 recaptcha_pass = {"success": True}
 recaptcha_fail = {"success": False}
@@ -14,13 +15,13 @@ multiple_files = {
             "Name": "OV_FULL_2015_08.zip",
             "Size": 45000000,
             "Checksum": "\"64c7d38f9bb980717c86fa66cd888117\"",
-            "URL": "https://s3.eu-central-1.amazonaws.com/..."
+            "URL": "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/overseas-ownership/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ABCDEFGHIJKLMNOPQRSTU%2F20150918%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20150918T133013Z&X-Amz-Expires=30&X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3"
         },
         {
             "Name": "OV_UPDATE_2015_08.zip",
             "Size": 2500000,
             "Checksum": "\"7e461444e9d2d959eb035c2528d9848a\"",
-            "URL": "https://s3.eu-central-1.amazonaws.com/..."
+            "URL": "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/overseas-ownership/OV_UPDATE_2015_08.zip?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ABCDEFGHIJKLMNOPQRSTU%2F20150918%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20150918T133013Z&X-Amz-Expires=30&X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3"
         }
     ],
     "Link_Duration": 60
@@ -30,8 +31,27 @@ no_files = {
     "Link_Duration": 60
 }
 
-class TestNavigation:
+valid_pi_session_details = {
+    'ip_address': '10.0.2.2',
+    'user_type': 'Private individual',
+    'title': 'Dr',
+    'first_name': 'first name',
+    'last_name': 'last name',
+    'username': 'username',
+    'day': 1,
+    'month': 1,
+    'year': datetime.date.today().year,
+    'company_name': 'company name',
+    'address_line_1': 'address line 1',
+    'country': 'United Kingdom',
+    'detected_country': 'United Kingdom',
+    'landline': '0123456789',
+    'email': 'person@email.com',
+    'terms_accepted': True
+}
 
+
+class TestNavigation:
     def setup_method(self, method):
         self.app = app.test_client()
 
@@ -100,7 +120,7 @@ class TestNavigation:
     def test_get_personal_page_pi_success(self):
         response = self.app.post('/usertype/validation', data=dict(
             user_type='Private individual'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Company Name' not in content
@@ -110,7 +130,7 @@ class TestNavigation:
     def test_get_personal_page_company_success(self):
         response = self.app.post('/usertype/validation', data=dict(
             user_type='Company'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Company name' in content
@@ -120,7 +140,7 @@ class TestNavigation:
     def test_get_personal_page_no_selection_success(self):
         response = self.app.post('/usertype/validation', data=dict(
             user_type=''
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Select user type' in content
@@ -151,7 +171,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -171,7 +191,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -191,7 +211,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -210,7 +230,7 @@ class TestNavigation:
             day='',
             month='',
             year=''
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -230,7 +250,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -250,7 +270,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -269,7 +289,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -288,7 +308,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='3063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -307,7 +327,7 @@ class TestNavigation:
             day='32',
             month='13',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -327,7 +347,7 @@ class TestNavigation:
             day='29',
             month='2',
             year='1983'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -346,7 +366,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -362,7 +382,7 @@ class TestNavigation:
 
     def test_address_page_field_over_character_limit(self):
         params = {'address_line_1': 'A house name',
-                  'address_line_2': ''.join(['a']*61),
+                  'address_line_2': ''.join(['a'] * 61),
                   'country': 'United Kingdom'}
         response = self.app.post('/address/validation', data=params)
         content = response.data.decode()
@@ -420,7 +440,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='07895223141',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -433,7 +453,7 @@ class TestNavigation:
             landline='',
             mobile='07895123445',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Telephone (Landline) is required" in content
@@ -446,7 +466,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -459,7 +479,7 @@ class TestNavigation:
             landline='',
             mobile='07895332244',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -472,7 +492,7 @@ class TestNavigation:
             landline='',
             mobile='',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Landline or Mobile" in content
@@ -485,7 +505,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email=''
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "E-mail is required" in content
@@ -498,7 +518,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='mickeymouseclubhouse.disney.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Invalid e-mail address format" in content
@@ -511,7 +531,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890@disney.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
@@ -548,16 +568,38 @@ class TestNavigation:
         assert response.status_code == 200
         assert 'Terms and conditions' in content
 
+    def test_get_decline_terms_page(self):
+        decline_terms_session_details = valid_pi_session_details
+        decline_terms_session_details['terms_accepted'] = False
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in decline_terms_session_details.items():
+                    sess[key] = val
+        response = self.app.get('/decline_terms', follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Overseas Ownership Dataset' in content
+        assert 'Terms and conditions' not in content
+
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
         response = self.app.post('/data')
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset (" in content
+        assert "Overseas Dataset1 (" in content
         assert " update)" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
         response = self.app.post('/data')
         content = response.data.decode()
         assert response.status_code == 200
@@ -581,6 +623,7 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Cookies' in content
+
 
 if __name__ == '__main__':
     pytest.main()

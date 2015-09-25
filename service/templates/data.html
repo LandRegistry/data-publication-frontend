@@ -23,10 +23,10 @@
 
 <h1 class="heading-xlarge">Land Registry Data</h1>
 <h2 class="heading-large">
-  <span class="heading-secondary">Step 7 of 7</span>
+  <span class="heading-secondary">Step 6 of 6</span>
   Download Dataset Files
 </h2>
-<div id="valid-link-message">Please note that these download links will only remain valid for <span id="duration">{{ duration }}</span> second(s).</div>
+<div id="valid-link-message">Please note that these download links will only remain valid for <span id="duration">{{ duration }}</span>.</div>
 <div class="grid-row">
   <div class="column-half">
     <h3 class="heading-medium">Full Datasets</h3>
@@ -73,8 +73,12 @@
     function countdown() {
       var refreshIntervalId = setInterval(function() {
         var duration = document.getElementById('duration');
-        duration.innerText = duration.innerText - 1;
-        if (duration.innerText == 0) {
+        temp = duration.innerText.split(' ');
+        totalSeconds = ((temp[0] * 60) + parseInt(temp[2])) - 1;
+        minutes = Math.floor(totalSeconds / 60);
+        seconds = totalSeconds % 60;
+        duration.innerText = minutes + " minute(s) " + seconds + " second(s)";
+        if (totalSeconds == 0) {
           clearInterval(refreshIntervalId);
           document.getElementById('valid-link-message').innerText = 'The download links have expired. You may need to reload the page.';
           document.getElementById('valid-link-message').style.color = 'red';
