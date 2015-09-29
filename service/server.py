@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, redirect, url_for, session, request
 from service import app
-from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm, CompanyTelForm, TermsForm
+from service.my_forms import UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm, CompanyTelForm, TermsForm, ReCaptchaForm
 import requests
 import json
 from hurry.filesize import size, alternative
@@ -10,6 +10,8 @@ import datetime
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
+
+RECAPTCHA_SECRET_KEY = app.config['RECAPTCHA_SECRET_KEY']
 
 @app.route('/')
 @app.route('/index.htm')
@@ -86,9 +88,10 @@ def address(address_form=None):
                     session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
                 else:
                     session['detected_country'] = '(Could not detect)'
-            except ValueError:
+            except requests.exceptions.Timeout:
                 session['detected_country'] = '(Could not detect)'
-
+            except requests.exceptions.ConnectionError:
+                session['detected_country'] = '(Could not detect)'
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
@@ -122,12 +125,29 @@ def validate_telephone_details():
         tel_form = TelForm()
     populate_session(tel_form)
     if tel_form.validate_on_submit():
-        return redirect(url_for('terms'))
+        return redirect(url_for('recaptcha'))
     return tel(tel_form)
+
+@app.route('/recaptcha')
+def recaptcha(recaptcha_form=None):
+    if recaptcha_form is None:
+        recaptcha_form = ReCaptchaForm()
+        populate_form(recaptcha_form)
+    return render_template('recaptcha.html', form=recaptcha_form)
+
+@app.route('/recaptcha/validation', methods=['POST'])
+def validate_recaptcha():
+    recaptcha_form = ReCaptchaForm()
+    populate_session(recaptcha_form)
+    if recaptcha_form.validate_on_submit():
+        return redirect(url_for('terms'))
+    return recaptcha(recaptcha_form)
 
 @app.route('/terms')
 def terms(terms_form=None):
     if terms_form is None:
+        if 'g_recaptcha_response' not in session:
+            return redirect(url_for('recaptcha'))
         terms_form = TermsForm()
         populate_form(terms_form)
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
@@ -145,6 +165,8 @@ def printable_terms():
 @app.route('/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':
+        if 'g_recaptcha_response' not in session:
+            return redirect(url_for('recaptcha'))
         session['terms_accepted'] = True
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas-ownership")

@@ -5,6 +5,9 @@ from unittest import mock
 import json
 import requests
 
+recaptcha_pass = {"success": True}
+recaptcha_fail = {"success": False}
+
 multiple_files = {
     "File_List": [
         {
@@ -38,6 +41,13 @@ class TestNavigation:
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
+
+    def test_get_recaptcha_page_success(self):
+        response = self.app.get('/recaptcha')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'reCAPTCHA Check' in content
 
     def test_get_usertype_page_success(self):
         response = self.app.get('/usertype')
@@ -406,7 +416,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Terms and conditions" in content
+        assert "reCAPTCHA Check" in content
 
     def test_validate_contact_page_company_no_landline(self):
         with self.app as c:
@@ -432,7 +442,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Terms and conditions" in content
+        assert "reCAPTCHA Check" in content
 
     def test_validate_contact_page_pi_mobile_only(self):
         with self.app as c:
@@ -445,7 +455,7 @@ class TestNavigation:
             ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Terms and conditions" in content
+        assert "reCAPTCHA Check" in content
 
     def test_validate_contact_page_pi_no_number(self):
         with self.app as c:
@@ -499,7 +509,8 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
 
-    def test_get_terms_page_success(self):
+    @mock.patch('requests.post', return_value=FakeResponse(str.encode(json.dumps(recaptcha_pass))))
+    def test_get_terms_page_success(self, mock_recaptcha_response):
         response = self.app.get('/terms')
         content = response.data.decode()
         assert response.status_code == 200
@@ -528,8 +539,9 @@ class TestNavigation:
         assert "Full Datasets" in content
         assert "Change-Only Updates" in content
 
+    @mock.patch('requests.post', return_value=FakeResponse(str.encode(json.dumps(recaptcha_pass))))
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
-    def test_get_datasets_fail_using_get(self, mock_backend_reponse):
+    def test_get_datasets_fail_using_get(self, mock_backend_reponse, mock_recaptcha_response):
         response = self.app.get('/data', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200

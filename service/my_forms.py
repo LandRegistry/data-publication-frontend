@@ -167,3 +167,6 @@ class CompanyTelForm(TelForm):
 
 class TermsForm(Form):
     terms = TextField('',)
+
+class ReCaptchaForm(Form):
+    g_recaptcha_response = TextField('',)
