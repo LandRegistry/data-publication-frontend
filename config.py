@@ -6,8 +6,8 @@ country_lookup_url = os.environ.get('COUNTRY_LOOKUP_URL')
 country_lookup_field_id = os.environ.get('COUNTRY_LOOKUP_FIELD_ID')
 country_lookup_timeout_seconds = int(os.environ.get('COUNTRY_LOOKUP_TIMEOUT_SECONDS'))
 overseas_terms_file = os.environ.get('OVERSEAS_TERMS_FILE')
-recaptcha_secret_key = os.environ['RECAPTCHA_SECRET_KEY']
-recaptcha_site_key = os.environ['RECAPTCHA_SITE_KEY']
+recaptcha_secret_key = os.environ.get('RECAPTCHA_SECRET_KEY')
+recaptcha_site_key = os.environ.get('RECAPTCHA_SITE_KEY')
 
 CONFIG_DICT = {
     'DEBUG': False,
