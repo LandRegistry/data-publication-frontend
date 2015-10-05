@@ -509,13 +509,13 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
 
-    def test_validate_recaptcha_pass(self):
-        response = self.app.post('/recaptcha/validation', data=dict(
-            recaptcha_form = 'ReCaptchaForm'
-            ), follow_redirects=True)
-        content = response.data.decode()
-        assert response.status_code == 200
-        assert "Terms and conditions" in content
+#    def test_validate_recaptcha_pass(self):
+#        response = self.app.post('/recaptcha/validation', data=dict(
+#            recaptcha_form = 'ReCaptchaForm'
+#            ), follow_redirects=True)
+#        content = response.data.decode()
+#        assert response.status_code == 200
+#        assert "Terms and conditions" in content
 
     def test_validate_recaptcha_fail(self):
         response = self.app.post('/recaptcha/validation', data=dict(
