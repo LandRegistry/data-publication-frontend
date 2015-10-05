@@ -33,13 +33,6 @@
 {% endif %}
 <form action="/recaptcha/validation" method="post">
   {{ form.csrf_token }}
-  {% if form.captcha.errors %}
-  <div class="form-group error">
-    <span class="error-message">
-      Recaptcha check not completed
-    </span>
-  </div>
-  {% endif %}
     <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
     <noscript>
         <div style="width: 302px; height: 484px;">
@@ -60,6 +53,14 @@
             </div>
         </div>
     </noscript>
+    <br/>
+    {% if form.captcha.errors %}
+    <div class="form-group error">
+      <span class="error-message">
+        reCAPTCHA check not completed
+      </span>
+    </div>
+    {% endif %}
     <br/>
     <button class="button" type="submit">Confirm</button>
 </form>
