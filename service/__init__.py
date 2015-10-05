@@ -49,8 +49,8 @@ def asset_path_context_processor():
 def inject_user_id():
     return dict(user_id=request.headers.get('iv_user'))
 
-RECAPTCHA_SITE_KEY = app.config['RECAPTCHA_SITE_KEY']
+RECAPTCHA_PUBLIC_KEY = app.config['RECAPTCHA_PUBLIC_KEY']
 
 @app.context_processor
 def inject_google_analytics():
-    return {'recaptcha_site_key': RECAPTCHA_SITE_KEY}
+    return {'recaptcha_public_key': RECAPTCHA_PUBLIC_KEY}

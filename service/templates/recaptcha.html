@@ -33,12 +33,15 @@
 {% endif %}
 <form action="/recaptcha/validation" method="post">
   {{ form.csrf_token }}
-    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+  {% for error in form.captcha.errors %}
+    {{ error }}
+  {% endfor %}
+    <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
     <noscript>
         <div style="width: 302px; height: 484px;">
             <div style="width: 302px; height: 484px; position: relative;">
                 <div style="width: 302px; height: 424px; position: relative;">
-                    <iframe src="https://www.google.com/recaptcha/api/fallback?k={{ recaptcha_site_key }}"
+                    <iframe src="https://www.google.com/recaptcha/api/fallback?k={{ recaptcha_public_key }}"
                             frameborder="0" scrolling="no"
                             style="width: 302px; height:424px; border-style: none;">
                     </iframe>
