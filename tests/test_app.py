@@ -509,8 +509,26 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
 
-    @mock.patch('requests.post', return_value=FakeResponse(str.encode(json.dumps(recaptcha_pass))))
-    def test_get_terms_page_success(self, mock_recaptcha_response):
+    def test_validate_recaptcha_pass(self):
+        response = self.app.post('/recaptcha/validation', data=dict(
+            recaptcha_form = 'ReCaptchaForm'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Terms and conditions" in content
+
+    def test_validate_recaptcha_fail(self):
+        response = self.app.post('/recaptcha/validation', data=dict(
+            recaptcha_result='fail'
+            ), follow_redirects=True)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "reCAPTCHA Check" in content
+
+    def test_get_terms_page_success(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['recaptcha_result'] = 'pass'
         response = self.app.get('/terms')
         content = response.data.decode()
         assert response.status_code == 200
@@ -539,14 +557,16 @@ class TestNavigation:
         assert "Full Datasets" in content
         assert "Change-Only Updates" in content
 
-    @mock.patch('requests.post', return_value=FakeResponse(str.encode(json.dumps(recaptcha_pass))))
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
-    def test_get_datasets_fail_using_get(self, mock_backend_reponse, mock_recaptcha_response):
+    def test_get_datasets_fail_using_get(self, mock_backend_reponse):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['recaptcha_result'] = 'fail'
         response = self.app.get('/data', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
-        assert 'Terms and conditions' in content
+        assert 'reCAPTCHA Check' in content
 
     def test_get_cookies_page_success(self):
         response = self.app.get('/cookies')

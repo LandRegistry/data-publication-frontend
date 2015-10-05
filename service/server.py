@@ -11,7 +11,7 @@ MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
 
-RECAPTCHA_SECRET_KEY = app.config['RECAPTCHA_SECRET_KEY']
+RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
 
 @app.route('/')
 @app.route('/index.htm')
@@ -140,13 +140,15 @@ def validate_recaptcha():
     recaptcha_form = ReCaptchaForm()
     populate_session(recaptcha_form)
     if recaptcha_form.validate_on_submit():
+        session['recaptcha_result'] = 'pass'
         return redirect(url_for('terms'))
+    session['recaptcha_result'] = 'fail'
     return recaptcha(recaptcha_form)
 
 @app.route('/terms')
 def terms(terms_form=None):
     if terms_form is None:
-        if 'g_recaptcha_response' not in session:
+        if 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail':
             return redirect(url_for('recaptcha'))
         terms_form = TermsForm()
         populate_form(terms_form)
@@ -165,8 +167,6 @@ def printable_terms():
 @app.route('/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':
-        if 'g_recaptcha_response' not in session:
-            return redirect(url_for('recaptcha'))
         session['terms_accepted'] = True
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas-ownership")
