@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import Form, RecaptchaField
 from wtforms import TextField, IntegerField, SelectField, RadioField
 from wtforms.validators import ValidationError, Required, Length, NumberRange, Regexp
 
@@ -169,4 +169,4 @@ class TermsForm(Form):
     terms = TextField('',)
 
 class ReCaptchaForm(Form):
-    g_recaptcha_response = TextField('',)
+    captcha = RecaptchaField()
