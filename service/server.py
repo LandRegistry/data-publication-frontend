@@ -137,12 +137,18 @@ def recaptcha(recaptcha_form=None):
 
 @app.route('/recaptcha/validation', methods=['POST'])
 def validate_recaptcha():
+    if app.config['DO_RECAPTCHA'] == 'False':
+        session['recaptcha_result'] = 'pass'
+        return redirect(url_for('terms'))
     recaptcha_form = ReCaptchaForm()
     populate_session(recaptcha_form)
+    print(recaptcha_form.captcha)
     if recaptcha_form.validate_on_submit():
+        print("pass")
         session['recaptcha_result'] = 'pass'
         return redirect(url_for('terms'))
     session['recaptcha_result'] = 'fail'
+    print("fail")
     return recaptcha(recaptcha_form)
 
 @app.route('/terms')
