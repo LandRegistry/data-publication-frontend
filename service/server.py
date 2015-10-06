@@ -8,6 +8,7 @@ import requests
 import json
 from hurry.filesize import size, alternative
 import datetime
+import uuid
 
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -39,6 +40,8 @@ def user_type(usertype_form=None):
 def validate_usertype_details():
     usertype_form = UserTypeForm()
     populate_session(usertype_form)
+    if 'session_id' not in session or session['session_id'] is not '':
+        session['session_id'] = uuid.uuid4()
     if usertype_form.validate_on_submit():
         return redirect(url_for("personal"))
     return user_type(usertype_form)
@@ -283,6 +286,7 @@ def populate_session(form):
 def format_session_info_for_audit(download_filename=None):
     log_entry = []
     log_entry.append(session['ip_address'])
+    log_entry.append(str(session['session_id']))
     log_entry.append(session['user_type'])
     log_entry.append(session['title'])
     log_entry.append(session['other_title'] if 'other_title' in session
