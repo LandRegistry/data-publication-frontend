@@ -1,12 +1,12 @@
 import logging
-from config import CONFIG_DICT
+from service.server import app
 from os import stat
 
 # create logger
 _audit = logging.getLogger('audit_logger')
 _audit.setLevel(logging.INFO)
 # create handler
-_audit_handler = logging.handlers.TimedRotatingFileHandler(CONFIG_DICT['AUDIT_LOG_FILE'],
+_audit_handler = logging.handlers.TimedRotatingFileHandler(app.config['AUDIT_LOG_FILE'],
                                                            when='midnight', utc=True)
 _audit_handler.setLevel(logging.INFO)
 # create formatter
@@ -18,14 +18,14 @@ _audit.addHandler(_audit_handler)
 
 
 def audit(message):
-    if CONFIG_DICT['LOGGING']:
+    if app.config['LOGGING']:
         _write_audit_log_header()
         _audit.info(message)
 
 
 def _write_audit_log_header():
-    if CONFIG_DICT['LOGGING']:
-        if stat(CONFIG_DICT['AUDIT_LOG_FILE']).st_size == 0:
+    if app.config['LOGGING']:
+        if stat(app.config['AUDIT_LOG_FILE']).st_size == 0:
             _formatter2 = logging.Formatter('%(message)s')
             _audit_handler.setFormatter(_formatter2)
             _audit.addHandler(_audit_handler)

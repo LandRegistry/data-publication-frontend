@@ -5,6 +5,8 @@ from unittest import mock
 import json
 import requests
 import datetime
+from os import stat, remove
+import shutil
 
 recaptcha_pass = {"success": True}
 recaptcha_fail = {"success": False}
@@ -589,9 +591,10 @@ class TestNavigation:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
         response = self.app.post('/data')
+        app.config['LOGGING'] = False
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Overseas Dataset1 (" in content
+        assert "Overseas Dataset (" in content
         assert " update)" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
@@ -605,6 +608,27 @@ class TestNavigation:
         assert response.status_code == 200
         assert "Full Datasets" in content
         assert "Change-Only Updates" in content
+
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_log_file_is_written_to(self, mock_backend_reponse):
+        shutil.copy(app.config['AUDIT_LOG_FILE'], "{}.backup".format(app.config['AUDIT_LOG_FILE']))
+        open(app.config['AUDIT_LOG_FILE'], 'w+').close()
+        size_before = stat(app.config['AUDIT_LOG_FILE']).st_size
+        app.config['LOGGING'] = True
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+        response = self.app.post('/data')
+        app.config['LOGGING'] = False
+        size_after = stat(app.config['AUDIT_LOG_FILE']).st_size
+        shutil.copy("{}.backup".format(app.config['AUDIT_LOG_FILE']), app.config['AUDIT_LOG_FILE'])
+        remove("{}.backup".format(app.config['AUDIT_LOG_FILE']))
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert "Overseas Dataset (" in content
+        assert " update)" in content
+        assert size_after > size_before
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_fail_using_get(self, mock_backend_reponse):
