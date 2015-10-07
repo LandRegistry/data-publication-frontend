@@ -43,6 +43,9 @@ class TestNavigation:
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_recaptcha_page_success(self):
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['tel_screen'] = 'Complete'
         response = self.app.get('/recaptcha')
         content = response.data.decode()
         assert response.status_code == 200
@@ -87,6 +90,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
+                sess['personal_screen'] = 'Complete'
         response = self.app.get('/address')
         content = response.data.decode()
         assert response.status_code == 200
@@ -128,6 +132,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
+                sess['personal_screen'] = 'Complete'
         response = self.app.get('/address')
         content = response.data.decode()
         assert response.status_code == 200
@@ -387,6 +392,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
+                sess['address_screen'] = 'Complete'
         response = self.app.get('/tel')
         content = response.data.decode()
         assert response.status_code == 200
@@ -398,6 +404,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
+                sess['address_screen'] = 'Complete'
         response = self.app.get('/tel')
         content = response.data.decode()
         assert response.status_code == 200
@@ -562,6 +569,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'fail'
+                sess['tel_screen'] = 'Complete'
         response = self.app.get('/data', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200

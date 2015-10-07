@@ -60,12 +60,15 @@ def validate_personal_details():
         personal_form = PersonalForm()
     populate_session(personal_form)
     if personal_form.validate_on_submit():
+        session['personal_screen'] = 'Complete'
         return redirect(url_for("address"))
     return personal(personal_form)
 
 @app.route('/address')
 def address(address_form=None):
     if address_form is None:
+        if 'personal_screen' not in session :
+            return redirect(url_for("personal"))
         address_form = AddressForm()
         if 'country' not in session or session['country'] is '':
             ip_address = request.remote_addr
@@ -100,14 +103,15 @@ def validate_address_details():
     address_form = AddressForm()
     populate_session(address_form)
     if address_form.validate_on_submit():
+        session['address_screen'] = 'Complete'
         return redirect(url_for("tel"))
     return address(address_form)
 
 @app.route('/tel')
 def tel(tel_form=None):
     if tel_form is None:
-        if 'user_type' not in session:
-            return redirect(url_for('user_type'))
+        if 'address_screen' not in session:
+            return redirect(url_for('address'))
         elif session['user_type'] == 'Company':
             tel_form = CompanyTelForm()
         else:
@@ -125,12 +129,15 @@ def validate_telephone_details():
         tel_form = TelForm()
     populate_session(tel_form)
     if tel_form.validate_on_submit():
+        session['tel_screen'] = 'Complete'
         return redirect(url_for('recaptcha'))
     return tel(tel_form)
 
 @app.route('/recaptcha')
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
+        if 'tel_screen' not in session:
+            return redirect(url_for('tel'))
         recaptcha_form = ReCaptchaForm()
         populate_form(recaptcha_form)
     return render_template('recaptcha.html', form=recaptcha_form)
@@ -144,7 +151,6 @@ def validate_recaptcha():
     populate_session(recaptcha_form)
     print(recaptcha_form.captcha)
     if recaptcha_form.validate_on_submit():
-        print("pass")
         session['recaptcha_result'] = 'pass'
         return redirect(url_for('terms'))
     session['recaptcha_result'] = 'fail'
