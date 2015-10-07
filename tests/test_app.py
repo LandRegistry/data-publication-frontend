@@ -171,7 +171,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -191,7 +191,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -211,7 +211,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -230,7 +230,7 @@ class TestNavigation:
             day='',
             month='',
             year=''
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -250,7 +250,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -270,7 +270,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -289,7 +289,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -308,7 +308,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='3063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -327,7 +327,7 @@ class TestNavigation:
             day='32',
             month='13',
             year='1963'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -347,7 +347,7 @@ class TestNavigation:
             day='29',
             month='2',
             year='1983'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -366,7 +366,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -440,7 +440,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='07895223141',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -453,7 +453,7 @@ class TestNavigation:
             landline='',
             mobile='07895123445',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Telephone (Landline) is required" in content
@@ -466,7 +466,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -479,7 +479,7 @@ class TestNavigation:
             landline='',
             mobile='07895332244',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -492,7 +492,7 @@ class TestNavigation:
             landline='',
             mobile='',
             email='1963@hotmail.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Landline or Mobile" in content
@@ -505,7 +505,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email=''
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "E-mail is required" in content
@@ -518,7 +518,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='mickeymouseclubhouse.disney.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Invalid e-mail address format" in content
@@ -531,18 +531,18 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890@disney.com'
-            ), follow_redirects=True)
+        ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
 
-#    def test_validate_recaptcha_pass(self):
-#        response = self.app.post('/recaptcha/validation', data=dict(
-#            recaptcha_form = 'ReCaptchaForm'
-#            ), follow_redirects=True)
-#        content = response.data.decode()
-#        assert response.status_code == 200
-#        assert "Terms and conditions" in content
+    #    def test_validate_recaptcha_pass(self):
+    #        response = self.app.post('/recaptcha/validation', data=dict(
+    #            recaptcha_form = 'ReCaptchaForm'
+    #            ), follow_redirects=True)
+    #        content = response.data.decode()
+    #        assert response.status_code == 200
+    #        assert "Terms and conditions" in content
 
     def test_validate_recaptcha_fail(self):
         response = self.app.post('/recaptcha/validation', data=dict(
@@ -638,6 +638,31 @@ class TestNavigation:
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'reCAPTCHA Check' in content
+
+    def test_hide_url_download_link(self):
+        filename = 'OV_FULL_2015_08.zip'
+        amazon_date = '20150918T133013Z'
+        link_duration = '900'
+        credentials = 'ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request'
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, credentials,
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+        response = self.app.get(url)
+        content = response.data.decode()
+        assert response.status_code == 302
+        assert "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/" \
+               "overseas-ownership/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&amp;" \
+               "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20150918T133013Z&amp;" \
+               "X-Amz-Expires=900&amp;" \
+               "X-Amz-Credential=ABCDEFGHIJKLMNOPQRST%2F20150918%2Feu-central-1%2Fs3%2F" \
+               "aws4_request&amp;" \
+               "X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3" \
+               in content
 
     def test_get_cookies_page_success(self):
         response = self.app.get('/cookies')
