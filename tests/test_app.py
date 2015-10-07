@@ -35,6 +35,7 @@ no_files = {
 
 valid_pi_session_details = {
     'ip_address': '10.0.2.2',
+    'session_id': 'e9e40eb4-b0a8-44c2-aa3f-9daaf375fbe1',
     'user_type': 'Private individual',
     'title': 'Dr',
     'first_name': 'first name',
@@ -121,8 +122,7 @@ class TestNavigation:
 
     def test_get_personal_page_pi_success(self):
         response = self.app.post('/usertype/validation', data=dict(
-            user_type='Private individual'
-        ), follow_redirects=True)
+            user_type='Private individual'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Company Name' not in content
@@ -131,8 +131,7 @@ class TestNavigation:
 
     def test_get_personal_page_company_success(self):
         response = self.app.post('/usertype/validation', data=dict(
-            user_type='Company'
-        ), follow_redirects=True)
+            user_type='Company'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Company name' in content
@@ -141,8 +140,7 @@ class TestNavigation:
 
     def test_get_personal_page_no_selection_success(self):
         response = self.app.post('/usertype/validation', data=dict(
-            user_type=''
-        ), follow_redirects=True)
+            user_type=''), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Select user type' in content
@@ -173,7 +171,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -193,7 +191,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -213,7 +211,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -232,7 +230,7 @@ class TestNavigation:
             day='',
             month='',
             year=''
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -252,7 +250,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -272,7 +270,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -291,7 +289,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -310,7 +308,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='3063'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -329,7 +327,7 @@ class TestNavigation:
             day='32',
             month='13',
             year='1963'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -349,7 +347,7 @@ class TestNavigation:
             day='29',
             month='2',
             year='1983'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -368,7 +366,7 @@ class TestNavigation:
             day='22',
             month='11',
             year='1063'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -442,7 +440,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='07895223141',
             email='1963@hotmail.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -455,7 +453,7 @@ class TestNavigation:
             landline='',
             mobile='07895123445',
             email='1963@hotmail.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Telephone (Landline) is required" in content
@@ -468,7 +466,7 @@ class TestNavigation:
             landline='01725221163',
             mobile='',
             email='1963@hotmail.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -481,7 +479,7 @@ class TestNavigation:
             landline='',
             mobile='07895332244',
             email='1963@hotmail.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
@@ -494,7 +492,7 @@ class TestNavigation:
             landline='',
             mobile='',
             email='1963@hotmail.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Landline or Mobile" in content
@@ -507,7 +505,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email=''
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "E-mail is required" in content
@@ -520,7 +518,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='mickeymouseclubhouse.disney.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Invalid e-mail address format" in content
@@ -533,7 +531,7 @@ class TestNavigation:
             landline='01917675432',
             mobile='07896543213',
             email='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890@disney.com'
-        ), follow_redirects=True)
+            ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "Field cannot be longer than 60 characters." in content
@@ -548,8 +546,7 @@ class TestNavigation:
 
     def test_validate_recaptcha_fail(self):
         response = self.app.post('/recaptcha/validation', data=dict(
-            recaptcha_result='fail'
-            ), follow_redirects=True)
+            recaptcha_result='fail'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert "reCAPTCHA Check" in content
