@@ -27,7 +27,7 @@ def index():
 def cookies():
     return render_template('cookies.html')
 
-
+@app.route('/usertype/')
 @app.route('/usertype')
 def user_type(usertype_form=None):
     if usertype_form is None:
@@ -46,7 +46,7 @@ def validate_usertype_details():
         return redirect(url_for("personal"))
     return user_type(usertype_form)
 
-
+@app.route('/personal/')
 @app.route('/personal')
 def personal(personal_form=None):
     if personal_form is None:
@@ -74,7 +74,7 @@ def validate_personal_details():
         return redirect(url_for("address"))
     return personal(personal_form)
 
-
+@app.route('/address/')
 @app.route('/address')
 def address(address_form=None):
     if address_form is None:
@@ -119,7 +119,7 @@ def validate_address_details():
         return redirect(url_for("tel"))
     return address(address_form)
 
-
+@app.route('/tel/')
 @app.route('/tel')
 def tel(tel_form=None):
     if tel_form is None:
@@ -147,7 +147,7 @@ def validate_telephone_details():
         return redirect(url_for('recaptcha'))
     return tel(tel_form)
 
-
+@app.route('/recaptcha/')
 @app.route('/recaptcha')
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
@@ -171,7 +171,7 @@ def validate_recaptcha():
     session['recaptcha_result'] = 'fail'
     return recaptcha(recaptcha_form)
 
-
+@app.route('/terms/')
 @app.route('/terms')
 def terms(terms_form=None):
     if terms_form is None:
@@ -184,7 +184,7 @@ def terms(terms_form=None):
     f.close()
     return render_template('terms.html', form=terms_form, text=data)
 
-
+@app.route('/printable_terms/')
 @app.route('/printable_terms')
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
@@ -199,7 +199,7 @@ def decline_terms():
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-
+@app.route('/data/', methods=['GET', 'POST'])
 @app.route('/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':
@@ -248,7 +248,7 @@ def get_data():
     else:
         return redirect(url_for('terms'))
 
-
+@app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     logger.audit(format_session_info_for_audit(download_filename=filename))
