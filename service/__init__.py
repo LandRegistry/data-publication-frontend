@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 from flask import Flask, request
 from flask.ext.assets import Environment, Bundle
+from flask_wtf.csrf import CsrfProtect
 from os import path
 import sass as libsass
-from flask_wtf.csrf import CsrfProtect
 
 from service import error_handler
 from config import CONFIG_DICT
@@ -11,7 +11,7 @@ from config import CONFIG_DICT
 app = Flask(__name__)
 app.config.update(CONFIG_DICT)
 app.secret_key = app.config['SESSION_KEY']
-#error_handler.setup_errors(app)
+error_handler.setup_errors(app)
 
 CsrfProtect(app)
 
@@ -30,6 +30,7 @@ def __compile_sass(_in, out, **kw):
         )
     )
 
+
 sass = Bundle('govuk-elements-scss/main.scss',
               'govuk-elements-scss/main-ie6.scss',
               'govuk-elements-scss/main-ie7.scss',
@@ -38,12 +39,14 @@ sass = Bundle('govuk-elements-scss/main.scss',
               output='build/stylesheets/govuk_sass.css')
 assets.register('govuk_sass', sass)
 
+
 @app.context_processor
 def asset_path_context_processor():
     return {
-      'asset_path': '/static/build/',
-      'landregistry_asset_path': '/static/build/'
+        'asset_path': '/static/build/',
+        'landregistry_asset_path': '/static/build/'
     }
+
 
 @app.context_processor
 def inject_user_id():
