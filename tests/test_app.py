@@ -45,11 +45,15 @@ valid_pi_session_details = {
     'month': 1,
     'year': datetime.date.today().year,
     'company_name': 'company name',
+    'personal_screen': 'Complete',
     'address_line_1': 'address line 1',
     'country': 'United Kingdom',
     'detected_country': 'United Kingdom',
+    'address_screen': 'Complete',
     'landline': '0123456789',
     'email': 'person@email.com',
+    'tel_screen': 'Complete',
+    'recaptcha_result': 'pass',
     'terms_accepted': True
 }
 
@@ -568,12 +572,11 @@ class TestNavigation:
         assert 'Terms and conditions' in content
 
     def test_get_decline_terms_page(self):
-        decline_terms_session_details = valid_pi_session_details
-        decline_terms_session_details['terms_accepted'] = False
         with self.app as c:
             with c.session_transaction() as sess:
-                for key, val in decline_terms_session_details.items():
+                for key, val in valid_pi_session_details.items():
                     sess[key] = val
+                sess['terms_accepted'] = False
         response = self.app.get('/decline_terms', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -652,7 +655,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.get(url)
+        response = self.app.get(url, environ_base={'REMOTE_ADDR': '10.0.2.2'})
         content = response.data.decode()
         assert response.status_code == 302
         assert "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/" \
@@ -663,6 +666,48 @@ class TestNavigation:
                "aws4_request&amp;" \
                "X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3" \
                in content
+
+    def test_hide_url_download_link_different_ip(self):
+        filename = 'OV_FULL_2015_08.zip'
+        amazon_date = '20150918T133013Z'
+        link_duration = '900'
+        credentials = 'ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request'
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, credentials,
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+                sess['ip_address'] = '1.1.1.1'
+        response = self.app.get(url, follow_redirects=True, environ_base={'REMOTE_ADDR': '10.0.2.2'})
+        content = response.data.decode()
+        print(content)
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Terms and conditions' in content
+
+    def test_hide_url_download_link_terms_declined(self):
+        filename = 'OV_FULL_2015_08.zip'
+        amazon_date = '20150918T133013Z'
+        link_duration = '900'
+        credentials = 'ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request'
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, credentials,
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+                sess['terms_accepted'] = False
+        response = self.app.get(url, follow_redirects=True, environ_base={'REMOTE_ADDR': '10.0.2.2'})
+        content = response.data.decode()
+        print(content)
+        assert response.status_code == 200
+        assert 'Land Registry Data' in content
+        assert 'Terms and conditions' in content
 
     def test_get_cookies_page_success(self):
         response = self.app.get('/cookies')

@@ -251,6 +251,10 @@ def get_data():
 
 @app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
+    ip_address = request.remote_addr
+    if ('ip_address' not in session or ip_address != session['ip_address']) or \
+            ('terms_accepted' not in session or session['terms_accepted'] is False):
+        return redirect(url_for('terms'))
     logger.audit(format_session_info_for_audit(download_filename=filename))
     base_url = \
         "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/overseas-ownership/{}" \
