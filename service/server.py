@@ -15,20 +15,23 @@ MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
 
+URL_PREFIX = app.config['URL_PREFIX']
+
 RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
 
-@app.route('/')
-@app.route('/index.htm')
-@app.route('/index.html')
+@app.route(URL_PREFIX + '/')
+@app.route(URL_PREFIX + '/index.htm')
+@app.route(URL_PREFIX + '/index.html')
 def index():
     return render_template('ood.html')
 
-@app.route('/cookies')
+
+@app.route(URL_PREFIX + '/cookies')
 def cookies():
     return render_template('cookies.html')
 
-@app.route('/usertype/')
-@app.route('/usertype')
+@app.route(URL_PREFIX + '/usertype/')
+@app.route(URL_PREFIX + '/usertype')
 def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
@@ -36,7 +39,7 @@ def user_type(usertype_form=None):
     return render_template('usertype.html', form=usertype_form)
 
 
-@app.route('/usertype/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/usertype/validation', methods=['POST'])
 def validate_usertype_details():
     usertype_form = UserTypeForm()
     populate_session(usertype_form)
@@ -46,8 +49,8 @@ def validate_usertype_details():
         return redirect(url_for("personal"))
     return user_type(usertype_form)
 
-@app.route('/personal/')
-@app.route('/personal')
+@app.route(URL_PREFIX + '/personal/')
+@app.route(URL_PREFIX + '/personal')
 def personal(personal_form=None):
     if personal_form is None:
         if 'user_type' not in session:
@@ -60,7 +63,7 @@ def personal(personal_form=None):
     return render_template("personal.html", form=personal_form)
 
 
-@app.route('/personal/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/personal/validation', methods=['POST'])
 def validate_personal_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -74,8 +77,8 @@ def validate_personal_details():
         return redirect(url_for("address"))
     return personal(personal_form)
 
-@app.route('/address/')
-@app.route('/address')
+@app.route(URL_PREFIX + '/address/')
+@app.route(URL_PREFIX + '/address')
 def address(address_form=None):
     if address_form is None:
         if 'personal_screen' not in session :
@@ -110,7 +113,7 @@ def address(address_form=None):
     return render_template("address.html", form=address_form)
 
 
-@app.route('/address/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/address/validation', methods=['POST'])
 def validate_address_details():
     address_form = AddressForm()
     populate_session(address_form)
@@ -119,8 +122,8 @@ def validate_address_details():
         return redirect(url_for("tel"))
     return address(address_form)
 
-@app.route('/tel/')
-@app.route('/tel')
+@app.route(URL_PREFIX + '/tel/')
+@app.route(URL_PREFIX + '/tel')
 def tel(tel_form=None):
     if tel_form is None:
         if 'address_screen' not in session:
@@ -133,7 +136,7 @@ def tel(tel_form=None):
     return render_template('tel.html', form=tel_form)
 
 
-@app.route('/tel/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/tel/validation', methods=['POST'])
 def validate_telephone_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -147,8 +150,8 @@ def validate_telephone_details():
         return redirect(url_for('recaptcha'))
     return tel(tel_form)
 
-@app.route('/recaptcha/')
-@app.route('/recaptcha')
+@app.route(URL_PREFIX + '/recaptcha/')
+@app.route(URL_PREFIX + '/recaptcha')
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
         if 'tel_screen' not in session:
@@ -159,7 +162,7 @@ def recaptcha(recaptcha_form=None):
                            recaptcha_public_key=app.config['RECAPTCHA_PUBLIC_KEY'])
 
 
-@app.route('/recaptcha/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/recaptcha/validation', methods=['POST'])
 def validate_recaptcha():
     if app.config['DO_RECAPTCHA'] == 'False':
         session['recaptcha_result'] = 'pass'
@@ -172,8 +175,8 @@ def validate_recaptcha():
     session['recaptcha_result'] = 'fail'
     return recaptcha(recaptcha_form)
 
-@app.route('/terms/')
-@app.route('/terms')
+@app.route(URL_PREFIX + '/terms/')
+@app.route(URL_PREFIX + '/terms')
 def terms(terms_form=None):
     if terms_form is None:
         if 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail':
@@ -185,8 +188,8 @@ def terms(terms_form=None):
     f.close()
     return render_template('terms.html', form=terms_form, text=data)
 
-@app.route('/printable_terms/')
-@app.route('/printable_terms')
+@app.route(URL_PREFIX + '/printable_terms/')
+@app.route(URL_PREFIX + '/printable_terms')
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
     data = f.read()
@@ -194,14 +197,14 @@ def printable_terms():
     return render_template('terms_printer_friendly.html', text=data)
 
 
-@app.route('/decline_terms')
+@app.route(URL_PREFIX + '/decline_terms')
 def decline_terms():
     session['terms_accepted'] = False
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-@app.route('/data/', methods=['GET', 'POST'])
-@app.route('/data', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
 def get_data():
     if request.method == 'POST':
         session['terms_accepted'] = True
@@ -209,7 +212,7 @@ def get_data():
         logger.audit(format_session_info_for_audit())
 
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
-                                "/list-files/overseas-ownership")
+                                "/list-files/overseas")
         response_json = response.json()
 
         # Get the link
@@ -250,16 +253,16 @@ def get_data():
     else:
         return redirect(url_for('terms'))
 
-@app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
-@app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
+@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
+@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     logger.audit(format_session_info_for_audit(download_filename=filename))
-    base_url = \
-        "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/overseas-ownership/{}" \
-        "?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}" \
-        "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}"
+    base_url = (
+        "{}overseas/{}?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}"
+        "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}")
     return redirect(
-        base_url.format(filename, amazon_date, int(link_duration), credentials, signature))
+        base_url.format(app.config['AWS_BASE_URL'], filename, amazon_date, int(link_duration),
+                        credentials, signature))
 
 def extract_url_variables(url):
     parts = url.split('?')
