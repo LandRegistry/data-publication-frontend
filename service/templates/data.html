@@ -73,14 +73,14 @@
     function countdown() {
       var refreshIntervalId = setInterval(function() {
         var duration = document.getElementById('duration');
-        temp = duration.innerText.split(' ');
+        temp = duration.innerHTML.split(' ');
         totalSeconds = ((temp[0] * 60) + parseInt(temp[2])) - 1;
         minutes = Math.floor(totalSeconds / 60);
         seconds = totalSeconds % 60;
-        duration.innerText = minutes + " minute(s) " + seconds + " second(s)";
+        duration.innerHTML = minutes + " minute(s) " + seconds + " second(s)";
         if (totalSeconds == 0) {
           clearInterval(refreshIntervalId);
-          document.getElementById('valid-link-message').innerText = 'The download links have expired. You may need to reload the page.';
+          document.getElementById('valid-link-message').innerHTML = 'The download links have expired. You may need to reload the page.';
           document.getElementById('valid-link-message').style.color = 'red';
         }
       }, 1000);
