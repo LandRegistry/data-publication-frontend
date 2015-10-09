@@ -10,6 +10,7 @@ recaptcha_private_key = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 recaptcha_public_key = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 do_recaptcha = os.environ.get('DO_RECAPTCHA')
 audit_log_file = os.environ.get('AUDIT_LOG_FILE')
+ga_property_id = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
 
 CONFIG_DICT = {
     'DEBUG': False,
@@ -24,7 +25,8 @@ CONFIG_DICT = {
     'RECAPTCHA_PUBLIC_KEY': recaptcha_public_key,
     'RECAPTCHA_PRIVATE_KEY': recaptcha_private_key,
     'DO_RECAPTCHA': do_recaptcha,
-    'AUDIT_LOG_FILE': audit_log_file
+    'AUDIT_LOG_FILE': audit_log_file,
+    'GOOGLE_ANALYTICS_PROPERTY_ID': ga_property_id
 }
 
 settings = os.environ.get('SETTINGS')

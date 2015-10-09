@@ -38,7 +38,7 @@
             <span class="icon icon-download" title="download"></span>
           </div>
           <div>
-            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
+            <a href='{{ link["url"] }}' onClick="ga('send', 'event', { eventCategory: 'Dataset', eventAction: 'Download', eventLabel: '{{ link['filename'] }}'});">{{ link["filename"] }}</a>
             <br/>
             <span class="text-secondary">({{ link["size"] }})</span>
           </div>
@@ -56,7 +56,7 @@
             <span class="icon icon-download" title="download"></span>
           </div>
           <div>
-            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
+            <a href='{{ link["url"] }}' onClick="ga('send', 'event', { eventCategory: 'Dataset', eventAction: 'Download', eventLabel: '{{ link['filename'] }}'});">{{ link["filename"] }}</a>
             <br/>
             <span class="text-secondary">({{ link["size"] }})</span>
           </div>
