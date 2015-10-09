@@ -11,6 +11,7 @@ from config import CONFIG_DICT
 app = Flask(__name__)
 app.config.update(CONFIG_DICT)
 app.secret_key = app.config['SESSION_KEY']
+app.session_cookie_name = 'lr_data_session'
 error_handler.setup_errors(app)
 
 CsrfProtect(app)
