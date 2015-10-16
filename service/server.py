@@ -264,6 +264,7 @@ def hide_url(filename, amazon_date, link_duration, credentials, signature):
         base_url.format(app.config['AWS_BASE_URL'], filename, amazon_date, int(link_duration),
                         credentials, signature))
 
+
 def extract_url_variables(url):
     parts = url.split('?')
     pairs = parts[1].split('&')
