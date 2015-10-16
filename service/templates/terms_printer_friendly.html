@@ -1,0 +1,21 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block head_additionals %}
+  <link rel="stylesheet" href="{{ landregistry_asset_path }}stylesheets/print.css" type="text/css" media="print" />
+{% endblock %}
+{% block body %}
+    <br/>
+    <form>
+      <script type="text/javascript">
+        /*<![CDATA[*/
+          document.write("<input class='button' type='button' value='Print this page' onclick='window.print();return false;'' id='print'/>");
+        /*]]>*/
+      </script>
+      <noscript>To print this page, use your browser's print function. A printer-friendly version of the page will be provided.</noscript>
+    </form>
+      <h1 class="heading-xlarge">
+        Terms and conditions
+      </h1>
+      <div style="white-space: pre-wrap">{{ text }}</div>
+{% endblock %}

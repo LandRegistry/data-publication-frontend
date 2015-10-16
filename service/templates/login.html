@@ -1,0 +1,32 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Login{% endblock %}
+{% block body %}
+<h1 class="heading-xlarge">Land Registry data</h1>
+<h2 class="heading-large">
+    Login<br/>
+    <span class="heading-secondary">You must log in to see commercial data</span>
+</h2>
+
+<form action="">
+    <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-control" id="username" type="text" placeholder="Username">
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-control" id="password" type="password" placeholder="Password">
+    </div>
+    <button class="button">Login</button>
+</form>
+
+<hr>
+<h2 class="heading-large">Sign-up information</h2>
+
+<p>To to get an account contact our Business Development Fulfilment Team.</p>
+<ul class="list-bullet">
+    <li><strong>Phone:</strong> 0300 006 0492</li>
+    <li><strong>Email:</strong> <a href="mailto:datapublication@landregistry.gsi.gov.uk">datapublication@landregistry.gsi.gov.uk</a></li>
+</ul>
+
+{% endblock %}

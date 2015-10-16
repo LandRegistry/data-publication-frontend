@@ -1,0 +1,32 @@
+{% extends "global/govuk_template.html" %}
+
+
+{% block head %}
+  <link href="{{ landregistry_asset_path }}stylesheets/landregistry-main.css" media="screen" rel="stylesheet" type="text/css">
+  {% assets "govuk_sass" %}
+    <link href="{{ ASSET_URL }}" media="screen" rel="stylesheet" type="text/css">
+  {% endassets %}
+  <link href="{{ landregistry_asset_path }}stylesheets/lr-additional.css" media="screen" rel="stylesheet" type="text/css">
+  {% block head_additionals %}{% endblock %}
+{% endblock %}
+
+
+{% block use_nta_font %}
+  <!-- Do not use NTA font -->
+{% endblock %}
+
+
+{% block cookie_message %}
+  <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
+{% endblock %}
+
+
+{% block body_end %}
+  {% if env_flag != 'build' %}
+    <script src="{{ landregistry_asset_path }}javascripts/vendor/jquery-1.11.0.min.js"></script>
+    <script src="{{ landregistry_asset_path }}javascripts/govuk/selection-buttons.js"></script>
+    <script src="{{ landregistry_asset_path }}javascripts/govuk/stick-at-top-when-scrolling.js"></script>
+    <script src="{{ landregistry_asset_path }}javascripts/govuk/stop-scrolling-at-footer.js"></script>
+  {% endif %}
+  {% block js_additionals %}{% endblock %}
+{% endblock %}

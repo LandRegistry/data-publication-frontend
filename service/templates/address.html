@@ -1,0 +1,92 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block body %}
+  <div class="grid-row">
+
+    <div id="global-breadcrumb" class="header-context column-three-quarters">
+      <nav role="navigation" class="expand-top-half expand-bottom-half">
+        <ol class="group">
+          <li><a href="/" id="details">Dataset Details</a></li>
+          <li><a href="/usertype" id="usertype">User type</a></li>
+          <li><a href="/personal" id="personal">Personal details</a></li>
+          <li><a href="/address" id="address">Address</a></li>
+        </ol>
+      </nav>
+    </div>
+
+  </div>
+
+  <h1 class="heading-xlarge">Land Registry Data</h1>
+  {% if 'user_type' in session and session['user_type'] == 'Company' %}
+  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Company address details</h2>
+  {% else %}
+  <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Address details</h2>
+  {% endif %}
+
+  <form action="/address/validation" method="post">
+    {{ form.csrf_token }}
+    <fieldset>
+      <div class="form-group{% if form.address_line_1.errors %} error{% endif %}">
+        {{ form.address_line_1.label(class_="form-label") }}
+        {{ form.address_line_1(class_="form-control") }}
+        <br/>
+        {% for error in form.address_line_1.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.address_line_2.errors %} error{% endif %}">
+        {{ form.address_line_2.label(class_="form-label") }}
+        {{ form.address_line_2(class_="form-control") }}
+        <br/>
+        {% for error in form.address_line_2.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.address_line_3.errors %} error{% endif %}">
+        {{ form.address_line_3.label(class_="form-label") }}
+        {{ form.address_line_3(class_="form-control") }}
+        <br/>
+        {% for error in form.address_line_3.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.city.errors %} error{% endif %}">
+        {{ form.city.label(class_="form-label") }}
+        {{ form.city(class_="form-control") }}
+        <br/>
+        {% for error in form.city.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.region.errors %} error{% endif %}">
+        {{ form.region.label(class_="form-label") }}
+        {{ form.region(class_="form-control") }}
+        <br/>
+        {% for error in form.region.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.postal_code.errors %} error{% endif %}">
+        {{ form.postal_code.label(class_="form-label") }}
+        {{ form.postal_code(class_="form-control") }}
+        <br/>
+        {% for error in form.postal_code.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="form-group{% if form.country.errors %} error{% endif %}">
+        {{ form.country.label(class_="form-label") }}
+        {{ form.country(class_="form-control") }}
+        <br/>
+        {% for error in form.country.errors %}
+        <span class="error-message">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <input type="submit" class="button" id="next" value="Next"/>
+
+  </form>
+
+{% endblock %}
