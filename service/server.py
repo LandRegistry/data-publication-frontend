@@ -9,6 +9,7 @@ import json
 from hurry.filesize import size, alternative
 import datetime
 import uuid
+import re
 
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -218,6 +219,12 @@ def get_data():
         updated_datasets = []
 
         for link in files:
+
+            # Check link is in valid format
+            pattern = re.compile(r'OV+_[A-Za-z]+_20\d{2}_\d{2}.[A-Za-z]{3}')
+            pattern.match(link["Name"])
+            print (pattern.match(link["Name"]))
+
             # Split into a list of words and reorder the month and year
             words = link["Name"].split("_")
             # Display the month in name format
@@ -230,14 +237,16 @@ def get_data():
                                     credentials=amazon_attributes['X-Amz-Credential'],
                                     signature=amazon_attributes['X-Amz-Signature'])
 
-            if words[1] == "FULL":
+            if words[1].upper() == "FULL":
                 new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
                 full_datasets.append({"filename": new_link, "url": generated_url,
                                       "size": size(link["Size"], system=alternative)})
-            else:
+            elif words[1].upper() == "UPDATE":
                 update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
                 updated_datasets.append({"filename": update_link, "url": generated_url,
                                          "size": size(link["Size"], system=alternative)})
+            else:
+                continue
 
         duration = response_json['Link_Duration']
         minutes, seconds = divmod(duration, 60)
