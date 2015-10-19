@@ -156,7 +156,8 @@ def recaptcha(recaptcha_form=None):
             return redirect(url_for('tel'))
         recaptcha_form = ReCaptchaForm()
         populate_form(recaptcha_form)
-    return render_template('recaptcha.html', form=recaptcha_form)
+    return render_template('recaptcha.html', form=recaptcha_form,
+                           recaptcha_public_key=app.config['RECAPTCHA_PUBLIC_KEY'])
 
 
 @app.route('/recaptcha/validation', methods=['POST'])
