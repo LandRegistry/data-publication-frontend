@@ -81,7 +81,7 @@ def validate_personal_details():
 @app.route(URL_PREFIX + '/address')
 def address(address_form=None):
     if address_form is None:
-        if 'personal_screen' not in session :
+        if 'personal_screen' not in session:
             return redirect(url_for("personal"))
         address_form = AddressForm()
 
@@ -186,7 +186,8 @@ def decline_terms():
 @app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
 @app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
 def get_data():
-    if request.method == 'POST':
+    if request.method == 'POST' or ('terms_accepted' in session
+                                    and session['terms_accepted'] is True):
         session['terms_accepted'] = True
 
         logger.audit(format_session_info_for_audit())
@@ -225,7 +226,7 @@ def get_data():
                 else:
                     continue
 
-        duration = response_json['Link_Duration']
+        duration = response_json['Link_Duration'] - 1
         minutes, seconds = divmod(duration, 60)
         duration = "{} minute(s) {} second(s)".format(minutes, seconds)
 
@@ -233,9 +234,23 @@ def get_data():
     else:
         return redirect(url_for('terms'))
 
+
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
+    if ('user_type' not in session
+            or 'personal_screen' not in session
+            or 'address_screen' not in session
+            or 'tel_screen' not in session
+            or 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail'):
+        return redirect(url_for('terms'))
+
+    expiry_date = (datetime.datetime.strptime(amazon_date, "%Y%m%dT%H%M%SZ")
+                   + datetime.timedelta(seconds=int(link_duration)))
+
+    if datetime.datetime.utcnow() >= expiry_date:
+        return render_template('download_expired.html', filename=filename)
+
     logger.audit(format_session_info_for_audit(download_filename=filename))
     base_url = (
         "{}overseas/{}?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}"
