@@ -29,27 +29,9 @@
 <div id="valid-link-message">Please note that these download links will only remain valid for <span id="duration">{{ duration }}</span>.</div>
 <div class="grid-row">
   <div class="column-half">
-    <h3 class="heading-medium">Full Datasets</h3>
+    <h3 class="heading-medium">Datasets</h3>
     <ul>
-      {% for link in fullDatasets %}
-      <li>
-        <div style="margin-bottom:4%">
-          <div style="float:left; margin-right:2%">
-            <span class="icon icon-download" title="download"></span>
-          </div>
-          <div>
-            <a href='{{ link["url"] }}' onClick="ga('send', 'event', { eventCategory: 'Dataset', eventAction: 'Download', eventLabel: '{{ link['filename'] }}'});">{{ link["filename"] }}</a>
-            <br/>
-            <span class="text-secondary">({{ link["size"] }})</span>
-          </div>
-        </div>
-      </li>      {% endfor %}
-    </ul>
-  </div>
-  <div class="column-half">
-    <h3 class="heading-medium">Change-Only Updates</h3>
-    <ul>
-      {% for link in updatedDatasets %}
+      {% for link in datasets %}
       <li>
         <div style="margin-bottom:4%">
           <div style="float:left; margin-right:2%">

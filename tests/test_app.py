@@ -580,7 +580,6 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
-        assert " update)" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):
@@ -591,8 +590,7 @@ class TestNavigation:
         response = self.app.post('/data')
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Full Datasets" in content
-        assert "Change-Only Updates" in content
+        assert "Datasets" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_log_file_is_written_to(self, mock_backend_reponse):
@@ -612,7 +610,6 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
-        assert " update)" in content
         assert size_after > size_before
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
