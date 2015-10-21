@@ -643,14 +643,14 @@ class TestNavigation:
         response = self.app.get(URL_PREFIX + url)
         content = response.data.decode()
         assert response.status_code == 302
-        assert "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/" \
-               "overseas-ownership/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&amp;" \
-               "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20150918T133013Z&amp;" \
-               "X-Amz-Expires=900&amp;" \
-               "X-Amz-Credential=ABCDEFGHIJKLMNOPQRST%2F20150918%2Feu-central-1%2Fs3%2F" \
-               "aws4_request&amp;" \
-               "X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3" \
-               in content
+        assert (
+            app.config['AWS_BASE_URL'] +
+            "overseas/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&amp;"
+            "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20150918T133013Z&amp;"
+            "X-Amz-Expires=900&amp;"
+            "X-Amz-Credential=ABCDEFGHIJKLMNOPQRST%2F20150918%2Feu-central-1%2Fs3%2Faws4_request"
+            "&amp;X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3"
+            ) in content
 
     def test_get_cookies_page_success(self):
         response = self.app.get(URL_PREFIX + '/cookies')
