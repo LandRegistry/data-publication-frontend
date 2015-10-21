@@ -23,7 +23,6 @@ RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
 def index():
     return render_template('ood.html')
 
-
 @app.route('/cookies')
 def cookies():
     return render_template('cookies.html')
@@ -223,31 +222,30 @@ def get_data():
 
             # Check link is in valid format
             pattern = re.compile(r'OV+_[A-Za-z]+_20\d{2}_\d{2}.[A-Za-z]{3}')
-            pattern.match(link["Name"])
-            print (pattern.match(link["Name"]))
+            if pattern.match(link["Name"]):
 
-            # Split into a list of words and reorder the month and year
-            words = link["Name"].split("_")
-            # Display the month in name format
-            words[3] = MONTHS[int(words[3][:2]) - 1]
+                # Split into a list of words and reorder the month and year
+                words = link["Name"].split("_")
+                # Display the month in name format
+                words[3] = MONTHS[int(words[3][:2]) - 1]
 
-            amazon_attributes = extract_url_variables(link['URL'])
-            generated_url = url_for('hide_url', filename=link['Name'],
-                                    amazon_date=amazon_attributes['X-Amz-Date'],
-                                    link_duration=response_json['Link_Duration'],
-                                    credentials=amazon_attributes['X-Amz-Credential'],
-                                    signature=amazon_attributes['X-Amz-Signature'])
+                amazon_attributes = extract_url_variables(link['URL'])
+                generated_url = url_for('hide_url', filename=link['Name'],
+                                        amazon_date=amazon_attributes['X-Amz-Date'],
+                                        link_duration=response_json['Link_Duration'],
+                                        credentials=amazon_attributes['X-Amz-Credential'],
+                                        signature=amazon_attributes['X-Amz-Signature'])
 
-            if words[1].upper() == "FULL":
-                new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-                full_datasets.append({"filename": new_link, "url": generated_url,
-                                      "size": size(link["Size"], system=alternative)})
-            elif words[1].upper() == "UPDATE":
-                update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-                updated_datasets.append({"filename": update_link, "url": generated_url,
-                                         "size": size(link["Size"], system=alternative)})
-            else:
-                continue
+                if words[1].upper() == "FULL":
+                    new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
+                    full_datasets.append({"filename": new_link, "url": generated_url,
+                                          "size": size(link["Size"], system=alternative)})
+                elif words[1].upper() == "UPDATE":
+                    update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
+                    updated_datasets.append({"filename": update_link, "url": generated_url,
+                                             "size": size(link["Size"], system=alternative)})
+                else:
+                    continue
 
         duration = response_json['Link_Duration']
         minutes, seconds = divmod(duration, 60)
@@ -268,7 +266,6 @@ def hide_url(filename, amazon_date, link_duration, credentials, signature):
         "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}"
     return redirect(
         base_url.format(filename, amazon_date, int(link_duration), credentials, signature))
-
 
 def extract_url_variables(url):
     parts = url.split('?')
@@ -303,7 +300,6 @@ def format_session_info_for_audit(download_filename=None):
                                                and session['title'] == 'Other' else '')
     log_entry.append(session['first_name'])
     log_entry.append(session['last_name'])
-    log_entry.append(session['username'])
     log_entry.append("{}/{}/{}".format(session['day'], session['month'], session['year']))
     log_entry.append(session['company_name'] if 'company_name' in session
                                                 and session['user_type'] == 'Company' else '')

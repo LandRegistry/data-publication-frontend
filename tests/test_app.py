@@ -40,7 +40,6 @@ valid_pi_session_details = {
     'title': 'Dr',
     'first_name': 'first name',
     'last_name': 'last name',
-    'username': 'username',
     'day': 1,
     'month': 1,
     'year': datetime.date.today().year,
@@ -167,7 +166,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -187,7 +185,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -207,7 +204,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -226,7 +222,6 @@ class TestNavigation:
             title='Dr',
             first_name='',
             last_name='',
-            username='',
             day='',
             month='',
             year=''
@@ -234,7 +229,7 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
-        assert 'Username is required' in content
+        assert ' is required' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_personal_page_all_fields_other_title_valid(self):
@@ -246,7 +241,6 @@ class TestNavigation:
             other_title='Brigadier Sir',
             first_name='Alistair Gordon',
             last_name='Lethbridge-Stewart',
-            username='The Brig',
             day='22',
             month='11',
             year='1963'
@@ -266,7 +260,6 @@ class TestNavigation:
             other_title='',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -285,7 +278,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1063'
@@ -304,7 +296,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='3063'
@@ -323,7 +314,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='32',
             month='13',
             year='1963'
@@ -343,7 +333,6 @@ class TestNavigation:
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='29',
             month='2',
             year='1983'
@@ -361,8 +350,7 @@ class TestNavigation:
         response = self.app.post('/personal/validation', data=dict(
             title='Dr',
             first_name='John',
-            last_name='Smith',
-            username='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890',
+            last_name='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890',
             day='22',
             month='11',
             year='1063'

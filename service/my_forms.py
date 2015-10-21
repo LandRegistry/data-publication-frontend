@@ -1,5 +1,5 @@
 from flask_wtf import Form, RecaptchaField
-from wtforms import TextField, IntegerField, SelectField, RadioField
+from wtforms import TextField, IntegerField, SelectField, RadioField, HiddenField
 from wtforms.validators import ValidationError, Required, Length, NumberRange, Regexp
 
 import datetime
@@ -98,9 +98,6 @@ class PersonalForm(Form):
                           validators=[
                               Length(max=60),
                               Required(message="Last name/Family name is required")])
-    username = TextField('Username',
-                         validators=[
-                             Length(max=60), Required(message="Username is required")])
 
     current_year = datetime.date.today().year
     oldest_year = current_year - 125
@@ -167,6 +164,7 @@ class CompanyTelForm(TelForm):
 
 class TermsForm(Form):
     terms = TextField('',)
+    version = HiddenField('version',)
 
 class ReCaptchaForm(Form):
     captcha = RecaptchaField()
