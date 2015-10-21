@@ -54,3 +54,9 @@ GOOGLE_ANALYTICS_PROPERTY_ID = app.config['GOOGLE_ANALYTICS_PROPERTY_ID']
 @app.context_processor
 def inject_google_analytics():
     return {'ga_property_id': GOOGLE_ANALYTICS_PROPERTY_ID}
+
+URL_PREFIX = app.config['URL_PREFIX']
+
+@app.context_processor
+def inject_url_prefix():
+    return {'url_prefix': URL_PREFIX}

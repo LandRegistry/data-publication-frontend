@@ -11,6 +11,8 @@ recaptcha_public_key = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 do_recaptcha = os.environ.get('DO_RECAPTCHA')
 audit_log_file = os.environ.get('AUDIT_LOG_FILE')
 ga_property_id = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
+url_prefix = os.environ.get('URL_PREFIX')
+aws_base_url = os.environ.get('AWS_BASE_URL')
 
 CONFIG_DICT = {
     'DEBUG': False,
@@ -26,7 +28,9 @@ CONFIG_DICT = {
     'RECAPTCHA_PRIVATE_KEY': recaptcha_private_key,
     'DO_RECAPTCHA': do_recaptcha,
     'AUDIT_LOG_FILE': audit_log_file,
-    'GOOGLE_ANALYTICS_PROPERTY_ID': ga_property_id
+    'GOOGLE_ANALYTICS_PROPERTY_ID': ga_property_id,
+    'URL_PREFIX': url_prefix,
+    'AWS_BASE_URL': aws_base_url
 }
 
 settings = os.environ.get('SETTINGS')
