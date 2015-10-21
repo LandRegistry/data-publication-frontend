@@ -215,8 +215,7 @@ def get_data():
         # Get the link
         files = response_json['File_List']
 
-        full_datasets = []
-        updated_datasets = []
+        datasets = []
 
         for link in files:
 
@@ -238,12 +237,8 @@ def get_data():
 
                 if words[1].upper() == "FULL":
                     new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-                    full_datasets.append({"filename": new_link, "url": generated_url,
+                    datasets.append({"filename": new_link, "url": generated_url,
                                           "size": size(link["Size"], system=alternative)})
-                elif words[1].upper() == "UPDATE":
-                    update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-                    updated_datasets.append({"filename": update_link, "url": generated_url,
-                                             "size": size(link["Size"], system=alternative)})
                 else:
                     continue
 
@@ -251,8 +246,7 @@ def get_data():
         minutes, seconds = divmod(duration, 60)
         duration = "{} minute(s) {} second(s)".format(minutes, seconds)
 
-        return render_template('data.html', fullDatasets=full_datasets,
-                               updatedDatasets=updated_datasets, duration=duration)
+        return render_template('data.html', datasets=datasets, duration=duration)
     else:
         return redirect(url_for('terms'))
 
