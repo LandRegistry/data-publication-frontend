@@ -1,5 +1,5 @@
 from flask_wtf import Form, RecaptchaField
-from wtforms import TextField, IntegerField, SelectField, RadioField, HiddenField
+from wtforms import TextField, IntegerField, SelectField, RadioField
 from wtforms.validators import ValidationError, Required, Length, NumberRange, Regexp
 
 import datetime
@@ -164,7 +164,6 @@ class CompanyTelForm(TelForm):
 
 class TermsForm(Form):
     terms = TextField('',)
-    version = HiddenField('version',)
 
 class ReCaptchaForm(Form):
     captcha = RecaptchaField()
