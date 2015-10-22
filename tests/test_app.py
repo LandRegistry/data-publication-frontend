@@ -7,6 +7,7 @@ import requests
 import datetime
 from os import stat, remove
 import shutil
+from urllib.parse import quote_plus
 
 recaptcha_pass = {"success": True}
 recaptcha_fail = {"success": False}
@@ -44,13 +45,16 @@ valid_pi_session_details = {
     'month': 1,
     'year': datetime.date.today().year,
     'company_name': 'company name',
+    'personal_screen': 'Complete',
     'address_line_1': 'address line 1',
     'country': 'United Kingdom',
+    'address_screen': 'Complete',
     'landline': '0123456789',
     'email': 'person@email.com',
-    'terms_accepted': True
+    'tel_screen': 'Complete',
+    'recaptcha_result': 'pass',
+    'terms': 'accepted'
 }
-
 
 URL_PREFIX = app.config['URL_PREFIX']
 
@@ -58,6 +62,12 @@ URL_PREFIX = app.config['URL_PREFIX']
 class TestNavigation:
     def setup_method(self, method):
         self.app = app.test_client()
+
+    def test_error_page_for_non_existant_url(self):
+        response = self.app.get(URL_PREFIX + '/this_does_not_exist')
+        content = response.data.decode()
+        assert response.status_code == 404
+        assert '404: Not Found' in content
 
     def test_get_index_page_success(self):
         response = self.app.get(URL_PREFIX + '/')
@@ -387,7 +397,6 @@ class TestNavigation:
                   'country': 'United Kingdom'}
         response = self.app.post(URL_PREFIX + '/address/validation', data=params, follow_redirects=True)
         content = response.data.decode()
-        print(content)
         assert response.status_code == 200
         assert 'Enter your contact details' in content
 
@@ -558,12 +567,11 @@ class TestNavigation:
         assert 'Terms and conditions' in content
 
     def test_get_decline_terms_page(self):
-        decline_terms_session_details = valid_pi_session_details
-        decline_terms_session_details['terms_accepted'] = False
         with self.app as c:
             with c.session_transaction() as sess:
-                for key, val in decline_terms_session_details.items():
+                for key, val in valid_pi_session_details.items():
                     sess[key] = val
+                sess['terms'] = 'declined'
         response = self.app.get(URL_PREFIX + '/decline_terms', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -628,12 +636,12 @@ class TestNavigation:
 
     def test_hide_url_download_link(self):
         filename = 'OV_FULL_2015_08.zip'
-        amazon_date = '20150918T133013Z'
+        amazon_date = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
         link_duration = '900'
-        credentials = 'ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request'
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
         url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
-                                                     link_duration, credentials,
+                                                     link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
             with c.session_transaction() as sess:
@@ -642,14 +650,53 @@ class TestNavigation:
         response = self.app.get(URL_PREFIX + url)
         content = response.data.decode()
         assert response.status_code == 302
-        assert (
+        amazon_link = (
             app.config['AWS_BASE_URL'] +
-            "overseas/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&amp;"
-            "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20150918T133013Z&amp;"
-            "X-Amz-Expires=900&amp;"
-            "X-Amz-Credential=ABCDEFGHIJKLMNOPQRST%2F20150918%2Feu-central-1%2Fs3%2Faws4_request"
-            "&amp;X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3"
-            ) in content
+            "overseas/" + filename + "?X-Amz-SignedHeaders=host&amp;"
+            "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=" + amazon_date +
+            "&amp;X-Amz-Expires=" + link_duration + "&amp;X-Amz-Credential=" + credentials +
+            "&amp;X-Amz-Signature=" + signature
+        )
+        assert amazon_link in content
+
+    def test_hide_url_download_link_fail_missing_required_fields(self):
+        filename = 'OV_FULL_2015_08.zip'
+        amazon_date = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        link_duration = '900'
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, quote_plus(credentials),
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+                sess['terms'] = 'declined'
+        response = self.app.get(URL_PREFIX + url)
+        content = response.data.decode()
+        assert response.status_code == 302
+        assert URL_PREFIX + '/terms' in content
+
+    def test_hide_url_download_link__expired_link_redirect(self):
+        filename = 'OV_FULL_2015_08.zip'
+        link_duration = '900'
+        amazon_date = (datetime.datetime.utcnow() -
+                       datetime.timedelta(seconds=int(link_duration) + 1)
+                       ).strftime("%Y%m%dT%H%M%SZ")
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, quote_plus(credentials),
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+        response = self.app.get(URL_PREFIX + url)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'The timed download link you clicked has expired' in content
 
     def test_get_cookies_page_success(self):
         response = self.app.get(URL_PREFIX + '/cookies')
