@@ -46,7 +46,6 @@ valid_pi_session_details = {
     'company_name': 'company name',
     'address_line_1': 'address line 1',
     'country': 'United Kingdom',
-    'detected_country': 'United Kingdom',
     'landline': '0123456789',
     'email': 'person@email.com',
     'terms_accepted': True
