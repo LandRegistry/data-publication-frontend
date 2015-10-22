@@ -84,31 +84,11 @@ def address(address_form=None):
         if 'personal_screen' not in session :
             return redirect(url_for("personal"))
         address_form = AddressForm()
-        if 'country' not in session or session['country'] is '':
-            ip_address = request.remote_addr
 
-            # Use this code when running locally to get IP address
-#             my_ip_address = requests.get('http://www.telize.com/jsonip',
-#                                          timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-#             if my_ip_address.status_code == 200:
-#                 ip_address = my_ip_address.json()['ip']
-#             else:
-#                 ip_address = "81.128.179.58"
+        ip_address = request.remote_addr
 
-            session['ip_address'] = ip_address
+        session['ip_address'] = ip_address
 
-            try:
-                geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
-                                   timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-                if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
-                    address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
-                    session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
-                else:
-                    session['detected_country'] = '(Could not detect)'
-            except requests.exceptions.Timeout:
-                session['detected_country'] = '(Could not detect)'
-            except requests.exceptions.ConnectionError:
-                session['detected_country'] = '(Could not detect)'
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
@@ -308,7 +288,6 @@ def format_session_info_for_audit(download_filename=None):
     log_entry.append(session['region'] if 'region' in session else '')
     log_entry.append(session['postal_code'] if 'postal_code' in session else '')
     log_entry.append(session['country'])
-    log_entry.append(session['detected_country'] if 'detected_country' in session else '')
     log_entry.append(session['landline'] if 'landline' in session else '')
     log_entry.append(session['mobile'] if 'mobile' in session else '')
     log_entry.append(session['email'])
