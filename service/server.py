@@ -81,7 +81,7 @@ def validate_personal_details():
 @app.route(URL_PREFIX + '/address')
 def address(address_form=None):
     if address_form is None:
-        if 'personal_screen' not in session :
+        if 'personal_screen' not in session:
             return redirect(url_for("personal"))
         address_form = AddressForm()
 
@@ -179,15 +179,16 @@ def printable_terms():
 
 @app.route(URL_PREFIX + '/decline_terms')
 def decline_terms():
-    session['terms_accepted'] = False
+    session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
 @app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
 @app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
 def get_data():
-    if request.method == 'POST':
-        session['terms_accepted'] = True
+    if request.method == 'POST' or ('terms' in session
+                                    and session['terms'] == 'accepted'):
+        session['terms'] = 'accepted'
 
         logger.audit(format_session_info_for_audit())
 
@@ -210,14 +211,12 @@ def get_data():
                 words = link["Name"].split("_")
                 # Display the month in name format
                 words[3] = MONTHS[int(words[3][:2]) - 1]
-
                 amazon_attributes = extract_url_variables(link['URL'])
                 generated_url = url_for('hide_url', filename=link['Name'],
                                         amazon_date=amazon_attributes['X-Amz-Date'],
                                         link_duration=response_json['Link_Duration'],
                                         credentials=amazon_attributes['X-Amz-Credential'],
                                         signature=amazon_attributes['X-Amz-Signature'])
-
                 if words[1].upper() == "FULL":
                     new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
                     datasets.append({"filename": new_link, "url": generated_url,
@@ -225,7 +224,7 @@ def get_data():
                 else:
                     continue
 
-        duration = response_json['Link_Duration']
+        duration = response_json['Link_Duration'] - 1
         minutes, seconds = divmod(duration, 60)
         duration = "{} minute(s) {} second(s)".format(minutes, seconds)
 
@@ -233,13 +232,29 @@ def get_data():
     else:
         return redirect(url_for('terms'))
 
+
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
+    if ('user_type' not in session
+            or 'personal_screen' not in session
+            or 'address_screen' not in session
+            or 'tel_screen' not in session
+            or 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail'
+            or 'terms' not in session or session['terms'] != 'accepted'):
+        return redirect(url_for('terms'))
+
+    expiry_date = (datetime.datetime.strptime(amazon_date, "%Y%m%dT%H%M%SZ")
+                   + datetime.timedelta(seconds=int(link_duration)))
+
+    if datetime.datetime.utcnow() >= expiry_date:
+        return render_template('download_expired.html', url_prefix=URL_PREFIX)
+
     logger.audit(format_session_info_for_audit(download_filename=filename))
     base_url = (
         "{}overseas/{}?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}"
         "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}")
+
     return redirect(
         base_url.format(app.config['AWS_BASE_URL'], filename, amazon_date, int(link_duration),
                         credentials, signature))
@@ -291,7 +306,7 @@ def format_session_info_for_audit(download_filename=None):
     log_entry.append(session['landline'] if 'landline' in session else '')
     log_entry.append(session['mobile'] if 'mobile' in session else '')
     log_entry.append(session['email'])
-    log_entry.append(str(session['terms_accepted']))
+    log_entry.append(session['terms'])
     log_entry.append(download_filename if download_filename else '')
     return "\"{}\"".format("\",\"".join(log_entry))
 
