@@ -36,6 +36,9 @@ def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
         populate_form(usertype_form)
+
+        ip_address = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+        session['ip_address'] = ip_address
     return render_template('usertype.html', form=usertype_form)
 
 
@@ -84,11 +87,6 @@ def address(address_form=None):
         if 'personal_screen' not in session:
             return redirect(url_for("personal"))
         address_form = AddressForm()
-
-        ip_address = request.remote_addr
-
-        session['ip_address'] = ip_address
-
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
