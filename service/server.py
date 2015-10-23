@@ -9,26 +9,29 @@ import json
 from hurry.filesize import size, alternative
 import datetime
 import uuid
+import re
 
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
 
+URL_PREFIX = app.config['URL_PREFIX']
+
 RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
 
-@app.route('/')
-@app.route('/index.htm')
-@app.route('/index.html')
+@app.route(URL_PREFIX + '/')
+@app.route(URL_PREFIX + '/index.htm')
+@app.route(URL_PREFIX + '/index.html')
 def index():
     return render_template('ood.html')
 
 
-@app.route('/cookies')
+@app.route(URL_PREFIX + '/cookies')
 def cookies():
     return render_template('cookies.html')
 
-@app.route('/usertype/')
-@app.route('/usertype')
+@app.route(URL_PREFIX + '/usertype/')
+@app.route(URL_PREFIX + '/usertype')
 def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
@@ -36,7 +39,7 @@ def user_type(usertype_form=None):
     return render_template('usertype.html', form=usertype_form)
 
 
-@app.route('/usertype/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/usertype/validation', methods=['POST'])
 def validate_usertype_details():
     usertype_form = UserTypeForm()
     populate_session(usertype_form)
@@ -46,8 +49,8 @@ def validate_usertype_details():
         return redirect(url_for("personal"))
     return user_type(usertype_form)
 
-@app.route('/personal/')
-@app.route('/personal')
+@app.route(URL_PREFIX + '/personal/')
+@app.route(URL_PREFIX + '/personal')
 def personal(personal_form=None):
     if personal_form is None:
         if 'user_type' not in session:
@@ -60,7 +63,7 @@ def personal(personal_form=None):
     return render_template("personal.html", form=personal_form)
 
 
-@app.route('/personal/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/personal/validation', methods=['POST'])
 def validate_personal_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -74,43 +77,23 @@ def validate_personal_details():
         return redirect(url_for("address"))
     return personal(personal_form)
 
-@app.route('/address/')
-@app.route('/address')
+@app.route(URL_PREFIX + '/address/')
+@app.route(URL_PREFIX + '/address')
 def address(address_form=None):
     if address_form is None:
-        if 'personal_screen' not in session :
+        if 'personal_screen' not in session:
             return redirect(url_for("personal"))
         address_form = AddressForm()
-        if 'country' not in session or session['country'] is '':
-            ip_address = request.remote_addr
 
-            # Use this code when running locally to get IP address
-#             my_ip_address = requests.get('http://www.telize.com/jsonip',
-#                                          timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-#             if my_ip_address.status_code == 200:
-#                 ip_address = my_ip_address.json()['ip']
-#             else:
-#                 ip_address = "81.128.179.58"
+        ip_address = request.remote_addr
 
-            session['ip_address'] = ip_address
+        session['ip_address'] = ip_address
 
-            try:
-                geo = requests.get(app.config['COUNTRY_LOOKUP_URL'].format(ip_address),
-                                   timeout=app.config['COUNTRY_LOOKUP_TIMEOUT_SECONDS'])
-                if geo.status_code == 200 and app.config['COUNTRY_LOOKUP_FIELD_ID'] in geo.json():
-                    address_form.country.data = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
-                    session['detected_country'] = geo.json()[app.config['COUNTRY_LOOKUP_FIELD_ID']]
-                else:
-                    session['detected_country'] = '(Could not detect)'
-            except requests.exceptions.Timeout:
-                session['detected_country'] = '(Could not detect)'
-            except requests.exceptions.ConnectionError:
-                session['detected_country'] = '(Could not detect)'
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
 
-@app.route('/address/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/address/validation', methods=['POST'])
 def validate_address_details():
     address_form = AddressForm()
     populate_session(address_form)
@@ -119,8 +102,8 @@ def validate_address_details():
         return redirect(url_for("tel"))
     return address(address_form)
 
-@app.route('/tel/')
-@app.route('/tel')
+@app.route(URL_PREFIX + '/tel/')
+@app.route(URL_PREFIX + '/tel')
 def tel(tel_form=None):
     if tel_form is None:
         if 'address_screen' not in session:
@@ -133,7 +116,7 @@ def tel(tel_form=None):
     return render_template('tel.html', form=tel_form)
 
 
-@app.route('/tel/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/tel/validation', methods=['POST'])
 def validate_telephone_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -147,18 +130,19 @@ def validate_telephone_details():
         return redirect(url_for('recaptcha'))
     return tel(tel_form)
 
-@app.route('/recaptcha/')
-@app.route('/recaptcha')
+@app.route(URL_PREFIX + '/recaptcha/')
+@app.route(URL_PREFIX + '/recaptcha')
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
         if 'tel_screen' not in session:
             return redirect(url_for('tel'))
         recaptcha_form = ReCaptchaForm()
         populate_form(recaptcha_form)
-    return render_template('recaptcha.html', form=recaptcha_form)
+    return render_template('recaptcha.html', form=recaptcha_form,
+                           recaptcha_public_key=app.config['RECAPTCHA_PUBLIC_KEY'])
 
 
-@app.route('/recaptcha/validation', methods=['POST'])
+@app.route(URL_PREFIX + '/recaptcha/validation', methods=['POST'])
 def validate_recaptcha():
     if app.config['DO_RECAPTCHA'] == 'False':
         session['recaptcha_result'] = 'pass'
@@ -171,8 +155,8 @@ def validate_recaptcha():
     session['recaptcha_result'] = 'fail'
     return recaptcha(recaptcha_form)
 
-@app.route('/terms/')
-@app.route('/terms')
+@app.route(URL_PREFIX + '/terms/')
+@app.route(URL_PREFIX + '/terms')
 def terms(terms_form=None):
     if terms_form is None:
         if 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail':
@@ -184,8 +168,8 @@ def terms(terms_form=None):
     f.close()
     return render_template('terms.html', form=terms_form, text=data)
 
-@app.route('/printable_terms/')
-@app.route('/printable_terms')
+@app.route(URL_PREFIX + '/printable_terms/')
+@app.route(URL_PREFIX + '/printable_terms')
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
     data = f.read()
@@ -193,71 +177,87 @@ def printable_terms():
     return render_template('terms_printer_friendly.html', text=data)
 
 
-@app.route('/decline_terms')
+@app.route(URL_PREFIX + '/decline_terms')
 def decline_terms():
-    session['terms_accepted'] = False
+    session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-@app.route('/data/', methods=['GET', 'POST'])
-@app.route('/data', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
 def get_data():
-    if request.method == 'POST':
-        session['terms_accepted'] = True
+    if request.method == 'POST' or ('terms' in session
+                                    and session['terms'] == 'accepted'):
+        session['terms'] = 'accepted'
 
         logger.audit(format_session_info_for_audit())
 
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
-                                "/list-files/overseas-ownership")
+                                "/list-files/overseas")
         response_json = response.json()
 
         # Get the link
         files = response_json['File_List']
 
-        full_datasets = []
-        updated_datasets = []
+        datasets = []
 
         for link in files:
-            # Split into a list of words and reorder the month and year
-            words = link["Name"].split("_")
-            # Display the month in name format
-            words[3] = MONTHS[int(words[3][:2]) - 1]
 
-            amazon_attributes = extract_url_variables(link['URL'])
-            generated_url = url_for('hide_url', filename=link['Name'],
-                                    amazon_date=amazon_attributes['X-Amz-Date'],
-                                    link_duration=response_json['Link_Duration'],
-                                    credentials=amazon_attributes['X-Amz-Credential'],
-                                    signature=amazon_attributes['X-Amz-Signature'])
+            # Check link is in valid format
+            pattern = re.compile(r'OV+_[A-Za-z]+_20\d{2}_\d{2}.[A-Za-z]{3}')
+            if pattern.match(link["Name"]):
 
-            if words[1] == "FULL":
-                new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
-                full_datasets.append({"filename": new_link, "url": generated_url,
-                                      "size": size(link["Size"], system=alternative)})
-            else:
-                update_link = "Overseas Dataset (" + words[3] + " " + words[2] + " update)"
-                updated_datasets.append({"filename": update_link, "url": generated_url,
-                                         "size": size(link["Size"], system=alternative)})
+                # Split into a list of words and reorder the month and year
+                words = link["Name"].split("_")
+                # Display the month in name format
+                words[3] = MONTHS[int(words[3][:2]) - 1]
+                amazon_attributes = extract_url_variables(link['URL'])
+                generated_url = url_for('hide_url', filename=link['Name'],
+                                        amazon_date=amazon_attributes['X-Amz-Date'],
+                                        link_duration=response_json['Link_Duration'],
+                                        credentials=amazon_attributes['X-Amz-Credential'],
+                                        signature=amazon_attributes['X-Amz-Signature'])
+                if words[1].upper() == "FULL":
+                    new_link = "Overseas Dataset (" + words[3] + " " + words[2] + ")"
+                    datasets.append({"filename": new_link, "url": generated_url,
+                                          "size": size(link["Size"], system=alternative)})
+                else:
+                    continue
 
-        duration = response_json['Link_Duration']
+        duration = response_json['Link_Duration'] - 1
         minutes, seconds = divmod(duration, 60)
         duration = "{} minute(s) {} second(s)".format(minutes, seconds)
 
-        return render_template('data.html', fullDatasets=full_datasets,
-                               updatedDatasets=updated_datasets, duration=duration)
+        return render_template('data.html', datasets=datasets, duration=duration)
     else:
         return redirect(url_for('terms'))
 
-@app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
-@app.route('/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
+
+@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
+@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
+    if ('user_type' not in session
+            or 'personal_screen' not in session
+            or 'address_screen' not in session
+            or 'tel_screen' not in session
+            or 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail'
+            or 'terms' not in session or session['terms'] != 'accepted'):
+        return redirect(url_for('terms'))
+
+    expiry_date = (datetime.datetime.strptime(amazon_date, "%Y%m%dT%H%M%SZ")
+                   + datetime.timedelta(seconds=int(link_duration)))
+
+    if datetime.datetime.utcnow() >= expiry_date:
+        return render_template('download_expired.html', url_prefix=URL_PREFIX)
+
     logger.audit(format_session_info_for_audit(download_filename=filename))
-    base_url = \
-        "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/overseas-ownership/{}" \
-        "?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}" \
-        "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}"
+    base_url = (
+        "{}overseas/{}?X-Amz-SignedHeaders=host&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date={}"
+        "&X-Amz-Expires={}&X-Amz-Credential={}&X-Amz-Signature={}")
+
     return redirect(
-        base_url.format(filename, amazon_date, int(link_duration), credentials, signature))
+        base_url.format(app.config['AWS_BASE_URL'], filename, amazon_date, int(link_duration),
+                        credentials, signature))
 
 
 def extract_url_variables(url):
@@ -293,7 +293,6 @@ def format_session_info_for_audit(download_filename=None):
                                                and session['title'] == 'Other' else '')
     log_entry.append(session['first_name'])
     log_entry.append(session['last_name'])
-    log_entry.append(session['username'])
     log_entry.append("{}/{}/{}".format(session['day'], session['month'], session['year']))
     log_entry.append(session['company_name'] if 'company_name' in session
                                                 and session['user_type'] == 'Company' else '')
@@ -304,11 +303,10 @@ def format_session_info_for_audit(download_filename=None):
     log_entry.append(session['region'] if 'region' in session else '')
     log_entry.append(session['postal_code'] if 'postal_code' in session else '')
     log_entry.append(session['country'])
-    log_entry.append(session['detected_country'] if 'detected_country' in session else '')
     log_entry.append(session['landline'] if 'landline' in session else '')
     log_entry.append(session['mobile'] if 'mobile' in session else '')
     log_entry.append(session['email'])
-    log_entry.append(str(session['terms_accepted']))
+    log_entry.append(session['terms'])
     log_entry.append(download_filename if download_filename else '')
     return "\"{}\"".format("\",\"".join(log_entry))
 

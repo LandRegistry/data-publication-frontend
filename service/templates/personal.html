@@ -8,9 +8,9 @@
     <div id="global-breadcrumb" class="header-context column-three-quarters">
       <nav role="navigation" class="expand-top-half expand-bottom-half">
         <ol class="group">
-          <li><a href="/" id="details">Dataset Details</a></li>
-          <li><a href="/usertype" id="usertype">User type</a></li>
-          <li><a href="/personal" id="personal">Personal details</a></li>
+          <li><a href="{{ url_prefix }}/" id="details">Dataset Details</a></li>
+          <li><a href="{{ url_prefix }}/usertype" id="usertype">User type</a></li>
+          <li><a href="{{ url_prefix }}/personal" id="personal">Personal details</a></li>
         </ol>
       </nav>
     </div>
@@ -20,7 +20,7 @@
   <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 2 of 7</span>Enter name and title</h2>
 
-  <form action="/personal/validation" method="POST">
+  <form action="{{ url_prefix }}/personal/validation" method="POST">
     {{ form.csrf_token }}
     {% if 'user_type' in session and session['user_type'] == 'Company' %}
     <div class="form-group{% if form.company_name.errors %} error{% endif %}">
@@ -64,14 +64,6 @@
       <br/>
       {% for error in form.last_name.errors %}
         <span class="error-message">{{ error }}</span>
-      {% endfor %}
-    </div>
-    <div class="form-group{% if form.username.errors %} error{% endif %}">
-      {{ form.username.label(class_="form-label") }}
-      {{ form.username(class_="form-control") }}
-      <br/>
-      {% for error in form.username.errors %}
-      <span class="error-message">{{ error }}</span>
       {% endfor %}
     </div>
     <div class="form-group{% if form.day.errors or form.month.errors or form.year.errors %} error{% endif %}">

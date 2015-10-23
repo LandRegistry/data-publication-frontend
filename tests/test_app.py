@@ -7,6 +7,7 @@ import requests
 import datetime
 from os import stat, remove
 import shutil
+from urllib.parse import quote_plus
 
 recaptcha_pass = {"success": True}
 recaptcha_fail = {"success": False}
@@ -40,26 +41,36 @@ valid_pi_session_details = {
     'title': 'Dr',
     'first_name': 'first name',
     'last_name': 'last name',
-    'username': 'username',
     'day': 1,
     'month': 1,
     'year': datetime.date.today().year,
     'company_name': 'company name',
+    'personal_screen': 'Complete',
     'address_line_1': 'address line 1',
     'country': 'United Kingdom',
-    'detected_country': 'United Kingdom',
+    'address_screen': 'Complete',
     'landline': '0123456789',
     'email': 'person@email.com',
-    'terms_accepted': True
+    'tel_screen': 'Complete',
+    'recaptcha_result': 'pass',
+    'terms': 'accepted'
 }
+
+URL_PREFIX = app.config['URL_PREFIX']
 
 
 class TestNavigation:
     def setup_method(self, method):
         self.app = app.test_client()
 
+    def test_error_page_for_non_existant_url(self):
+        response = self.app.get(URL_PREFIX + '/this_does_not_exist')
+        content = response.data.decode()
+        assert response.status_code == 404
+        assert '404: Not Found' in content
+
     def test_get_index_page_success(self):
-        response = self.app.get('/')
+        response = self.app.get(URL_PREFIX + '/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -69,21 +80,21 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get('/recaptcha')
+        response = self.app.get(URL_PREFIX + '/recaptcha')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'reCAPTCHA Check' in content
 
     def test_get_usertype_page_success(self):
-        response = self.app.get('/usertype')
+        response = self.app.get(URL_PREFIX + '/usertype')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_personal_page_directly_success(self):
-        response = self.app.get('/personal', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/personal', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -93,7 +104,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.get('/personal')
+        response = self.app.get(URL_PREFIX + '/personal')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -103,7 +114,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.get('/personal')
+        response = self.app.get(URL_PREFIX + '/personal')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -114,14 +125,14 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get('/address')
+        response = self.app.get(URL_PREFIX + '/address')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Company address details' in content
 
     def test_get_personal_page_pi_success(self):
-        response = self.app.post('/usertype/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/usertype/validation', data=dict(
             user_type='Private individual'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -130,7 +141,7 @@ class TestNavigation:
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_personal_page_company_success(self):
-        response = self.app.post('/usertype/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/usertype/validation', data=dict(
             user_type='Company'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -139,7 +150,7 @@ class TestNavigation:
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_personal_page_no_selection_success(self):
-        response = self.app.post('/usertype/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/usertype/validation', data=dict(
             user_type=''), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -153,7 +164,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get('/address')
+        response = self.app.get(URL_PREFIX + '/address')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -163,11 +174,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -182,12 +192,11 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             company_name='UNIT',
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -202,12 +211,11 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             company_name='',
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -222,11 +230,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='',
             last_name='',
-            username='',
             day='',
             month='',
             year=''
@@ -234,19 +241,18 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
-        assert 'Username is required' in content
+        assert ' is required' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_personal_page_all_fields_other_title_valid(self):
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Other',
             other_title='Brigadier Sir',
             first_name='Alistair Gordon',
             last_name='Lethbridge-Stewart',
-            username='The Brig',
             day='22',
             month='11',
             year='1963'
@@ -261,12 +267,11 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Other',
             other_title='',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1963'
@@ -281,11 +286,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='1063'
@@ -300,11 +304,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='22',
             month='11',
             year='3063'
@@ -319,11 +322,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='32',
             month='13',
             year='1963'
@@ -339,11 +341,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
             last_name='Smith',
-            username='The Doctor',
             day='29',
             month='2',
             year='1983'
@@ -358,11 +359,10 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/personal/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/personal/validation', data=dict(
             title='Dr',
             first_name='John',
-            last_name='Smith',
-            username='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890',
+            last_name='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890',
             day='22',
             month='11',
             year='1063'
@@ -374,7 +374,7 @@ class TestNavigation:
         assert 'Overseas Ownership Dataset' in content
 
     def test_address_page_all_fields_blank(self):
-        response = self.app.post('/address/validation')
+        response = self.app.post(URL_PREFIX + '/address/validation')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Address line 1 is required' in content
@@ -384,7 +384,7 @@ class TestNavigation:
         params = {'address_line_1': 'A house name',
                   'address_line_2': ''.join(['a'] * 61),
                   'country': 'United Kingdom'}
-        response = self.app.post('/address/validation', data=params)
+        response = self.app.post(URL_PREFIX + '/address/validation', data=params)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Field cannot be longer than 60 characters.' in content
@@ -395,14 +395,13 @@ class TestNavigation:
                 sess['user_type'] = 'Private individual'
         params = {'address_line_1': 'A house name',
                   'country': 'United Kingdom'}
-        response = self.app.post('/address/validation', data=params, follow_redirects=True)
+        response = self.app.post(URL_PREFIX + '/address/validation', data=params, follow_redirects=True)
         content = response.data.decode()
-        print(content)
         assert response.status_code == 200
         assert 'Enter your contact details' in content
 
     def test_get_contact_page_directly_success(self):
-        response = self.app.get('/tel', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/tel', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -413,7 +412,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get('/tel')
+        response = self.app.get(URL_PREFIX + '/tel')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -425,7 +424,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get('/tel')
+        response = self.app.get(URL_PREFIX + '/tel')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -436,7 +435,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='01725221163',
             mobile='07895223141',
             email='1963@hotmail.com'
@@ -449,7 +448,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='',
             mobile='07895123445',
             email='1963@hotmail.com'
@@ -462,7 +461,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='01725221163',
             mobile='',
             email='1963@hotmail.com'
@@ -475,7 +474,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='',
             mobile='07895332244',
             email='1963@hotmail.com'
@@ -488,7 +487,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='',
             mobile='',
             email='1963@hotmail.com'
@@ -501,7 +500,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='01917675432',
             mobile='07896543213',
             email=''
@@ -514,7 +513,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='01917675432',
             mobile='07896543213',
             email='mickeymouseclubhouse.disney.com'
@@ -527,7 +526,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.post('/tel/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/tel/validation', data=dict(
             landline='01917675432',
             mobile='07896543213',
             email='abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890@disney.com'
@@ -537,7 +536,7 @@ class TestNavigation:
         assert "Field cannot be longer than 60 characters." in content
 
     #    def test_validate_recaptcha_pass(self):
-    #        response = self.app.post('/recaptcha/validation', data=dict(
+    #        response = self.app.post(URL_PREFIX + '/recaptcha/validation', data=dict(
     #            recaptcha_form = 'ReCaptchaForm'
     #            ), follow_redirects=True)
     #        content = response.data.decode()
@@ -545,7 +544,7 @@ class TestNavigation:
     #        assert "Terms and conditions" in content
 
     def test_validate_recaptcha_fail(self):
-        response = self.app.post('/recaptcha/validation', data=dict(
+        response = self.app.post(URL_PREFIX + '/recaptcha/validation', data=dict(
             recaptcha_result='fail'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
@@ -555,26 +554,25 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'pass'
-        response = self.app.get('/terms')
+        response = self.app.get(URL_PREFIX + '/terms')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Terms and conditions' in content
 
     def test_get_printable_terms_page_success(self):
-        response = self.app.get('/printable_terms')
+        response = self.app.get(URL_PREFIX + '/printable_terms')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Terms and conditions' in content
 
     def test_get_decline_terms_page(self):
-        decline_terms_session_details = valid_pi_session_details
-        decline_terms_session_details['terms_accepted'] = False
         with self.app as c:
             with c.session_transaction() as sess:
-                for key, val in decline_terms_session_details.items():
+                for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.get('/decline_terms', follow_redirects=True)
+                sess['terms'] = 'declined'
+        response = self.app.get(URL_PREFIX + '/decline_terms', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -587,12 +585,11 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post('/data')
+        response = self.app.post(URL_PREFIX + '/data')
         app.config['LOGGING'] = False
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
-        assert " update)" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(no_files))))
     def test_get_datasets_success_no_files(self, mock_backend_reponse):
@@ -600,11 +597,10 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post('/data')
+        response = self.app.post(URL_PREFIX + '/data')
         content = response.data.decode()
         assert response.status_code == 200
-        assert "Full Datasets" in content
-        assert "Change-Only Updates" in content
+        assert "Datasets" in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_log_file_is_written_to(self, mock_backend_reponse):
@@ -616,7 +612,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post('/data')
+        response = self.app.post(URL_PREFIX + '/data')
         app.config['LOGGING'] = False
         size_after = stat(app.config['AUDIT_LOG_FILE']).st_size
         shutil.copy("{}.backup".format(app.config['AUDIT_LOG_FILE']), app.config['AUDIT_LOG_FILE'])
@@ -624,7 +620,6 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
-        assert " update)" in content
         assert size_after > size_before
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
@@ -633,7 +628,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'fail'
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get('/data', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/data', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -641,31 +636,70 @@ class TestNavigation:
 
     def test_hide_url_download_link(self):
         filename = 'OV_FULL_2015_08.zip'
-        amazon_date = '20150918T133013Z'
+        amazon_date = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
         link_duration = '900'
-        credentials = 'ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request'
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
         url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
-                                                     link_duration, credentials,
+                                                     link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.get(url)
+        response = self.app.get(URL_PREFIX + url)
         content = response.data.decode()
         assert response.status_code == 302
-        assert "https://s3.eu-central-1.amazonaws.com/data.landregistry.gov.uk/" \
-               "overseas-ownership/OV_FULL_2015_08.zip?X-Amz-SignedHeaders=host&amp;" \
-               "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20150918T133013Z&amp;" \
-               "X-Amz-Expires=900&amp;" \
-               "X-Amz-Credential=ABCDEFGHIJKLMNOPQRST%2F20150918%2Feu-central-1%2Fs3%2F" \
-               "aws4_request&amp;" \
-               "X-Amz-Signature=227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3" \
-               in content
+        amazon_link = (
+            app.config['AWS_BASE_URL'] +
+            "overseas/" + filename + "?X-Amz-SignedHeaders=host&amp;"
+            "X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=" + amazon_date +
+            "&amp;X-Amz-Expires=" + link_duration + "&amp;X-Amz-Credential=" + credentials +
+            "&amp;X-Amz-Signature=" + signature
+        )
+        assert amazon_link in content
+
+    def test_hide_url_download_link_fail_missing_required_fields(self):
+        filename = 'OV_FULL_2015_08.zip'
+        amazon_date = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        link_duration = '900'
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, quote_plus(credentials),
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+                sess['terms'] = 'declined'
+        response = self.app.get(URL_PREFIX + url)
+        content = response.data.decode()
+        assert response.status_code == 302
+        assert URL_PREFIX + '/terms' in content
+
+    def test_hide_url_download_link__expired_link_redirect(self):
+        filename = 'OV_FULL_2015_08.zip'
+        link_duration = '900'
+        amazon_date = (datetime.datetime.utcnow() -
+                       datetime.timedelta(seconds=int(link_duration) + 1)
+                       ).strftime("%Y%m%dT%H%M%SZ")
+        credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
+        signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
+        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+                                                     link_duration, quote_plus(credentials),
+                                                     signature)
+        with self.app as c:
+            with c.session_transaction() as sess:
+                for key, val in valid_pi_session_details.items():
+                    sess[key] = val
+        response = self.app.get(URL_PREFIX + url)
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert 'The timed download link you clicked has expired' in content
 
     def test_get_cookies_page_success(self):
-        response = self.app.get('/cookies')
+        response = self.app.get(URL_PREFIX + '/cookies')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Cookies' in content

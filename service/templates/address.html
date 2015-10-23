@@ -7,10 +7,10 @@
     <div id="global-breadcrumb" class="header-context column-three-quarters">
       <nav role="navigation" class="expand-top-half expand-bottom-half">
         <ol class="group">
-          <li><a href="/" id="details">Dataset Details</a></li>
-          <li><a href="/usertype" id="usertype">User type</a></li>
-          <li><a href="/personal" id="personal">Personal details</a></li>
-          <li><a href="/address" id="address">Address</a></li>
+          <li><a href="{{ url_prefix }}/" id="details">Dataset Details</a></li>
+          <li><a href="{{ url_prefix }}/usertype" id="usertype">User type</a></li>
+          <li><a href="{{ url_prefix }}/personal" id="personal">Personal details</a></li>
+          <li><a href="{{ url_prefix }}/address" id="address">Address</a></li>
         </ol>
       </nav>
     </div>
@@ -24,7 +24,7 @@
   <h2 class="heading-large"><span class="heading-secondary">Step 3 of 7</span>Address details</h2>
   {% endif %}
 
-  <form action="/address/validation" method="post">
+  <form action="{{ url_prefix }}/address/validation" method="post">
     {{ form.csrf_token }}
     <fieldset>
       <div class="form-group{% if form.address_line_1.errors %} error{% endif %}">

@@ -7,14 +7,14 @@
   <div id="global-breadcrumb" class="header-context column-three-quarters">
     <nav role="navigation" class="expand-top-half expand-bottom-half">
       <ol class="group">
-        <li><a href="/" id="details">Dataset Details</a></li>
-        <li><a href="/usertype" id="usertype">User type</a></li>
-        <li><a href="/personal" id="personal">Personal details</a></li>
-        <li><a href="/address" id="address">Address</a></li>
-        <li><a href="/tel" id="contact">Contact Details</a></li>
-        <li><a href="/recaptcha" id="recaptcha">reCAPTCHA Check</a></li>
-        <li><a href="/terms" id="terms">Terms and conditions</a></li>
-        <li><a href="/data" id="download">Dataset Download</a></li>
+        <li><a href="{{ url_prefix }}/" id="details">Dataset Details</a></li>
+        <li><a href="{{ url_prefix }}/usertype" id="usertype">User type</a></li>
+        <li><a href="{{ url_prefix }}/personal" id="personal">Personal details</a></li>
+        <li><a href="{{ url_prefix }}/address" id="address">Address</a></li>
+        <li><a href="{{ url_prefix }}/tel" id="contact">Contact Details</a></li>
+        <li><a href="{{ url_prefix }}/recaptcha" id="recaptcha">reCAPTCHA Check</a></li>
+        <li><a href="{{ url_prefix }}/terms" id="terms">Terms and conditions</a></li>
+        <li><a href="{{ url_prefix }}/data" id="download">Dataset Download</a></li>
       </ol>
     </nav>
   </div>
@@ -29,34 +29,16 @@
 <div id="valid-link-message">Please note that these download links will only remain valid for <span id="duration">{{ duration }}</span>.</div>
 <div class="grid-row">
   <div class="column-half">
-    <h3 class="heading-medium">Full Datasets</h3>
+    <h3 class="heading-medium">Datasets</h3>
     <ul>
-      {% for link in fullDatasets %}
+      {% for link in datasets %}
       <li>
         <div style="margin-bottom:4%">
           <div style="float:left; margin-right:2%">
             <span class="icon icon-download" title="download"></span>
           </div>
           <div>
-            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
-            <br/>
-            <span class="text-secondary">({{ link["size"] }})</span>
-          </div>
-        </div>
-      </li>      {% endfor %}
-    </ul>
-  </div>
-  <div class="column-half">
-    <h3 class="heading-medium">Change-Only Updates</h3>
-    <ul>
-      {% for link in updatedDatasets %}
-      <li>
-        <div style="margin-bottom:4%">
-          <div style="float:left; margin-right:2%">
-            <span class="icon icon-download" title="download"></span>
-          </div>
-          <div>
-            <a href='{{ link["url"] }}'>{{ link["filename"] }}</a>
+            <a href='{{ link["url"] }}' onClick="ga('send', 'event', { eventCategory: 'Dataset', eventAction: 'Download', eventLabel: '{{ link['filename'] }}'});">{{ link["filename"] }}</a>
             <br/>
             <span class="text-secondary">({{ link["size"] }})</span>
           </div>

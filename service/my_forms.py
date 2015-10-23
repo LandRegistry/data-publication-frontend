@@ -98,9 +98,6 @@ class PersonalForm(Form):
                           validators=[
                               Length(max=60),
                               Required(message="Last name/Family name is required")])
-    username = TextField('Username',
-                         validators=[
-                             Length(max=60), Required(message="Username is required")])
 
     current_year = datetime.date.today().year
     oldest_year = current_year - 125
