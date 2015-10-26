@@ -23,19 +23,24 @@ URL_PREFIX = app.config['URL_PREFIX']
 
 RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
 
+
 @app.route(URL_PREFIX + '/')
 @app.route(URL_PREFIX + '/index.htm')
 @app.route(URL_PREFIX + '/index.html')
+@logger.start_stop_logging
 def index():
     return render_template('ood.html')
 
 
 @app.route(URL_PREFIX + '/cookies')
+@logger.start_stop_logging
 def cookies():
     return render_template('cookies.html')
 
+
 @app.route(URL_PREFIX + '/usertype/')
 @app.route(URL_PREFIX + '/usertype')
+@logger.start_stop_logging
 def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
@@ -47,6 +52,7 @@ def user_type(usertype_form=None):
 
 
 @app.route(URL_PREFIX + '/usertype/validation', methods=['POST'])
+@logger.start_stop_logging
 def validate_usertype_details():
     usertype_form = UserTypeForm()
     populate_session(usertype_form)
@@ -58,6 +64,7 @@ def validate_usertype_details():
 
 @app.route(URL_PREFIX + '/personal/')
 @app.route(URL_PREFIX + '/personal')
+@logger.start_stop_logging
 def personal(personal_form=None):
     if personal_form is None:
         if 'user_type' not in session:
@@ -71,6 +78,7 @@ def personal(personal_form=None):
 
 
 @app.route(URL_PREFIX + '/personal/validation', methods=['POST'])
+@logger.start_stop_logging
 def validate_personal_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -86,6 +94,7 @@ def validate_personal_details():
 
 @app.route(URL_PREFIX + '/address/')
 @app.route(URL_PREFIX + '/address')
+@logger.start_stop_logging
 def address(address_form=None):
     if address_form is None:
         if 'personal_screen' not in session:
@@ -96,6 +105,7 @@ def address(address_form=None):
 
 
 @app.route(URL_PREFIX + '/address/validation', methods=['POST'])
+@logger.start_stop_logging
 def validate_address_details():
     address_form = AddressForm()
     populate_session(address_form)
@@ -106,6 +116,7 @@ def validate_address_details():
 
 @app.route(URL_PREFIX + '/tel/')
 @app.route(URL_PREFIX + '/tel')
+@logger.start_stop_logging
 def tel(tel_form=None):
     if tel_form is None:
         if 'address_screen' not in session:
@@ -119,6 +130,7 @@ def tel(tel_form=None):
 
 
 @app.route(URL_PREFIX + '/tel/validation', methods=['POST'])
+@logger.start_stop_logging
 def validate_telephone_details():
     if 'user_type' not in session:
         return redirect(url_for('user_type'))
@@ -134,6 +146,7 @@ def validate_telephone_details():
 
 @app.route(URL_PREFIX + '/recaptcha/')
 @app.route(URL_PREFIX + '/recaptcha')
+@logger.start_stop_logging
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
         if 'tel_screen' not in session:
@@ -145,6 +158,7 @@ def recaptcha(recaptcha_form=None):
 
 
 @app.route(URL_PREFIX + '/recaptcha/validation', methods=['POST'])
+@logger.start_stop_logging
 def validate_recaptcha():
     if app.config['DO_RECAPTCHA'] == 'False':
         session['recaptcha_result'] = 'pass'
@@ -159,6 +173,7 @@ def validate_recaptcha():
 
 @app.route(URL_PREFIX + '/terms/')
 @app.route(URL_PREFIX + '/terms')
+@logger.start_stop_logging
 def terms(terms_form=None):
     if terms_form is None:
         if 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail':
@@ -172,6 +187,7 @@ def terms(terms_form=None):
 
 @app.route(URL_PREFIX + '/printable_terms/')
 @app.route(URL_PREFIX + '/printable_terms')
+@logger.start_stop_logging
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
     data = f.read()
@@ -180,6 +196,7 @@ def printable_terms():
 
 
 @app.route(URL_PREFIX + '/decline_terms')
+@logger.start_stop_logging
 def decline_terms():
     session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
@@ -187,6 +204,7 @@ def decline_terms():
 
 @app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
 @app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
+@logger.start_stop_logging
 def get_data():
     if request.method == 'POST' or ('terms' in session
                                     and session['terms'] == 'accepted'):
@@ -237,6 +255,7 @@ def get_data():
 
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
+@logger.start_stop_logging
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     if ('user_type' not in session
             or 'personal_screen' not in session
