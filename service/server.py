@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, redirect, url_for, session, request
+from flask import Flask, render_template, redirect, url_for, session, request, abort
 from service import app, logger_config
 #import service.logger_config
 from service.my_forms import (UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm,
@@ -218,6 +218,8 @@ def get_data():
 
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas")
+        if (response.status_code != 200):
+            abort(response.status_code)
         response_json = response.json()
 
         # Get the link
