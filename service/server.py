@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, redirect, url_for, session, request
-from service import app
-import service.logger_config as logger
+from service import app, logger_config
+#import service.logger_config
 from service.my_forms import (UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm,
                               CompanyTelForm, TermsForm, ReCaptchaForm)
 import requests
@@ -22,6 +22,10 @@ MONTHS = [
 URL_PREFIX = app.config['URL_PREFIX']
 
 RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
+
+logger = logger_config.LoggerConfig(app)
+logger.setup_logger(__name__)
+logger.setup_audit_logger()
 
 
 @app.route(URL_PREFIX + '/')

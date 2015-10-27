@@ -1,66 +1,77 @@
 import logging
-from os import stat
 from functools import wraps
 
-from config import CONFIG_DICT
 
-# create logger
-_audit = logging.getLogger('audit_logger')
-_audit.setLevel(logging.INFO)
-# create handler
-_audit_handler = logging.handlers.TimedRotatingFileHandler(CONFIG_DICT['AUDIT_LOG_FILE'],
-                                                           when='midnight', utc=True)
-_audit_handler.setLevel(logging.INFO)
-# create formatter
-_formatter = logging.Formatter('\"%(asctime)s\",%(message)s', "%Y-%m-%d %H:%M:%S")
-# add formatter
-_audit_handler.setFormatter(_formatter)
-# add handler to logger
-_audit.addHandler(_audit_handler)
+class LoggerConfig(object):
+    app = None
+    _audit = None
+    _general = None
 
+    def __init__(self, app):
+        self.app = app
 
-def audit(message):
-    if CONFIG_DICT['LOGGING']:
-        _audit.info(message)
+    def setup_audit_logger(self):
+        # create logger
+        self._audit = logging.getLogger('audit_logger')
+        self._audit.setLevel(logging.INFO)
+        # create handler
+        _audit_handler = logging.handlers.TimedRotatingFileHandler(
+            self.app.config['AUDIT_LOG_FILE'], when='midnight', utc=True)
+        _audit_handler.setLevel(logging.INFO)
+        # create formatter
+        _formatter = logging.Formatter('\"%(asctime)s\",%(message)s', "%Y-%m-%d %H:%M:%S")
+        # add formatter
+        _audit_handler.setFormatter(_formatter)
+        # add handler to logger
+        self._audit.addHandler(_audit_handler)
 
+    def audit(self, message):
+        if self.app.config['LOGGING'] and self._audit:
+            self._audit.info(message)
 
-# create logger
-_general = logging.getLogger('logger')
-_general.setLevel(logging.INFO)
-# create handler
-_general_handler = logging.handlers.TimedRotatingFileHandler(CONFIG_DICT['GENERAL_LOG_FILE'],
-                                                             when='midnight', utc=True)
-_general_handler.setLevel(logging.INFO)
-# create formatter
-_formatter = logging.Formatter(
-    '%(asctime)s level=[%(levelname)s] message=[%(message)s] exception=[%(exc_info)s]', "%Y-%m-%d %H:%M:%S")
-# add formatter
-_general_handler.setFormatter(_formatter)
-# add handler to logger
-_general.addHandler(_general_handler)
+    def setup_logger(self, name):
+        # create logger
+        self._general = logging.getLogger(name)
+        self._general.setLevel(_get_logging_level_from_string(self.app.config['LOGGING_LEVEL']))
+        # create handler
+        _general_handler = logging.handlers.TimedRotatingFileHandler(
+            self.app.config['GENERAL_LOG_FILE'], when='midnight', utc=True)
+        _general_handler.setLevel(_get_logging_level_from_string(self.app.config['LOGGING_LEVEL']))
+        # create formatter
+        _formatter = logging.Formatter(
+            '%(asctime)s level=[%(levelname)s] logger=[%(name)s] message=[%(message)s] exception=[%(exc_info)s]',
+            "%Y-%m-%d %H:%M:%S")
+        # add formatter
+        _general_handler.setFormatter(_formatter)
+        # add handler to logger
+        self._general.addHandler(_general_handler)
 
+    def log(self, message, level="INFO", exception=None):
+        msg_level = _get_logging_level_from_string(level)
 
-def log(message, level="INFO", exception=None):
-    if level.upper() == "CRITICAL":
-        msg_level = logging.CRITICAL
-    elif level.upper() == "ERROR":
-        msg_level = logging.ERROR
-    elif level.upper() == "WARNING":
-        msg_level = logging.WARNING
-    elif level.upper() == "DEBUG":
-        msg_level = logging.DEBUG
+        if self.app.config['LOGGING'] and self._general:
+            self._general.log(level=msg_level, msg=message, exc_info=exception)
+
+    def start_stop_logging(self, original_function):
+        @wraps(original_function)
+        def wrapped(*args, **kwargs):
+            self.log("{} Start".format(original_function.__name__))
+            original = original_function(*args, **kwargs)
+            self.log("{} End".format(original_function.__name__))
+            return original
+
+        return wrapped
+
+def _get_logging_level_from_string(level_text):
+    """convert string to message level"""
+    if level_text.upper() == "CRITICAL":
+        level = logging.CRITICAL
+    elif level_text.upper() == "ERROR":
+        level = logging.ERROR
+    elif level_text.upper() == "WARNING":
+        level = logging.WARNING
+    elif level_text.upper() == "DEBUG":
+        level = logging.DEBUG
     else:
-        msg_level = logging.INFO
-
-    if CONFIG_DICT['LOGGING']:
-        _general.log(level=msg_level, msg=message, exc_info=exception)
-
-
-def start_stop_logging(original_function):
-    @wraps(original_function)
-    def wrapped(*args, **kwargs):
-        log("{} Start".format(original_function.__name__))
-        original = original_function(*args, **kwargs)
-        log("{} End".format(original_function.__name__))
-        return original
-    return wrapped
+        level = logging.INFO
+    return level
