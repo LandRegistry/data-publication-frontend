@@ -84,7 +84,7 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
-        assert 'reCAPTCHA Check' in content
+        assert 'robot' in content
 
     def test_get_usertype_page_success(self):
         response = self.app.get(URL_PREFIX + '/usertype')
@@ -442,7 +442,7 @@ class TestNavigation:
         ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "reCAPTCHA Check" in content
+        assert "robot" in content
 
     def test_validate_contact_page_company_no_landline(self):
         with self.app as c:
@@ -468,7 +468,7 @@ class TestNavigation:
         ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "reCAPTCHA Check" in content
+        assert "robot" in content
 
     def test_validate_contact_page_pi_mobile_only(self):
         with self.app as c:
@@ -481,7 +481,7 @@ class TestNavigation:
         ), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "reCAPTCHA Check" in content
+        assert "robot" in content
 
     def test_validate_contact_page_pi_no_number(self):
         with self.app as c:
@@ -548,7 +548,7 @@ class TestNavigation:
             recaptcha_result='fail'), follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
-        assert "reCAPTCHA Check" in content
+        assert "robot" in content
 
     def test_get_terms_page_success(self):
         with self.app as c:
@@ -632,7 +632,7 @@ class TestNavigation:
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
-        assert 'reCAPTCHA Check' in content
+        assert 'robot' in content
 
     def test_hide_url_download_link(self):
         filename = 'OV_FULL_2015_08.zip'
