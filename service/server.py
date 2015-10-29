@@ -10,6 +10,10 @@ from hurry.filesize import size, alternative
 import datetime
 import uuid
 import re
+from werkzeug.contrib.fixers import ProxyFix
+
+# Apply fix for obtaining IP address from behind a proxy.
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 MONTHS = [
     "January", "February", "March", "April", "May", "June",
@@ -36,6 +40,9 @@ def user_type(usertype_form=None):
     if usertype_form is None:
         usertype_form = UserTypeForm()
         populate_form(usertype_form)
+
+        ip_address = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+        session['ip_address'] = ip_address
     return render_template('usertype.html', form=usertype_form)
 
 
@@ -84,11 +91,6 @@ def address(address_form=None):
         if 'personal_screen' not in session:
             return redirect(url_for("personal"))
         address_form = AddressForm()
-
-        ip_address = request.remote_addr
-
-        session['ip_address'] = ip_address
-
         populate_form(address_form)
     return render_template("address.html", form=address_form)
 
