@@ -1,10 +1,15 @@
 from flask import Markup, request, render_template, url_for
 from werkzeug.exceptions import default_exceptions, HTTPException
+from service import logger_config
 
 
 def setup_errors(app, error_template="error.html"):
     """Add a handler for each of the available HTTP error responses."""
+    logger = logger_config.LoggerConfig(app)
+    logger.setup_logger(__name__)
+
     def error_handler(error):
+        logger.log("An error occurred while processing the request.", level="ERROR", exception=error)
         if isinstance(error, HTTPException):
             description = error.get_description(request.environ)
             code = error.code
