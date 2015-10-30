@@ -55,9 +55,9 @@ class LoggerConfig(object):
     def start_stop_logging(self, original_function):
         @wraps(original_function)
         def wrapped(*args, **kwargs):
-            self.log("{} Start".format(original_function.__name__))
+            self.log("{} Start".format(original_function.__name__), level="DEBUG")
             original = original_function(*args, **kwargs)
-            self.log("{} End".format(original_function.__name__))
+            self.log("{} End".format(original_function.__name__), level="DEBUG")
             return original
 
         return wrapped

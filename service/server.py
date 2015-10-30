@@ -218,8 +218,6 @@ def get_data():
 
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] +
                                 "/list-files/overseas")
-        if (response.status_code != 200):
-            abort(response.status_code)
         response_json = response.json()
 
         # Get the link
