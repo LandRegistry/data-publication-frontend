@@ -604,9 +604,15 @@ class TestNavigation:
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_log_file_is_written_to(self, mock_backend_reponse):
+        # Backup log file
+        shutil.copy(app.config['GENERAL_LOG_FILE'], "{}.backup".format(
+            app.config['GENERAL_LOG_FILE']))
+        open(app.config['GENERAL_LOG_FILE'], 'w+').close()
+        size_before = stat(app.config['GENERAL_LOG_FILE']).st_size
+        # Back audit log file
         shutil.copy(app.config['AUDIT_LOG_FILE'], "{}.backup".format(app.config['AUDIT_LOG_FILE']))
         open(app.config['AUDIT_LOG_FILE'], 'w+').close()
-        size_before = stat(app.config['AUDIT_LOG_FILE']).st_size
+        audit_size_before = stat(app.config['AUDIT_LOG_FILE']).st_size
         app.config['LOGGING'] = True
         with self.app as c:
             with c.session_transaction() as sess:
@@ -614,13 +620,20 @@ class TestNavigation:
                     sess[key] = val
         response = self.app.post(URL_PREFIX + '/data')
         app.config['LOGGING'] = False
-        size_after = stat(app.config['AUDIT_LOG_FILE']).st_size
+        # Restore log file
+        size_after = stat(app.config['GENERAL_LOG_FILE']).st_size
+        shutil.copy("{}.backup".format(app.config['GENERAL_LOG_FILE']),
+                    app.config['GENERAL_LOG_FILE'])
+        remove("{}.backup".format(app.config['GENERAL_LOG_FILE']))
+        # Restore audit log file
+        audit_size_after = stat(app.config['AUDIT_LOG_FILE']).st_size
         shutil.copy("{}.backup".format(app.config['AUDIT_LOG_FILE']), app.config['AUDIT_LOG_FILE'])
         remove("{}.backup".format(app.config['AUDIT_LOG_FILE']))
         content = response.data.decode()
         assert response.status_code == 200
         assert "Overseas Dataset (" in content
         assert size_after > size_before
+        assert audit_size_after > audit_size_before
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_fail_using_get(self, mock_backend_reponse):

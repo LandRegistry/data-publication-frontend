@@ -6,6 +6,8 @@ overseas_terms_file = os.environ.get('OVERSEAS_TERMS_FILE')
 recaptcha_private_key = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 recaptcha_public_key = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 do_recaptcha = os.environ.get('DO_RECAPTCHA')
+logging_level = os.environ.get('LOGGING_LEVEL')
+general_log_file = os.environ.get('GENERAL_LOG_FILE')
 audit_log_file = os.environ.get('AUDIT_LOG_FILE')
 ga_property_id = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
 url_prefix = os.environ.get('URL_PREFIX')
@@ -21,6 +23,8 @@ CONFIG_DICT = {
     'RECAPTCHA_PUBLIC_KEY': recaptcha_public_key,
     'RECAPTCHA_PRIVATE_KEY': recaptcha_private_key,
     'DO_RECAPTCHA': do_recaptcha,
+    'LOGGING_LEVEL': logging_level,
+    'GENERAL_LOG_FILE': general_log_file,
     'AUDIT_LOG_FILE': audit_log_file,
     'GOOGLE_ANALYTICS_PROPERTY_ID': ga_property_id,
     'URL_PREFIX': url_prefix,
