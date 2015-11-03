@@ -64,7 +64,7 @@ class TestNavigation:
         self.app = app.test_client()
 
     def test_error_page_for_non_existant_url(self):
-        response = self.app.get(URL_PREFIX + '/this_does_not_exist')
+        response = self.app.get(URL_PREFIX + '/this_does_not_exist/')
         content = response.data.decode()
         assert response.status_code == 404
         assert '404: Not Found' in content
@@ -80,21 +80,21 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/recaptcha')
+        response = self.app.get(URL_PREFIX + '/recaptcha/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'robot' in content
 
     def test_get_usertype_page_success(self):
-        response = self.app.get(URL_PREFIX + '/usertype')
+        response = self.app.get(URL_PREFIX + '/usertype/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_personal_page_directly_success(self):
-        response = self.app.get(URL_PREFIX + '/personal', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/personal/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -104,7 +104,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.get(URL_PREFIX + '/personal')
+        response = self.app.get(URL_PREFIX + '/personal/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -114,7 +114,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.get(URL_PREFIX + '/personal')
+        response = self.app.get(URL_PREFIX + '/personal/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -125,7 +125,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/address')
+        response = self.app.get(URL_PREFIX + '/address/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -164,7 +164,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/address')
+        response = self.app.get(URL_PREFIX + '/address/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -401,7 +401,7 @@ class TestNavigation:
         assert 'Enter your contact details' in content
 
     def test_get_contact_page_directly_success(self):
-        response = self.app.get(URL_PREFIX + '/tel', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/tel/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -412,7 +412,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/tel')
+        response = self.app.get(URL_PREFIX + '/tel/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -424,7 +424,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/tel')
+        response = self.app.get(URL_PREFIX + '/tel/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -554,14 +554,14 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'pass'
-        response = self.app.get(URL_PREFIX + '/terms')
+        response = self.app.get(URL_PREFIX + '/terms/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Terms and conditions' in content
 
     def test_get_printable_terms_page_success(self):
-        response = self.app.get(URL_PREFIX + '/printable_terms')
+        response = self.app.get(URL_PREFIX + '/printable_terms/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Terms and conditions' in content
@@ -572,7 +572,7 @@ class TestNavigation:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
                 sess['terms'] = 'declined'
-        response = self.app.get(URL_PREFIX + '/decline_terms', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/decline_terms/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -641,7 +641,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'fail'
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/data', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/data/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -653,7 +653,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -678,7 +678,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -689,7 +689,7 @@ class TestNavigation:
         response = self.app.get(URL_PREFIX + url)
         content = response.data.decode()
         assert response.status_code == 302
-        assert URL_PREFIX + '/terms' in content
+        assert URL_PREFIX + '/terms/' in content
 
     def test_hide_url_download_link__expired_link_redirect(self):
         filename = 'OV_FULL_2015_08.zip'
@@ -699,7 +699,7 @@ class TestNavigation:
                        ).strftime("%Y%m%dT%H%M%SZ")
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -712,7 +712,7 @@ class TestNavigation:
         assert 'The timed download link you clicked has expired' in content
 
     def test_get_cookies_page_success(self):
-        response = self.app.get(URL_PREFIX + '/cookies')
+        response = self.app.get(URL_PREFIX + '/cookies/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Cookies' in content

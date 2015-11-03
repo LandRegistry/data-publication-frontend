@@ -36,14 +36,13 @@ def index():
     return render_template('ood.html')
 
 
-@app.route(URL_PREFIX + '/cookies')
+@app.route(URL_PREFIX + '/cookies/')
 @logger.start_stop_logging
 def cookies():
     return render_template('cookies.html')
 
 
 @app.route(URL_PREFIX + '/usertype/')
-@app.route(URL_PREFIX + '/usertype')
 @logger.start_stop_logging
 def user_type(usertype_form=None):
     if usertype_form is None:
@@ -67,7 +66,6 @@ def validate_usertype_details():
     return user_type(usertype_form)
 
 @app.route(URL_PREFIX + '/personal/')
-@app.route(URL_PREFIX + '/personal')
 @logger.start_stop_logging
 def personal(personal_form=None):
     if personal_form is None:
@@ -97,7 +95,6 @@ def validate_personal_details():
     return personal(personal_form)
 
 @app.route(URL_PREFIX + '/address/')
-@app.route(URL_PREFIX + '/address')
 @logger.start_stop_logging
 def address(address_form=None):
     if address_form is None:
@@ -119,7 +116,6 @@ def validate_address_details():
     return address(address_form)
 
 @app.route(URL_PREFIX + '/tel/')
-@app.route(URL_PREFIX + '/tel')
 @logger.start_stop_logging
 def tel(tel_form=None):
     if tel_form is None:
@@ -149,7 +145,6 @@ def validate_telephone_details():
     return tel(tel_form)
 
 @app.route(URL_PREFIX + '/recaptcha/')
-@app.route(URL_PREFIX + '/recaptcha')
 @logger.start_stop_logging
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
@@ -176,7 +171,6 @@ def validate_recaptcha():
     return recaptcha(recaptcha_form)
 
 @app.route(URL_PREFIX + '/terms/')
-@app.route(URL_PREFIX + '/terms')
 @logger.start_stop_logging
 def terms(terms_form=None):
     if terms_form is None:
@@ -190,7 +184,6 @@ def terms(terms_form=None):
     return render_template('terms.html', form=terms_form, text=data)
 
 @app.route(URL_PREFIX + '/printable_terms/')
-@app.route(URL_PREFIX + '/printable_terms')
 @logger.start_stop_logging
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
@@ -199,15 +192,15 @@ def printable_terms():
     return render_template('terms_printer_friendly.html', text=data)
 
 
-@app.route(URL_PREFIX + '/decline_terms')
+@app.route(URL_PREFIX + '/decline_terms/')
 @logger.start_stop_logging
 def decline_terms():
     session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-@app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
-@app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/data/', methods=['GET'])
+@app.route(URL_PREFIX + '/data', methods=['POST'])
 @logger.start_stop_logging
 def get_data():
     if request.method == 'POST' or ('terms' in session
@@ -258,7 +251,6 @@ def get_data():
 
 
 @app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
-@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
 @logger.start_stop_logging
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     if ('user_type' not in session
