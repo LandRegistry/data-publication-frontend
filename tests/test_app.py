@@ -72,9 +72,8 @@ class TestNavigation:
     def test_get_index_page_success(self):
         response = self.app.get(URL_PREFIX + '/')
         content = response.data.decode()
-        assert response.status_code == 200
-        assert 'Land Registry Data' in content
-        assert 'Overseas Ownership Dataset' in content
+        assert response.status_code == 302
+        assert app.config['START_PAGE'] in content
 
     def test_get_recaptcha_page_success(self):
         with self.app as c:
@@ -572,12 +571,12 @@ class TestNavigation:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
                 sess['terms'] = 'declined'
-        response = self.app.get(URL_PREFIX + '/decline_terms/', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/decline_terms/')
         content = response.data.decode()
-        assert response.status_code == 200
-        assert 'Land Registry Data' in content
-        assert 'Overseas Ownership Dataset' in content
-        assert 'Terms and conditions' not in content
+        assert response.status_code == 302
+        assert 'Redirecting...' in content
+        assert 'href="/"' in content
+        assert 'Download Dataset Files' not in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
