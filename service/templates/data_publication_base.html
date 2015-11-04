@@ -45,7 +45,7 @@
       {% if breadcrumbs %}
         <div id="global-breadcrumb" class="header-context column-three-quarters">
           <nav role="navigation" class="expand-top-half expand-bottom-half">
-            <ol class="group">
+            <ol class="group">              
               {% for breadcrumb in breadcrumbs %}
                 <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
               {% endfor %}
