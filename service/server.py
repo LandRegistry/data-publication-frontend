@@ -51,7 +51,7 @@ def index():
 @app.route(URL_PREFIX + '/cookies')
 @logger.start_stop_logging
 def cookies():
-    breadcrumbs = [{"text": "Dataset details", "url": "http://www.google.com"},
+    breadcrumbs = [{"text": "Dataset details", "url": "/"},
         {"text": "Cookies", "url": "/cookies"}]
     return render_template('cookies.html', breadcrumbs=breadcrumbs)
 
