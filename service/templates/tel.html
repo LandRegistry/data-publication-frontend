@@ -2,23 +2,6 @@
 
 {% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
 {% block body %}
-  <div class="grid-row">
-
-    <div id="global-breadcrumb" class="header-context column-three-quarters">
-      <nav role="navigation" class="expand-top-half expand-bottom-half">
-        <ol class="group">
-          <li><a href="{{ url_prefix }}/" id="details">Dataset details</a></li>
-          <li><a href="{{ url_prefix }}/usertype" id="usertype">User type</a></li>
-          <li><a href="{{ url_prefix }}/personal" id="personal">Personal details</a></li>
-          <li><a href="{{ url_prefix }}/address" id="address">Address</a></li>
-          <li><a href="{{ url_prefix }}/tel" id="contact">Contact details</a></li>
-        </ol>
-      </nav>
-    </div>
-
-  </div>
-
-  <h1 class="heading-xlarge">Land Registry Data</h1>
   <h2 class="heading-large"><span class="heading-secondary">Step 4 of 7</span>Enter your contact details</h2>
 
   <form action="{{ url_prefix }}/tel/validation" method="post">
