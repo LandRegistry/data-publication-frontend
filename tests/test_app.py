@@ -732,8 +732,11 @@ class TestNavigation:
         assert json.loads(content)['status'] == "Error"
         assert json.loads(content)['error'] == 'Cannot connect to backend service'
 
-    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps({"status": "Error", "error": "Error contacting Amazon S3 bucket"})), status_code=500))
+    @mock.patch('requests.get')
     def test_health_check_http_error(self, mock_backend_response):
+        error_response = {"status": "Error", "error": "Error contacting Amazon S3 bucket"}
+        mock_backend_response.return_value = FakeResponse(str.encode(json.dumps(error_response)),
+                                                          status_code=500)
         response = self.app.get(URL_PREFIX + '/health')
         content = response.data.decode()
         assert response.status_code == 500
