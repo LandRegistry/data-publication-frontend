@@ -47,7 +47,7 @@
           <nav role="navigation" class="expand-top-half expand-bottom-half">
             <ol class="group">
               {% for breadcrumb in breadcrumbs %}
-                <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+                <li><a href="{{ url_prefix + breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
               {% endfor %}
             </ol>
           </nav>
