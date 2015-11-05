@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, redirect, url_for, session, request, abort
+from flask import Flask, render_template, redirect, url_for, session, request, abort, Response
 from service import app, logger_config
 #import service.logger_config
 from service.my_forms import (UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm,
@@ -340,5 +340,26 @@ def format_session_info_for_audit(download_filename=None):
     return "\"{}\"".format("\",\"".join(log_entry))
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+@app.route('/health', methods=['GET'])
+def health_check():
+    try:
+        response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + "/health")
+        status_code = response.status_code
+        if status_code != 200:
+            error = response.json()['error']
+    except (requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError):
+        status_code = 500
+        error = 'Cannot connect to backend service'
+
+    status = "OK" if status_code == 200 else "Error"
+    response_body = {'status': status}
+
+    if status_code != 200:
+        response_body['error'] = error
+
+    return Response(
+        json.dumps(response_body),
+        status=status_code,
+        mimetype='application/json',
+    )

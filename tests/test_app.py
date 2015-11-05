@@ -716,6 +716,36 @@ class TestNavigation:
         assert response.status_code == 200
         assert 'Cookies' in content
 
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_health_check_ok(self, mock_backend_response):
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert json.loads(content)['status'] == "OK"
+
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_health_check_connection_error(self, mock_backend_response):
+        mock_backend_response.side_effect = create_connection_exception
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 500
+        assert json.loads(content)['status'] == "Error"
+        assert json.loads(content)['error'] == 'Cannot connect to backend service'
+
+    @mock.patch('requests.get')
+    def test_health_check_http_error(self, mock_backend_response):
+        error_response = {"status": "Error", "error": "Error contacting Amazon S3 bucket"}
+        mock_backend_response.return_value = FakeResponse(str.encode(json.dumps(error_response)),
+                                                          status_code=500)
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 500
+        assert json.loads(content)['status'] == "Error"
+        assert json.loads(content)['error'] == 'Error contacting Amazon S3 bucket'
+
+
+def create_connection_exception(self, *args):
+    raise requests.exceptions.ConnectionError()
 
 if __name__ == '__main__':
     pytest.main()
