@@ -41,11 +41,9 @@ logger.setup_audit_logger()
 
 
 @app.route(URL_PREFIX + '/')
-@app.route(URL_PREFIX + '/index.htm')
-@app.route(URL_PREFIX + '/index.html')
 @logger.start_stop_logging
 def index():
-    return render_template('ood.html')
+    return redirect(app.config['START_PAGE'])
 
 
 @app.route(URL_PREFIX + '/cookies/')
