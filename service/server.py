@@ -20,7 +20,7 @@ MONTHS = [
     "July", "August", "September", "October", "November", "December"]
 
 BREADCRUMBS = [
-    {"text": "Dataset details", "url": "http://www.google.com"},
+    {"text": "Dataset details", "url": "/"},
     {"text": "User type", "url": "/usertype"},
     {"text": "Personal details", "url": "/personal"},
     {"text": "Address details", "url": "/address"},

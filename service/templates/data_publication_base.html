@@ -45,7 +45,7 @@
       {% if breadcrumbs %}
         <div id="global-breadcrumb" class="header-context column-three-quarters">
           <nav role="navigation" class="expand-top-half expand-bottom-half">
-            <ol class="group">              
+            <ol class="group">
               {% for breadcrumb in breadcrumbs %}
                 <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
               {% endfor %}
@@ -54,6 +54,9 @@
         </div>
       {% endif %}
     </div>
+    {% block heading %}
+    <h1 class="heading-xlarge">Land Registry: overseas ownership data</h1>
+    {% endblock %}
     {% block body %}{% endblock %}
   </main>
 {% endblock %}
