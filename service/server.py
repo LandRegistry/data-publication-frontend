@@ -43,7 +43,7 @@ logger.setup_audit_logger()
 @app.route(URL_PREFIX + '/cookies/')
 @logger.start_stop_logging
 def cookies():
-    breadcrumbs = [{"text": "Dataset details", "url": app.config['START_PAGE']},
+    breadcrumbs = [{"text": "Back to form", "url": "/terms/"},
                    {"text": "Cookies", "url": "/cookies"}]
     return render_template('cookies.html', breadcrumbs=breadcrumbs)
 
