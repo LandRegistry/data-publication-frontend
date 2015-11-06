@@ -19,7 +19,7 @@ def setup_errors(app, error_template="error.html"):
             description = "<p>Please try again in a few moments.</p>"
 
         breadcrumbs = [
-            {"text": "Home", "url": url_for('index', _external=True)},
+            {"text": "Home", "url": app.config['START_PAGE']},
             {"text": "Error", "url": ""}
         ]
 

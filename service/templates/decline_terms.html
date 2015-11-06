@@ -1,0 +1,17 @@
+{% extends "data_publication_base.html" %}
+
+{% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
+{% block body %}
+<h2 class="heading-large">Declined terms and conditions</h2>
+<div>
+    <p>
+        To download datasets you must have accepted the Terms and Conditions on the previous page.
+    </p>
+    <p>
+        You can now choose to be returned to the terms and conditions page or return to GOV.UK.
+    </p>
+    <p>
+        <a href="{{ url_prefix }}/terms" class="button" id="terms">Return to Terms and Conditions</a>
+        <a href="{{ govuk_page }}" class="button" id="govuk">Return to GOV.UK</a>
+    </p>
+{% endblock %}
