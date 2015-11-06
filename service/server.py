@@ -27,7 +27,7 @@ BREADCRUMBS = [
     {"text": "Contact details", "url": "/tel"},
     {"text": "Human validation check", "url": "/recaptcha"},
     {"text": "Terms and conditions", "url": "/terms"},
-    {"text": "Data download", "url": "/data"},
+    {"text": "Data download", "url": "/dataset"},
     {"text": "Expired link", "url": ""}
 ]
 
@@ -211,8 +211,8 @@ def decline_terms():
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-@app.route(URL_PREFIX + '/data/', methods=['GET'])
-@app.route(URL_PREFIX + '/data', methods=['POST'])
+@app.route(URL_PREFIX + '/dataset/', methods=['GET'])
+@app.route(URL_PREFIX + '/dataset', methods=['POST'])
 @logger.start_stop_logging
 def get_data():
     if request.method == 'POST' or ('terms' in session
@@ -262,7 +262,7 @@ def get_data():
         return redirect(url_for('terms'))
 
 
-@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
+@app.route(URL_PREFIX + '/dataset/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @logger.start_stop_logging
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     if ('user_type' not in session

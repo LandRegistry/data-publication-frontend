@@ -584,7 +584,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         app.config['LOGGING'] = False
         content = response.data.decode()
         assert response.status_code == 200
@@ -596,7 +596,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         content = response.data.decode()
         assert response.status_code == 200
         assert "Datasets" in content
@@ -617,7 +617,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         app.config['LOGGING'] = False
         # Restore log file
         size_after = stat(app.config['GENERAL_LOG_FILE']).st_size
@@ -640,7 +640,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'fail'
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/data/', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/dataset/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -652,7 +652,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -677,7 +677,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -698,7 +698,7 @@ class TestNavigation:
                        ).strftime("%Y%m%dT%H%M%SZ")
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
