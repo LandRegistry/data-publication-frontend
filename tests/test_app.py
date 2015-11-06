@@ -64,7 +64,7 @@ class TestNavigation:
         self.app = app.test_client()
 
     def test_error_page_for_non_existant_url(self):
-        response = self.app.get(URL_PREFIX + '/this_does_not_exist')
+        response = self.app.get(URL_PREFIX + '/this_does_not_exist/')
         content = response.data.decode()
         assert response.status_code == 404
         assert '404: Not Found' in content
@@ -72,29 +72,28 @@ class TestNavigation:
     def test_get_index_page_success(self):
         response = self.app.get(URL_PREFIX + '/')
         content = response.data.decode()
-        assert response.status_code == 200
-        assert 'Land Registry Data' in content
-        assert 'Overseas Ownership Dataset' in content
+        assert response.status_code == 302
+        assert app.config['START_PAGE'] in content
 
     def test_get_recaptcha_page_success(self):
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/recaptcha')
+        response = self.app.get(URL_PREFIX + '/recaptcha/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'robot' in content
 
     def test_get_usertype_page_success(self):
-        response = self.app.get(URL_PREFIX + '/usertype')
+        response = self.app.get(URL_PREFIX + '/usertype/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Overseas Ownership Dataset' in content
 
     def test_get_personal_page_directly_success(self):
-        response = self.app.get(URL_PREFIX + '/personal', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/personal/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -104,7 +103,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
-        response = self.app.get(URL_PREFIX + '/personal')
+        response = self.app.get(URL_PREFIX + '/personal/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -114,7 +113,7 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
-        response = self.app.get(URL_PREFIX + '/personal')
+        response = self.app.get(URL_PREFIX + '/personal/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'First name(s)/Given name(s)' in content
@@ -125,7 +124,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/address')
+        response = self.app.get(URL_PREFIX + '/address/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -164,7 +163,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['personal_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/address')
+        response = self.app.get(URL_PREFIX + '/address/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -401,7 +400,7 @@ class TestNavigation:
         assert 'Enter your contact details' in content
 
     def test_get_contact_page_directly_success(self):
-        response = self.app.get(URL_PREFIX + '/tel', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/tel/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Private individual' in content
@@ -412,7 +411,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Private individual'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/tel')
+        response = self.app.get(URL_PREFIX + '/tel/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -424,7 +423,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['user_type'] = 'Company'
                 sess['address_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/tel')
+        response = self.app.get(URL_PREFIX + '/tel/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Landline telephone number' in content
@@ -554,14 +553,14 @@ class TestNavigation:
         with self.app as c:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'pass'
-        response = self.app.get(URL_PREFIX + '/terms')
+        response = self.app.get(URL_PREFIX + '/terms/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
         assert 'Terms and conditions' in content
 
     def test_get_printable_terms_page_success(self):
-        response = self.app.get(URL_PREFIX + '/printable_terms')
+        response = self.app.get(URL_PREFIX + '/printable_terms/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Terms and conditions' in content
@@ -572,12 +571,12 @@ class TestNavigation:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
                 sess['terms'] = 'declined'
-        response = self.app.get(URL_PREFIX + '/decline_terms', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/decline_terms/')
         content = response.data.decode()
-        assert response.status_code == 200
-        assert 'Land Registry Data' in content
-        assert 'Overseas Ownership Dataset' in content
-        assert 'Terms and conditions' not in content
+        assert response.status_code == 302
+        assert 'Redirecting...' in content
+        assert 'href="/"' in content
+        assert 'Download Dataset Files' not in content
 
     @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
     def test_get_datasets_success_multiple_files(self, mock_backend_reponse):
@@ -585,7 +584,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         app.config['LOGGING'] = False
         content = response.data.decode()
         assert response.status_code == 200
@@ -597,7 +596,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         content = response.data.decode()
         assert response.status_code == 200
         assert "Datasets" in content
@@ -618,7 +617,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 for key, val in valid_pi_session_details.items():
                     sess[key] = val
-        response = self.app.post(URL_PREFIX + '/data')
+        response = self.app.post(URL_PREFIX + '/dataset')
         app.config['LOGGING'] = False
         # Restore log file
         size_after = stat(app.config['GENERAL_LOG_FILE']).st_size
@@ -641,7 +640,7 @@ class TestNavigation:
             with c.session_transaction() as sess:
                 sess['recaptcha_result'] = 'fail'
                 sess['tel_screen'] = 'Complete'
-        response = self.app.get(URL_PREFIX + '/data', follow_redirects=True)
+        response = self.app.get(URL_PREFIX + '/dataset/', follow_redirects=True)
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Land Registry Data' in content
@@ -653,7 +652,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -678,7 +677,7 @@ class TestNavigation:
         link_duration = '900'
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -689,7 +688,7 @@ class TestNavigation:
         response = self.app.get(URL_PREFIX + url)
         content = response.data.decode()
         assert response.status_code == 302
-        assert URL_PREFIX + '/terms' in content
+        assert URL_PREFIX + '/terms/' in content
 
     def test_hide_url_download_link__expired_link_redirect(self):
         filename = 'OV_FULL_2015_08.zip'
@@ -699,7 +698,7 @@ class TestNavigation:
                        ).strftime("%Y%m%dT%H%M%SZ")
         credentials = "ABCDEFGHIJKLMNOPQRST%252F20150918%252Feu-central-1%252Fs3%252Faws4_request"
         signature = '227f10aeb13c61c987fddd75b2292fc76a29dcbe306a7dbe610c4624344393d3'
-        url = '/data/download/{}/{}/{}/{}/{}'.format(filename, amazon_date,
+        url = '/dataset/download/{}/{}/{}/{}/{}/'.format(filename, amazon_date,
                                                      link_duration, quote_plus(credentials),
                                                      signature)
         with self.app as c:
@@ -712,11 +711,41 @@ class TestNavigation:
         assert 'The timed download link you clicked has expired' in content
 
     def test_get_cookies_page_success(self):
-        response = self.app.get(URL_PREFIX + '/cookies')
+        response = self.app.get(URL_PREFIX + '/cookies/')
         content = response.data.decode()
         assert response.status_code == 200
         assert 'Cookies' in content
 
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_health_check_ok(self, mock_backend_response):
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 200
+        assert json.loads(content)['status'] == "OK"
+
+    @mock.patch('requests.get', return_value=FakeResponse(str.encode(json.dumps(multiple_files))))
+    def test_health_check_connection_error(self, mock_backend_response):
+        mock_backend_response.side_effect = create_connection_exception
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 500
+        assert json.loads(content)['status'] == "Error"
+        assert json.loads(content)['error'] == 'Cannot connect to backend service'
+
+    @mock.patch('requests.get')
+    def test_health_check_http_error(self, mock_backend_response):
+        error_response = {"status": "Error", "error": "Error contacting Amazon S3 bucket"}
+        mock_backend_response.return_value = FakeResponse(str.encode(json.dumps(error_response)),
+                                                          status_code=500)
+        response = self.app.get(URL_PREFIX + '/health')
+        content = response.data.decode()
+        assert response.status_code == 500
+        assert json.loads(content)['status'] == "Error"
+        assert json.loads(content)['error'] == 'Error contacting Amazon S3 bucket'
+
+
+def create_connection_exception(self, *args):
+    raise requests.exceptions.ConnectionError()
 
 if __name__ == '__main__':
     pytest.main()

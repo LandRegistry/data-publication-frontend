@@ -2,30 +2,9 @@
 
 {% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
 {% block body %}
-<div class="grid-row">
-
-    <div id="global-breadcrumb" class="header-context column-three-quarters">
-        <nav role="navigation" class="expand-top-half expand-bottom-half">
-            <ol class="group">
-                <li><a href="/" id="details">Dataset details</a></li>
-                <li><a href="/usertype" id="usertype">User type</a></li>
-                <li><a href="/personal" id="personal">Personal details</a></li>
-                <li><a href="/address" id="address">Address</a></li>
-                <li><a href="/tel" id="contact">Contact details</a></li>
-                <li><a href="/recaptcha" id="recaptcha">Human validation check</a></li>
-                <li><a href="/terms" id="terms">Terms and conditions</a></li>
-                <li><a href="/data" id="download">Dataset download</a></li>
-                <li><a href="" id="expired_link">Expired link</a></li>
-            </ol>
-        </nav>
-    </div>
-
-</div>
-
-<h1 class="heading-xlarge">Land Registry Data</h1>
 <h2 class="heading-large">Link has expired</h2>
 
 <p>The timed download link you clicked has expired</p>
-<p><a href="{{ url_prefix }}/data" id="download">Return to the download page</a> to get a new set of links.</p>
+<p><a href="{{ url_prefix }}/dataset" id="download">Return to the download page</a> to get a new set of links.</p>
 
 {% endblock %}

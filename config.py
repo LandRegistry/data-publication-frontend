@@ -12,6 +12,7 @@ audit_log_file = os.environ.get('AUDIT_LOG_FILE')
 ga_property_id = os.environ.get('GOOGLE_ANALYTICS_PROPERTY_ID')
 url_prefix = os.environ.get('URL_PREFIX')
 aws_base_url = os.environ.get('AWS_BASE_URL')
+start_page = os.environ.get('START_PAGE')
 
 CONFIG_DICT = {
     'DEBUG': False,
@@ -28,7 +29,8 @@ CONFIG_DICT = {
     'AUDIT_LOG_FILE': audit_log_file,
     'GOOGLE_ANALYTICS_PROPERTY_ID': ga_property_id,
     'URL_PREFIX': url_prefix,
-    'AWS_BASE_URL': aws_base_url
+    'AWS_BASE_URL': aws_base_url,
+    'START_PAGE': start_page
 }
 
 settings = os.environ.get('SETTINGS')

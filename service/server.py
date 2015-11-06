@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, redirect, url_for, session, request, abort
+from flask import Flask, render_template, redirect, url_for, session, request, abort, Response
 from service import app, logger_config
 #import service.logger_config
 from service.my_forms import (UserTypeForm, PersonalForm, CompanyForm, AddressForm, TelForm,
@@ -19,6 +19,18 @@ MONTHS = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"]
 
+BREADCRUMBS = [
+    {"text": "Dataset details", "url": "/"},
+    {"text": "User type", "url": "/usertype"},
+    {"text": "Personal details", "url": "/personal"},
+    {"text": "Address details", "url": "/address"},
+    {"text": "Contact details", "url": "/tel"},
+    {"text": "Human validation check", "url": "/recaptcha"},
+    {"text": "Terms and conditions", "url": "/terms"},
+    {"text": "Data download", "url": "/dataset"},
+    {"text": "Expired link", "url": ""}
+]
+
 URL_PREFIX = app.config['URL_PREFIX']
 
 RECAPTCHA_PRIVATE_KEY = app.config['RECAPTCHA_PRIVATE_KEY']
@@ -29,21 +41,20 @@ logger.setup_audit_logger()
 
 
 @app.route(URL_PREFIX + '/')
-@app.route(URL_PREFIX + '/index.htm')
-@app.route(URL_PREFIX + '/index.html')
 @logger.start_stop_logging
 def index():
-    return render_template('ood.html')
+    return redirect(app.config['START_PAGE'])
 
 
-@app.route(URL_PREFIX + '/cookies')
+@app.route(URL_PREFIX + '/cookies/')
 @logger.start_stop_logging
 def cookies():
-    return render_template('cookies.html')
+    breadcrumbs = [{"text": "Dataset details", "url": "/"},
+        {"text": "Cookies", "url": "/cookies"}]
+    return render_template('cookies.html', breadcrumbs=breadcrumbs)
 
 
 @app.route(URL_PREFIX + '/usertype/')
-@app.route(URL_PREFIX + '/usertype')
 @logger.start_stop_logging
 def user_type(usertype_form=None):
     if usertype_form is None:
@@ -52,7 +63,7 @@ def user_type(usertype_form=None):
 
         ip_address = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
         session['ip_address'] = ip_address
-    return render_template('usertype.html', form=usertype_form)
+    return render_template('usertype.html', form=usertype_form, breadcrumbs=BREADCRUMBS[:2])
 
 
 @app.route(URL_PREFIX + '/usertype/validation', methods=['POST'])
@@ -67,7 +78,6 @@ def validate_usertype_details():
     return user_type(usertype_form)
 
 @app.route(URL_PREFIX + '/personal/')
-@app.route(URL_PREFIX + '/personal')
 @logger.start_stop_logging
 def personal(personal_form=None):
     if personal_form is None:
@@ -78,7 +88,7 @@ def personal(personal_form=None):
         else:
             personal_form = PersonalForm()
         populate_form(personal_form)
-    return render_template("personal.html", form=personal_form)
+    return render_template("personal.html", form=personal_form, breadcrumbs=BREADCRUMBS[:3])
 
 
 @app.route(URL_PREFIX + '/personal/validation', methods=['POST'])
@@ -97,7 +107,6 @@ def validate_personal_details():
     return personal(personal_form)
 
 @app.route(URL_PREFIX + '/address/')
-@app.route(URL_PREFIX + '/address')
 @logger.start_stop_logging
 def address(address_form=None):
     if address_form is None:
@@ -105,7 +114,7 @@ def address(address_form=None):
             return redirect(url_for("personal"))
         address_form = AddressForm()
         populate_form(address_form)
-    return render_template("address.html", form=address_form)
+    return render_template("address.html", form=address_form, breadcrumbs=BREADCRUMBS[:4])
 
 
 @app.route(URL_PREFIX + '/address/validation', methods=['POST'])
@@ -119,7 +128,6 @@ def validate_address_details():
     return address(address_form)
 
 @app.route(URL_PREFIX + '/tel/')
-@app.route(URL_PREFIX + '/tel')
 @logger.start_stop_logging
 def tel(tel_form=None):
     if tel_form is None:
@@ -130,7 +138,7 @@ def tel(tel_form=None):
         else:
             tel_form = TelForm()
         populate_form(tel_form)
-    return render_template('tel.html', form=tel_form)
+    return render_template('tel.html', form=tel_form, breadcrumbs=BREADCRUMBS[:5])
 
 
 @app.route(URL_PREFIX + '/tel/validation', methods=['POST'])
@@ -149,7 +157,6 @@ def validate_telephone_details():
     return tel(tel_form)
 
 @app.route(URL_PREFIX + '/recaptcha/')
-@app.route(URL_PREFIX + '/recaptcha')
 @logger.start_stop_logging
 def recaptcha(recaptcha_form=None):
     if recaptcha_form is None:
@@ -158,7 +165,7 @@ def recaptcha(recaptcha_form=None):
         recaptcha_form = ReCaptchaForm()
         populate_form(recaptcha_form)
     return render_template('recaptcha.html', form=recaptcha_form,
-                           recaptcha_public_key=app.config['RECAPTCHA_PUBLIC_KEY'])
+                           recaptcha_public_key=app.config['RECAPTCHA_PUBLIC_KEY'], breadcrumbs=BREADCRUMBS[:6])
 
 
 @app.route(URL_PREFIX + '/recaptcha/validation', methods=['POST'])
@@ -176,7 +183,6 @@ def validate_recaptcha():
     return recaptcha(recaptcha_form)
 
 @app.route(URL_PREFIX + '/terms/')
-@app.route(URL_PREFIX + '/terms')
 @logger.start_stop_logging
 def terms(terms_form=None):
     if terms_form is None:
@@ -187,10 +193,9 @@ def terms(terms_form=None):
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
     data = f.read()
     f.close()
-    return render_template('terms.html', form=terms_form, text=data)
+    return render_template('terms.html', form=terms_form, text=data, breadcrumbs=BREADCRUMBS[:7])
 
 @app.route(URL_PREFIX + '/printable_terms/')
-@app.route(URL_PREFIX + '/printable_terms')
 @logger.start_stop_logging
 def printable_terms():
     f = open(app.config['OVERSEAS_TERMS_FILE'], 'r')
@@ -199,15 +204,15 @@ def printable_terms():
     return render_template('terms_printer_friendly.html', text=data)
 
 
-@app.route(URL_PREFIX + '/decline_terms')
+@app.route(URL_PREFIX + '/decline_terms/')
 @logger.start_stop_logging
 def decline_terms():
     session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
     return redirect(url_for('index'))
 
-@app.route(URL_PREFIX + '/data/', methods=['GET', 'POST'])
-@app.route(URL_PREFIX + '/data', methods=['GET', 'POST'])
+@app.route(URL_PREFIX + '/dataset/', methods=['GET'])
+@app.route(URL_PREFIX + '/dataset', methods=['POST'])
 @logger.start_stop_logging
 def get_data():
     if request.method == 'POST' or ('terms' in session
@@ -252,13 +257,12 @@ def get_data():
         minutes, seconds = divmod(duration, 60)
         duration = "{} minute(s) {} second(s)".format(minutes, seconds)
 
-        return render_template('data.html', datasets=datasets, duration=duration)
+        return render_template('data.html', datasets=datasets, duration=duration, breadcrumbs=BREADCRUMBS[:8])
     else:
         return redirect(url_for('terms'))
 
 
-@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
-@app.route(URL_PREFIX + '/data/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>')
+@app.route(URL_PREFIX + '/dataset/download/<filename>/<amazon_date>/<link_duration>/<credentials>/<signature>/')
 @logger.start_stop_logging
 def hide_url(filename, amazon_date, link_duration, credentials, signature):
     if ('user_type' not in session
@@ -336,5 +340,26 @@ def format_session_info_for_audit(download_filename=None):
     return "\"{}\"".format("\",\"".join(log_entry))
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+@app.route('/health', methods=['GET'])
+def health_check():
+    try:
+        response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + "/health")
+        status_code = response.status_code
+        if status_code != 200:
+            error = response.json()['error']
+    except (requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError):
+        status_code = 500
+        error = 'Cannot connect to backend service'
+
+    status = "OK" if status_code == 200 else "Error"
+    response_body = {'status': status}
+
+    if status_code != 200:
+        response_body['error'] = error
+
+    return Response(
+        json.dumps(response_body),
+        status=status_code,
+        mimetype='application/json',
+    )

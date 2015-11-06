@@ -47,13 +47,16 @@
           <nav role="navigation" class="expand-top-half expand-bottom-half">
             <ol class="group">
               {% for breadcrumb in breadcrumbs %}
-                <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+                <li><a href="{{ url_prefix + breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
               {% endfor %}
             </ol>
           </nav>
         </div>
       {% endif %}
     </div>
+    {% block heading %}
+    <h1 class="heading-xlarge">Land Registry: overseas ownership data</h1>
+    {% endblock %}
     {% block body %}{% endblock %}
   </main>
 {% endblock %}
