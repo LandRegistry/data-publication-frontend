@@ -39,6 +39,11 @@ logger = logger_config.LoggerConfig(app)
 logger.setup_logger(__name__)
 logger.setup_audit_logger()
 
+@app.route(URL_PREFIX + "/")
+@logger.start_stop_logging
+def index():
+    return redirect(app.config['START_PAGE'])
+
 
 @app.route(URL_PREFIX + '/cookies/')
 @logger.start_stop_logging
@@ -48,7 +53,6 @@ def cookies():
     return render_template('cookies.html', breadcrumbs=breadcrumbs)
 
 
-@app.route(URL_PREFIX + '/')
 @app.route(URL_PREFIX + '/usertype/')
 @logger.start_stop_logging
 def user_type(usertype_form=None):

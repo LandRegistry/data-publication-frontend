@@ -69,6 +69,12 @@ class TestNavigation:
         assert response.status_code == 404
         assert '404: Not Found' in content
 
+    def test_get_index_page_success(self):
+        response = self.app.get(URL_PREFIX + "/")
+        content = response.data.decode()
+        assert response.status_code == 302
+        assert app.config['START_PAGE'] in content
+
     def test_get_recaptcha_page_success(self):
         with self.app as c:
             with c.session_transaction() as sess:
