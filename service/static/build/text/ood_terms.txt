@@ -1,23 +1,100 @@
-Welcome to our website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern Land Registry's relationship with you in relation to this website. If you disagree with any part of these terms and conditions, please do not use our website.
+Licence for the supply of Overseas Company Ownership Data
 
-The term 'Land Registry' or 'us' or 'we' refers to the owner of the website whose registered office is Seaton Court. Our company registration number is [company registration number and place of registration]. The term 'you' refers to the user or viewer of our website.
+Definitions
 
-The use of this website is subject to the following terms of use:
+In this Licence, except where the context otherwise requires, the following terms shall have the following meanings:
 
-The content of the pages of this website is for your general information and use only. It is subject to change without notice.
+'Information' means the Overseas Company Ownership Dataset and comprises:
 
-This website uses cookies to monitor browsing preferences. If you do allow cookies to be used, the following personal information may be stored by us for use by third parties: [insert list of information].
+Property address, registered title number, tenure (Freehold/Leasehold), names (proprietor), date of registration of owners, country of incorporation and correspondence addresses for companies registered outside the UK or companies with correspondence addresses outside the UK and price paid data where this is available in our published Additional Price Paid Data.
 
-Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.
+'End User' means users or subscribers who use electronic or digital versions of your product or publication'.
 
-Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services or information available through this website meet your specific requirements.
+'Use' means doing any act which is restricted by copyright or database right, whether in the original medium or in any other medium, and includes without limitation distributing, copying, adapting, modifying as may be technically necessary to use it in a different mode or format.
 
-This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.
+'You', 'you' and 'your' means the natural or legal person, or body of persons corporate or incorporate, acquiring rights in the Information (whether the Information is obtained directly from the Licensor or otherwise) under this licence.
 
-All trade marks reproduced in this website which are not the property of, or licensed to, the operator are acknowledged on the website.
+'We', 'us' and 'our' means HM Land Registry (acting by the Chief Land Registrar).
 
-Unauthorised use of this website may give rise to a claim for damages and/or be a criminal offence.
+Using Information under this licence
 
-From time to time this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s).
+Use of copyright and database right material expressly made available under this licence (the 'Information') indicates your acceptance of the terms and conditions below.
 
-Your use of this website and any dispute arising out of such use of the website is subject to the laws of England, Northern Ireland, Scotland and Wales.
+We grant you a worldwide, royalty-free, perpetual, non-exclusive licence to use the Information subject to the conditions below.
+
+This licence does not affect your freedom under fair dealing or fair use or any other copyright or database right exceptions and limitations.
+
+Permitted Use
+
+(1)   You are free to publish the Information in aggregated form with other data you hold so that End Users of your publication may access our Information from You and download it provided that they use it only for private research, study or in-house use for non-commercial purpose.  Any commercial use of the Information by your End Users requires our formal written permission, which can be requested from us and is subject to an additional licence and associated charge,
+
+(2)   use the Information internally in your organisation for the following purposes:
+
+
+*        including in reports and submissions to third parties that relate to the internal administration and running of your business or organisation;
+
+*        formatting, hosting, de-duplicating, validating and cleansing the Information;
+
+*        matching to your own data and data you hold;
+
+*        appending to your data to create a combined internal database;
+
+*        holding and maintaining the Information in the combined internal database;
+
+*        running analysis or segmentation routines and selections on your data;
+
+*       verification of the accuracy of any data.
+
+You must not:
+
+*        copy, sell, distribute, send or make use of the Information provided for any purpose other than the Permitted use;
+
+*        sell or publish the whole or any part of the Information as a standalone licensed product or service;
+
+*        present out of date Information as being current;
+
+*        mislead others or misrepresent us or the Information;
+
+*        reproduce the Land Registry logo unless it forms an integral part of the Information and you are reproducing it in that context;
+
+*        use the Information for the purposes of direct marketing;
+
+*        use the Land Registry Title Number or permit it to be used in any way that causes our systems (e.g. Business Gateway) or access to those to be interrupted, damaged or impaired in any way.
+
+When using or publishing this information
+
+*        You will need to add the following attribution statement if you use or publish this Information:
+
+Information produced by Land Registry (c) Crown copyright 2015.
+
+*        When you publish the Information, be sure to include details of the nature of the Information and any relevant dates for the period of time covered.
+
+These are important conditions of this licence and if you fail to comply with them the rights granted to you under this licence, or any similar licence granted by us, will end automatically.
+
+Privacy Statement
+
+We may collect and use the information commercially available or supplied by you:
+
+- To enable us to ensure that you use the Information in an appropriate manner
+
+- For reporting and statistical purposes
+
+- For internal analysis on licensing, pricing, terms of use and data value, and
+
+- For such purpose or use as sharing, checking and verifying information with other government departments and agencies or law enforcement agencies.
+
+By entering into the Licence you will be indicating your agreement to us processing your information in this way.
+
+Non-endorsement
+
+This licence does not grant you any right to use the Information in a way that suggests any official status or that we endorse you or your use of the Information.
+
+No warranty
+
+The Information is licensed 'as is' and we exclude all representations, warranties, obligations and liabilities in relation to the Information to the maximum extent permitted by law.
+
+We are not liable for any errors or omissions in the Information and shall not be liable for any loss, injury or damage of any kind caused by its use. We do not guarantee the continued supply of the Information.
+
+Governing Law
+
+This Licence is governed by the laws of England and Wales.

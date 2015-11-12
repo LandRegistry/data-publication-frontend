@@ -20,7 +20,7 @@ MONTHS = [
     "July", "August", "September", "October", "November", "December"]
 
 BREADCRUMBS = [
-    {"text": "Dataset details", "url": "/"},
+    {"text": "Dataset details", "url": app.config['START_PAGE']},
     {"text": "User type", "url": "/usertype"},
     {"text": "Personal details", "url": "/personal"},
     {"text": "Address details", "url": "/address"},
@@ -39,8 +39,7 @@ logger = logger_config.LoggerConfig(app)
 logger.setup_logger(__name__)
 logger.setup_audit_logger()
 
-
-@app.route(URL_PREFIX + '/')
+@app.route(URL_PREFIX + "/")
 @logger.start_stop_logging
 def index():
     return redirect(app.config['START_PAGE'])
@@ -49,8 +48,8 @@ def index():
 @app.route(URL_PREFIX + '/cookies/')
 @logger.start_stop_logging
 def cookies():
-    breadcrumbs = [{"text": "Dataset details", "url": "/"},
-        {"text": "Cookies", "url": "/cookies"}]
+    breadcrumbs = [{"text": "Back to form", "url": "/terms/"},
+                   {"text": "Cookies", "url": "/cookies"}]
     return render_template('cookies.html', breadcrumbs=breadcrumbs)
 
 
@@ -209,7 +208,7 @@ def printable_terms():
 def decline_terms():
     session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
-    return redirect(url_for('index'))
+    return render_template('decline_terms.html', govuk_page=app.config['START_PAGE'])
 
 @app.route(URL_PREFIX + '/dataset/', methods=['GET'])
 @app.route(URL_PREFIX + '/dataset', methods=['POST'])
