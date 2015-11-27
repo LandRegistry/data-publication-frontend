@@ -12,6 +12,8 @@ app = Flask(__name__)
 app.config.update(CONFIG_DICT)
 app.secret_key = app.config['SESSION_KEY']
 app.session_cookie_name = 'lr_data_session'
+app.session_cookie_secure = True
+app.session_cookie_httponly = True
 error_handler.setup_errors(app)
 
 CsrfProtect(app)
