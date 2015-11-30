@@ -2,6 +2,7 @@ import os
 
 overseas_ownership_url = os.environ.get('OVERSEAS_OWNERSHIP_URL')
 session_key = os.environ.get('SESSION_KEY')
+secure_session = os.environ.get('SECURE_SESSION').lower() in ('true', 'yes')
 overseas_terms_file = os.environ.get('OVERSEAS_TERMS_FILE')
 recaptcha_private_key = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 recaptcha_public_key = os.environ.get('RECAPTCHA_PUBLIC_KEY')
@@ -17,6 +18,8 @@ start_page = os.environ.get('START_PAGE')
 CONFIG_DICT = {
     'DEBUG': False,
     'LOGGING': True,
+    'SESSION_COOKIE_HTTPONLY': True,
+    'SESSION_COOKIE_SECURE': secure_session,
     'OVERSEAS_OWNERSHIP_URL': overseas_ownership_url,
     'SESSION_KEY': session_key,
     'WTF_CSRF_SECRET_KEY': session_key,
