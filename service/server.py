@@ -206,6 +206,8 @@ def printable_terms():
 @app.route(URL_PREFIX + '/decline_terms/')
 @logger.start_stop_logging
 def decline_terms():
+    if 'recaptcha_result' not in session or session['recaptcha_result'] == 'fail':
+        return redirect(url_for('recaptcha'))
     session['terms'] = 'declined'
     logger.audit(format_session_info_for_audit())
     return render_template('decline_terms.html', govuk_page=app.config['START_PAGE'])
