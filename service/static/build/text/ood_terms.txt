@@ -4,97 +4,100 @@ Definitions
 
 In this Licence, except where the context otherwise requires, the following terms shall have the following meanings:
 
-'Information' means the Overseas Company Ownership Dataset and comprises:
+'Information' means the Overseas Company Ownership Dataset and comprises: 
 
-Property address, registered title number, tenure (Freehold/Leasehold), names (proprietor), date of registration of owners, country of incorporation and correspondence addresses for companies registered outside the UK or companies with correspondence addresses outside the UK and price paid data where this is available in our published Additional Price Paid Data.
+•	Property address, registered title number, tenure (Freehold/Leasehold), names (proprietor), date of registration of owners, country of incorporation and correspondence addresses for companies registered outside the UK or companies with correspondence addresses outside the UK and price paid data where this is available in our published Additional Price Paid Data.
 
-'End User' means users or subscribers who use electronic or digital versions of your product or publication'.
+‘End User’ means users or subscribers who use electronic or digital versions of your product or publication’.
+
+‘Public Sector Licence’ means a Public Sector Mapping Agreement Member Licence or a One Scotland Mapping Agreement Member Licence issued by Ordnance Survey.
 
 'Use' means doing any act which is restricted by copyright or database right, whether in the original medium or in any other medium, and includes without limitation distributing, copying, adapting, modifying as may be technically necessary to use it in a different mode or format.
 
 'You', 'you' and 'your' means the natural or legal person, or body of persons corporate or incorporate, acquiring rights in the Information (whether the Information is obtained directly from the Licensor or otherwise) under this licence.
 
-'We', 'us' and 'our' means HM Land Registry (acting by the Chief Land Registrar).
+‘We’, ‘us’ and ‘our’ means HM Land Registry (acting by the Chief Land Registrar).
+
 
 Using Information under this licence
 
 Use of copyright and database right material expressly made available under this licence (the 'Information') indicates your acceptance of the terms and conditions below.
 
-We grant you a worldwide, royalty-free, perpetual, non-exclusive licence to use the Information subject to the conditions below.
+We grant you a worldwide, royalty-free, perpetual, non-exclusive licence to use the Information subject to the conditions below. 
 
 This licence does not affect your freedom under fair dealing or fair use or any other copyright or database right exceptions and limitations.
 
+
 Permitted Use
+  
+(1)	 We use Ordnance Survey data in the preparation of the property addresses contained within the Information, therefore these licence terms are by agreement with Ordnance Survey. It is a condition of our supplying the Information to you that you have first entered into a Licence with Ordnance Survey for the use and re-use of addresses.
+Your permitted use of the property addresses is as follows:
 
-(1)   You are free to publish the Information in aggregated form with other data you hold so that End Users of your publication may access our Information from You and download it provided that they use it only for private research, study or in-house use for non-commercial purpose.  Any commercial use of the Information by your End Users requires our formal written permission, which can be requested from us and is subject to an additional licence and associated charge,
+o	If you hold a Public Sector Licence, your permitted use of the addresses  is in accordance with the terms of that Licence, provided and for so long as that Licence remains in force. In the event of any conflict between this Licence and the Public Sector Licence in relation to your licensed use rights for the property addresses, the Public Sector Licence will have precedence.  To be clear, if your Public Sector Licence terminates/expires, you will no longer be permitted to use the property addresses.
 
-(2)   use the Information internally in your organisation for the following purposes:
+o	If you hold a Licence with Ordnance Survey for the use of the property addresses your permitted use of the property addresses is in accordance with the terms of that Contract, provided and for so long as that Licence remains in force. In the event of any conflict between this Licence and the Licence you hold with Ordnance Survey in relation to your licensed use rights for the property addresses, the licence you hold with Ordnance Survey will have precedence.  To be clear, if the Licence you hold with Ordnance Survey for the use of property addresses terminates/expires, you will no longer be permitted to use the property addresses.
 
+o	If you require to use the property addresses for any purpose other than for which you are permitted under this clause (1), you must contact Ordnance Survey (http://www.ordnancesurvey.co.uk/) for the relevant licence conditions.
 
-*        including in reports and submissions to third parties that relate to the internal administration and running of your business or organisation;
+(2)	Subject to clause (1) above, you are free to
 
-*        formatting, hosting, de-duplicating, validating and cleansing the Information;
+(a) publish the Information in aggregated form with other data you hold so that End Users of your publication may access our Information from You and download it provided that they use it only for private research, study or in-house use for non-commercial purpose.  Any commercial use of the Information by your End Users requires our formal written permission, which can be requested from us and is subject to an additional licence and associated charge. 
 
-*        matching to your own data and data you hold;
+(b) use the Information internally in your organisation for the following purposes:
 
-*        appending to your data to create a combined internal database;
-
-*        holding and maintaining the Information in the combined internal database;
-
-*        running analysis or segmentation routines and selections on your data;
-
-*       verification of the accuracy of any data.
+•	including in reports and submissions to third parties that relate to the internal administration and running of your business or organisation;
+•	formatting, hosting, de-duplicating, validating and cleansing the Information;
+•	matching to your own data and data you hold; 
+•	appending to your data to create a combined internal database;
+•	holding and maintaining the Information in the combined internal database;
+•	running analysis or segmentation routines and selections on your data; 
+•	verification of the accuracy of any data.
 
 You must not:
+•	copy, sell, distribute, send or make use of the Information provided for any purpose other than the Permitted Use; 
+•	sell or publish the whole or any part of the Information as a standalone licensed product or service; 
+•	present out of date Information as being current; 
+•	mislead others or misrepresent us or the Information;
+•	reproduce the Land Registry logo unless it forms an integral part of the Information and you are reproducing it in that context;
+•	use the Information for the purposes of direct marketing;
+•	use the Land Registry Title Number or permit it to be used in any way that causes our systems (e.g. Business Gateway) or access to those to be interrupted, damaged or impaired in any way. 
 
-*        copy, sell, distribute, send or make use of the Information provided for any purpose other than the Permitted use;
-
-*        sell or publish the whole or any part of the Information as a standalone licensed product or service;
-
-*        present out of date Information as being current;
-
-*        mislead others or misrepresent us or the Information;
-
-*        reproduce the Land Registry logo unless it forms an integral part of the Information and you are reproducing it in that context;
-
-*        use the Information for the purposes of direct marketing;
-
-*        use the Land Registry Title Number or permit it to be used in any way that causes our systems (e.g. Business Gateway) or access to those to be interrupted, damaged or impaired in any way.
 
 When using or publishing this information
 
-*        You will need to add the following attribution statement if you use or publish this Information:
+•	You will need to add the following attribution statement if you use or publish this Information:
 
-Information produced by Land Registry (c) Crown copyright 2015.
+    Information produced by Land Registry © Crown copyright 2015.
 
-*        When you publish the Information, be sure to include details of the nature of the Information and any relevant dates for the period of time covered.
+•	When you publish the Information, be sure to include details of the nature of the Information and any relevant dates for the period of time covered.
 
 These are important conditions of this licence and if you fail to comply with them the rights granted to you under this licence, or any similar licence granted by us, will end automatically.
 
-Privacy Statement
 
-We may collect and use the information commercially available or supplied by you:
+Privacy Statement 
 
-- To enable us to ensure that you use the Information in an appropriate manner
-
-- For reporting and statistical purposes
-
+We may collect and use the information commercially available or supplied by you: 
+- To enable us to ensure that you use the Information in an appropriate manner 
+- For reporting and statistical purposes 
 - For internal analysis on licensing, pricing, terms of use and data value, and
-
 - For such purpose or use as sharing, checking and verifying information with other government departments and agencies or law enforcement agencies.
 
-By entering into the Licence you will be indicating your agreement to us processing your information in this way.
+By entering into the Licence you will be indicating your agreement to us processing your
+Information in this way. 
+
 
 Non-endorsement
 
 This licence does not grant you any right to use the Information in a way that suggests any official status or that we endorse you or your use of the Information.
 
+
 No warranty
 
-The Information is licensed 'as is' and we exclude all representations, warranties, obligations and liabilities in relation to the Information to the maximum extent permitted by law.
+The Information is licensed 'as is' and we exclude all representations, warranties, obligations and liabilities in relation to the Information to the maximum extent permitted by law. 
 
 We are not liable for any errors or omissions in the Information and shall not be liable for any loss, injury or damage of any kind caused by its use. We do not guarantee the continued supply of the Information.
 
+
 Governing Law
 
-This Licence is governed by the laws of England and Wales.
+This Licence is governed by the laws of England and Wales. 
