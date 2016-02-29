@@ -341,7 +341,7 @@ def format_session_info_for_audit(download_filename=None):
     return "\"{}\"".format("\",\"".join(log_entry))
 
 
-@app.route('/health', methods=['GET'])
+@app.route(URL_PREFIX + '/health', methods=['GET'])
 def health_check():
     try:
         response = requests.get(app.config['OVERSEAS_OWNERSHIP_URL'] + "/health")
