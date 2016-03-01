@@ -2,11 +2,13 @@
 
 
 {% block head %}
-  <link href="{{ landregistry_asset_path }}stylesheets/landregistry-main.css" media="screen" rel="stylesheet" type="text/css">
+  {% assets "landregistry_main" %}
+    <link href="{{ ASSET_URL }}" media="screen" rel="stylesheet" type="text/css">
+  {% endassets %}
   {% assets "govuk_sass" %}
     <link href="{{ ASSET_URL }}" media="screen" rel="stylesheet" type="text/css">
   {% endassets %}
-  <link href="{{ landregistry_asset_path }}stylesheets/lr-additional.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="{{ asset_path }}stylesheets/lr-additional.css" media="screen" rel="stylesheet" type="text/css">
   {% block head_additionals %}{% endblock %}
   {% block google_analytics %}{% endblock %}
 {% endblock %}
@@ -24,10 +26,10 @@
 
 {% block body_end %}
   {% if env_flag != 'build' %}
-    <script src="{{ landregistry_asset_path }}javascripts/vendor/jquery-1.11.0.min.js"></script>
-    <script src="{{ landregistry_asset_path }}javascripts/govuk/selection-buttons.js"></script>
-    <script src="{{ landregistry_asset_path }}javascripts/govuk/stick-at-top-when-scrolling.js"></script>
-    <script src="{{ landregistry_asset_path }}javascripts/govuk/stop-scrolling-at-footer.js"></script>
+    <script src="{{ asset_path }}javascripts/vendor/jquery-1.11.0.min.js"></script>
+    <script src="{{ asset_path }}javascripts/govuk/selection-buttons.js"></script>
+    <script src="{{ asset_path }}javascripts/govuk/stick-at-top-when-scrolling.js"></script>
+    <script src="{{ asset_path }}javascripts/govuk/stop-scrolling-at-footer.js"></script>
   {% endif %}
   {% block js_additionals %}{% endblock %}
 {% endblock %}

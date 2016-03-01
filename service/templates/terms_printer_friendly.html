@@ -2,7 +2,7 @@
 
 {% block page_title %}Land Registry Data - Overseas Ownership Dataset{% endblock %}
 {% block head_additionals %}
-  <link rel="stylesheet" href="{{ landregistry_asset_path }}stylesheets/print.css" type="text/css" media="print" />
+  <link rel="stylesheet" href="{{ asset_path }}stylesheets/print.css" type="text/css" media="print" />
 {% endblock %}
 {% block body %}
     <br/>
@@ -13,7 +13,7 @@
         /*]]>*/
       </script>
       <noscript>To print this page, use your browser's print function. A printer-friendly version of the page will be provided.</noscript>
-      <p><a href="/terms" class="button">Continue with sign up</a></p>
+      <p><a href="{{ url_prefix }}/terms" class="button">Continue with sign up</a></p>
     </form>
       <h2 class="heading-xlarge">
         Terms and conditions
