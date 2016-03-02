@@ -47,7 +47,11 @@
           <nav role="navigation" class="expand-top-half expand-bottom-half">
             <ol class="group">
               {% for breadcrumb in breadcrumbs %}
-                <li><a href="{{ url_prefix + breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+                {% if breadcrumb['url'].lower().startswith('http') %}
+                  <li><a href="{{ breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+                {% else %}
+                  <li><a href="{{ url_prefix + breadcrumb['url'] }}">{{ breadcrumb["text"] }}</a></li>
+                {% endif %}
               {% endfor %}
             </ol>
           </nav>
